@@ -38,7 +38,7 @@ export default function Home() {
         <section className="relative overflow-hidden border-b border-border/50">
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/40 via-background to-background" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-transparent to-transparent" />
-          <div className="relative mx-auto max-w-7xl px-4 py-16 sm:py-24 text-center">
+          <div className="relative mx-auto max-w-[1600px] px-4 py-16 sm:py-24 text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -75,7 +75,7 @@ export default function Home() {
 
         {/* Stats */}
         <section className="border-b border-border/50 bg-muted/10">
-          <div className="mx-auto max-w-7xl px-4 py-8">
+          <div className="mx-auto max-w-[1600px] px-4 py-8">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               <div className="rounded-xl border border-border/50 bg-card/30 p-4 text-center animate-fade-in-up">
                 <div className="text-2xl font-bold text-foreground"><AnimatedNumber value={totalVolume} /></div>
@@ -98,7 +98,7 @@ export default function Home() {
         </section>
 
         {/* Pairs */}
-        <section id="pairs" className="mx-auto max-w-7xl px-4 py-8 animate-fade-in">
+        <section id="pairs" className="mx-auto max-w-[1600px] px-4 py-8 animate-fade-in">
           <div className="mb-6 flex items-end justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-tight">All Pairs</h2>
