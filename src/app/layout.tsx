@@ -1,0 +1,42 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "@/components/providers";
+import { BottomNav } from "@/components/bottom-nav";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Aperture — Arc DEX Scanner",
+  description: "See Arc liquidity. Real-time DEX pair scanner for Arc network — track pairs, liquidity, volume, and transactions.",
+  keywords: ["Arc", "DEX", "scanner", "liquidity", "pairs", "DeFi", "blockchain"],
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  openGraph: {
+    title: "Aperture — Arc DEX Scanner",
+    description: "See Arc liquidity. Real-time DEX pair scanner for Arc network.",
+    type: "website",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className="dark">
+      <body className={`${inter.className} antialiased`}>
+        <Providers>
+          <div className="flex min-h-screen flex-col bg-background text-foreground pb-16 sm:pb-0">
+            {children}
+          </div>
+          <BottomNav />
+        </Providers>
+      </body>
+    </html>
+  );
+}
