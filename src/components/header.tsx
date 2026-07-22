@@ -21,13 +21,14 @@ export function Header({ active }: { active?: string }) {
           <div className="flex items-center gap-6">
             {/* Logo: Aperture | separator | Arc */}
             <a href="/" className="flex items-center gap-2.5">
-              {/* Aperture logo — custom aperture/lens icon */}
-              <div className="flex h-6 w-6 items-center justify-center rounded bg-emerald-500">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-background">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94" />
-                </svg>
-              </div>
+              {/* Aperture logo — The Aperture Orbit */}
+              <Image
+                src="/aperture-logo.svg"
+                alt="Aperture"
+                width={24}
+                height={24}
+                priority
+              />
               <span className="text-base font-bold tracking-tight">Aperture</span>
               {/* Separator */}
               <span className="h-4 w-px bg-border mx-0.5" />

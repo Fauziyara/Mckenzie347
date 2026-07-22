@@ -6,13 +6,13 @@ export function Footer() {
       <div className="w-full px-4 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2.5">
-            {/* Aperture logo */}
-            <div className="flex h-5 w-5 items-center justify-center rounded bg-emerald-500">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-background">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94" />
-              </svg>
-            </div>
+            {/* Aperture logo — The Aperture Orbit */}
+            <Image
+              src="/aperture-logo.svg"
+              alt="Aperture"
+              width={20}
+              height={20}
+            />
             <span className="text-sm font-bold">Aperture</span>
             {/* Separator */}
             <span className="h-3.5 w-px bg-border" />
