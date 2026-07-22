@@ -33,7 +33,7 @@ export function Header({ active }: { active?: string }) {
               <span className="h-4 w-px bg-border mx-0.5" />
               {/* Arc logo — official from Circle Brand Kit */}
               <Image
-                src="/arc-logo-ondark.svg"
+                src="/arc-logo-official.svg"
                 alt="Arc™ — Arc is a trademark of Circle Internet Group, Inc."
                 width={42}
                 height={14}

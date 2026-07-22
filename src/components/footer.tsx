@@ -18,7 +18,7 @@ export function Footer() {
             <span className="h-3.5 w-px bg-border" />
             {/* Arc logo — official */}
             <Image
-              src="/arc-logo-ondark.svg"
+              src="/arc-logo-official.svg"
               alt="Arc™"
               width={36}
               height={12}
