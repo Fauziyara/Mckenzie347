@@ -97,8 +97,8 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
   }
 
   function SortIcon({ k }: { k: SortKey }) {
-    if (sortKey !== k) return <span className="text-muted-foreground/30 ml-0.5">⇅</span>;
-    return <span className="text-emerald-400 ml-0.5 font-bold">{sortDir === "asc" ? "↑" : "↓"}</span>;
+    if (sortKey !== k) return <span className="text-muted-foreground/30">↕</span>;
+    return <span className="text-foreground">{sortDir === "asc" ? "↑" : "↓"}</span>;
   }
 
   function getChange(p: Pair) {
@@ -213,7 +213,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
               onClick={() => toggleSort(key)}
               className={`h-7 rounded-md px-2.5 text-xs font-medium gap-1 inline-flex items-center justify-center border transition-colors cursor-pointer ${
                 sortKey === key
-                  ? "bg-emerald-500 text-background border-emerald-500 hover:bg-emerald-600 sort-active"
+                  ? "bg-emerald-500 text-background border-emerald-500 hover:bg-emerald-600"
                   : "border-border bg-background hover:bg-muted hover:text-foreground"
               }`}
             >
@@ -225,7 +225,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
       </div>
 
       {/* ===== DESKTOP TABLE (md and up) ===== */}
-      <div className="hidden overflow-x-auto rounded-lg border border-border md:block sticky-thead">
+      <div className="hidden overflow-x-auto rounded-lg border border-border md:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/30">
@@ -254,7 +254,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                 const change = getChange(pair);
                 const isPositive = change >= 0;
                 return (
-                  <tr key={pair.address} className="row-glow border-b border-border/40 transition-colors last:border-0 hover:bg-muted/20">
+                  <tr key={pair.address} className="border-b border-border/40 transition-colors last:border-0 hover:bg-muted/20">
                     <td className="px-3 py-2.5">
                       <Link href={pair.isSwapReal ? "/swap" : `/pair/${pair.address}`} className="block">
                         <div className="flex items-center gap-2">
@@ -290,12 +290,12 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono text-xs text-muted-foreground">
                       <div className="inline-grid grid-cols-3 gap-x-2 gap-y-0.5 text-[10px] items-center">
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>{pair.top10Pct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h20M3 6l4 4 5-6 5 6 4-4-2 12H5L3 6z"/></svg>{pair.devPct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>{pair.sniperPct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>{pair.insiderPct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12h.01M15 12h.01M9 15h.01M15 15h.01M12 2a8 8 0 0 0-8 8v12l3-2 2 2 3-2 3 2 2-2 3 2V10a8 8 0 0 0-8-8z"/></svg>{pair.bundlerPct}%</span>
-  <span className="flex items-center gap-0.5 text-emerald-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Paid</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>{pair.top10Pct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20M3 6l4 4 5-6 5 6 4-4-2 12H5L3 6z"/></svg>{pair.devPct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>{pair.sniperPct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>{pair.insiderPct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01M15 12h.01M9 15h.01M15 15h.01M12 2a8 8 0 0 0-8 8v12l3-2 2 2 3-2 3 2 2-2 3 2V10a8 8 0 0 0-8-8z"/></svg>{pair.bundlerPct}%</span>
+  <span className="flex items-center gap-0.5 text-emerald-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Paid</span>
 </div>
                     </td>
                                         <td className="px-3 py-2.5 text-center">
