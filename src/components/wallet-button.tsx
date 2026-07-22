@@ -34,7 +34,7 @@ export function WalletButton() {
   if (!mounted) {
     return (
       <div className="relative">
-        <button className="flex items-center gap-1.5 rounded-md bg-amber-500 px-3 py-1.5 text-xs font-semibold text-background opacity-50">
+        <button className="flex items-center gap-1.5 rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-background opacity-50">
           Connect
         </button>
       </div>
@@ -46,7 +46,7 @@ export function WalletButton() {
     return (
       <button
         onClick={() => open()}
-        className="btn-lift flex items-center gap-1.5 rounded-md bg-amber-500 px-3 py-1.5 text-xs font-semibold text-background transition-colors hover:bg-amber-400"
+        className="btn-lift flex items-center gap-1.5 rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-background transition-colors hover:bg-emerald-400"
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M3 7h18v10H3z" />
@@ -67,7 +67,7 @@ export function WalletButton() {
         <span className="font-mono font-medium text-foreground">
           {shortAddr(address || "")}
         </span>
-        <div className="flex h-2 w-2 rounded-full bg-amber-500" />
+        <div className="flex h-2 w-2 rounded-full bg-emerald-500" />
       </button>
 
       {dropdownOpen && (
@@ -75,8 +75,8 @@ export function WalletButton() {
           <div className="mb-3">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Connected Wallet</div>
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/20">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-amber-400">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-400">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>

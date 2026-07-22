@@ -6,7 +6,7 @@ export function Footer() {
       <div className="w-full px-4 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-5 w-5 items-center justify-center rounded bg-amber-500">
+            <div className="flex h-5 w-5 items-center justify-center rounded bg-emerald-500">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-background">
                 <circle cx="12" cy="12" r="9" />
                 <path d="M12 3 A 9 9 0 0 1 12 21" fill="currentColor" />

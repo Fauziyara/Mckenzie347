@@ -23,7 +23,7 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
-                isActive ? "text-amber-400" : "text-muted-foreground hover:text-foreground"
+                isActive ? "text-emerald-400" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
