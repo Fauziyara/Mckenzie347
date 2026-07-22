@@ -3,7 +3,8 @@
 import { http, createConfig, createStorage } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { type Chain } from "wagmi/chains";
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { createAppKit } from "@reown/appkit/react";
 
 export const arcTestnet: Chain = {
   id: 5042002,
@@ -31,16 +32,42 @@ const noopStorage = {
 
 const isBrowser = typeof window !== "undefined";
 
-// RainbowKit config — handles all wallet UI/UX
-export const config = getDefaultConfig({
-  appName: "Arc Dashboard",
-  projectId: "arc-dashboard-testnet", // WalletConnect project ID — get from https://cloud.walletconnect.com
-  chains: [arcTestnet],
+// Wagmi adapter untuk Reown AppKit
+export const wagmiAdapter = new WagmiAdapter({
+  networks: [arcTestnet],
+  projectId: "arc-dashboard-testnet",
+  ssr: true,
+  storage: createStorage({
+    storage: isBrowser ? window.localStorage : (noopStorage as any),
+  }),
   transports: {
     [arcTestnet.id]: http("https://rpc.testnet.arc.network"),
   },
-  ssr: true,
 });
 
-// Keep old config export for backward compatibility
+// Create AppKit instance
+export const appKit = createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [arcTestnet],
+  projectId: "arc-dashboard-testnet",
+  metadata: {
+    name: "Arc Dashboard",
+    description: "Arc Network Dashboard — DEX Scanner & Analytics",
+    url: "https://arc-dashboard.vercel.app",
+    icons: ["https://arc.network/favicon.ico"],
+  },
+  features: {
+    analytics: false,
+    email: false,
+    socials: false,
+  },
+  themeMode: "dark",
+  themeVariables: {
+    "--w3m-accent": "#10b981", // emerald-500
+    "--w3m-border-radius-master": "2px",
+  },
+});
+
+// Export wagmi config dari adapter
+export const config = wagmiAdapter.wagmiConfig;
 export { config as wagmiConfig };
