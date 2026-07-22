@@ -13,7 +13,7 @@ type SortKey = "createdAt" | "liquidityUsd" | "volume24h" | "txCount24h" | "mark
 type Tab = "top" | "tren" | "baru" | "lonjakan" | "dipantau";
 
 const TAB_INFO: Record<Tab, { label: string; desc: string }> = {
-  top: { label: "Top", desc: "All pairs on Arc network" },
+  top: { label: "Top", desc: "" },
   tren: { label: "Trending", desc: "Pair dengan harga naik" },
   baru: { label: "New", desc: "Pair baru (≤24 h)" },
   lonjakan: { label: "Surge", desc: "Pair dengan kenaikan >10%" },
@@ -174,9 +174,6 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
               </button>
             ))}
           </div>
-        </div>
-        <div className="hidden sm:block text-xs text-muted-foreground">
-          {TAB_INFO[tab].desc} — <span className="text-foreground font-medium">{filtered.length}</span> pairs
         </div>
       </div>
 
