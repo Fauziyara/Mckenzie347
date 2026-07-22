@@ -18,6 +18,9 @@ interface TradePanelProps {
   };
 }
 
+// Demo balance — simulasi modal trading
+const DEMO_BALANCE = 1000;
+
 export function TradePanel({ pair }: TradePanelProps) {
   const { isConnected } = useAccount();
   const [side, setSide] = useState<"buy" | "sell">("buy");
@@ -41,6 +44,11 @@ export function TradePanel({ pair }: TradePanelProps) {
     if (v && !isNaN(Number(v))) {
       setSlippage(v);
     }
+  };
+
+  const handlePercent = (pct: number) => {
+    const val = (DEMO_BALANCE * pct / 100).toFixed(2);
+    setAmount(val);
   };
 
   return (
@@ -84,6 +92,12 @@ export function TradePanel({ pair }: TradePanelProps) {
           ))}
         </div>
 
+        {/* Balance display */}
+        <div className="flex justify-between text-xs">
+          <span className="text-muted-foreground">Modal</span>
+          <span className="font-mono text-muted-foreground">{DEMO_BALANCE.toLocaleString()} {side === "buy" ? pair.token1.symbol : pair.token0.symbol}</span>
+        </div>
+
         {/* Amount input */}
         <div>
           <div className="flex justify-between text-xs text-muted-foreground mb-1">
@@ -99,16 +113,21 @@ export function TradePanel({ pair }: TradePanelProps) {
           />
         </div>
 
-        {/* Quick amounts */}
+        {/* Quick amounts — persentase dari modal */}
         <div className="flex gap-1">
-          {["10", "50", "100", "500"].map(v => (
+          {[
+            { label: "25%", pct: 25 },
+            { label: "50%", pct: 50 },
+            { label: "75%", pct: 75 },
+            { label: "100%", pct: 100 },
+          ].map(v => (
             <button
-              key={v}
+              key={v.label}
               type="button"
-              onClick={() => setAmount(v)}
-              className="flex-1 rounded bg-muted/50 px-2 py-1 text-xs text-muted-foreground hover:bg-muted cursor-pointer"
+              onClick={() => handlePercent(v.pct)}
+              className="flex-1 rounded bg-muted/50 px-2 py-1 text-xs text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer transition-colors"
             >
-              {v}
+              {v.label}
             </button>
           ))}
         </div>
