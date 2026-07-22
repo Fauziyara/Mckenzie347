@@ -3,6 +3,7 @@
 import { http, createConfig, createStorage } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { type Chain } from "wagmi/chains";
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 
 export const arcTestnet: Chain = {
   id: 5042002,
@@ -30,15 +31,16 @@ const noopStorage = {
 
 const isBrowser = typeof window !== "undefined";
 
-export const config = createConfig({
+// RainbowKit config — handles all wallet UI/UX
+export const config = getDefaultConfig({
+  appName: "Arc Dashboard",
+  projectId: "arc-dashboard-testnet", // WalletConnect project ID — get from https://cloud.walletconnect.com
   chains: [arcTestnet],
-  connectors: [
-    injected({ shimDisconnect: true }),
-  ],
-  storage: createStorage({
-    storage: isBrowser ? window.localStorage : (noopStorage as any),
-  }),
   transports: {
     [arcTestnet.id]: http("https://rpc.testnet.arc.network"),
   },
+  ssr: true,
 });
+
+// Keep old config export for backward compatibility
+export { config as wagmiConfig };
