@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { WalletButton } from "@/components/wallet-button";
 import { TickerBar } from "@/components/ticker-bar";
+import { ThemeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
 
 const navItems = [
@@ -80,6 +81,7 @@ export function Header({ active }: { active?: string }) {
               </svg>
               <span className="text-xs font-medium text-blue-400">Faucet</span>
             </a>
+            <ThemeToggle />
             <WalletButton />
           </div>
         </div>
