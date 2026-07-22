@@ -54,7 +54,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-xl mx-auto">
-              Real-time analytics, on-chain swaps, and portfolio tracking for the Arc ecosystem.
+              Real-time analytics on-chain swaps and portfolio tracking for the Arc ecosystem
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
