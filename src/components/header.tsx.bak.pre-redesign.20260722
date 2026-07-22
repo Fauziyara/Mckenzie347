@@ -18,7 +18,7 @@ export function Header({ active }: { active?: string }) {
       <div className="w-full flex h-12 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-amber-500">
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-emerald-500">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-background">
                 <circle cx="12" cy="12" r="9" />
                 <path d="M12 3 A 9 9 0 0 1 12 21" fill="currentColor" />
@@ -33,7 +33,7 @@ export function Header({ active }: { active?: string }) {
                 href={item.href}
                 className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
                   active === item.label
-                    ? "bg-amber-500/20 text-amber-400"
+                    ? "bg-muted/50 text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -45,10 +45,10 @@ export function Header({ active }: { active?: string }) {
         <div className="flex items-center gap-2">
           <a
             href="/pulse"
-            className="flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 transition-colors hover:bg-amber-500/20"
+            className="flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-2.5 py-1 transition-colors hover:bg-emerald-500/20"
           >
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500" />
-            <span className="text-xs font-medium text-amber-400">TESTNET LIVE</span>
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+            <span className="text-xs font-medium text-emerald-400">TESTNET LIVE</span>
           </a>
           <a
             href="https://faucet.circle.com/"

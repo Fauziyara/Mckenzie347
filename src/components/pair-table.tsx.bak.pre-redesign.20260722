@@ -20,24 +20,6 @@ const TAB_INFO: Record<Tab, { label: string; desc: string }> = {
   dipantau: { label: "Watchlist", desc: "Pair yang kamu pantau" },
 };
 
-// Risk score calculation
-function getRiskScore(p: Pair): { score: number; level: "low" | "medium" | "high"; color: string } {
-  const riskFactors = [
-    p.top10Pct > 30 ? 2 : p.top10Pct > 15 ? 1 : 0,
-    p.devPct > 20 ? 2 : p.devPct > 10 ? 1 : 0,
-    p.sniperPct > 15 ? 2 : p.sniperPct > 5 ? 1 : 0,
-    p.insiderPct > 10 ? 2 : p.insiderPct > 5 ? 1 : 0,
-    p.bundlerPct > 10 ? 2 : p.bundlerPct > 5 ? 1 : 0,
-  ];
-  const total = riskFactors.reduce((a, b) => a + b, 0);
-  const max = riskFactors.length * 2;
-  const pct = (total / max) * 100;
-
-  if (pct <= 20) return { score: Math.round(pct), level: "low", color: "text-amber-400" };
-  if (pct <= 50) return { score: Math.round(pct), level: "medium", color: "text-orange-400" };
-  return { score: Math.round(pct), level: "high", color: "text-red-400" };
-}
-
 export function PairTable({ pairs }: { pairs: Pair[] }) {
   const [search, setSearch] = useState("");
   const [minLiq, setMinLiq] = useState("");
@@ -48,7 +30,6 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [buyPair, setBuyPair] = useState<Pair | null>(null);
-  const [flashing, setFlashing] = useState<Record<string, "green" | "red">>({});
 
   useEffect(() => {
     const saved = localStorage.getItem("aperture-watchlist");
@@ -58,28 +39,10 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
       setWatchlist(s ? JSON.parse(s) : []);
     };
     window.addEventListener("storage", handler);
+    // Simulate loading
     const t = setTimeout(() => setLoading(false), 400);
     return () => { window.removeEventListener("storage", handler); clearTimeout(t); };
   }, []);
-
-  // Simulate price flash on data change
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const randomPair = pairs[Math.floor(Math.random() * pairs.length)];
-      if (randomPair) {
-        const direction = Math.random() > 0.5 ? "green" : "red";
-        setFlashing(prev => ({ ...prev, [randomPair.address]: direction }));
-        setTimeout(() => {
-          setFlashing(prev => {
-            const next = { ...prev };
-            delete next[randomPair.address];
-            return next;
-          });
-        }, 600);
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [pairs]);
 
   const filtered = useMemo(() => {
     let result = [...pairs];
@@ -122,6 +85,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
       });
     }
 
+    // Always pin live swap pairs to top
     result.sort((a, b) => (b.isSwapReal ? 1 : 0) - (a.isSwapReal ? 1 : 0));
 
     return result;
@@ -134,13 +98,14 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
 
   function SortIcon({ k }: { k: SortKey }) {
     if (sortKey !== k) return <span className="text-muted-foreground/30 ml-0.5">⇅</span>;
-    return <span className="text-amber-400 ml-0.5 font-bold">{sortDir === "asc" ? "↑" : "↓"}</span>;
+    return <span className="text-emerald-400 ml-0.5 font-bold">{sortDir === "asc" ? "↑" : "↓"}</span>;
   }
 
   function getChange(p: Pair) {
     return timeframe === "5m" ? p.priceChange5m : timeframe === "1h" ? p.priceChange1h : p.priceChange24h;
   }
 
+  // Loading skeleton
   if (loading) {
     return (
       <div className="space-y-3">
@@ -185,7 +150,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                 onClick={() => setTab(t)}
                 className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   tab === t
-                    ? "bg-amber-500 text-background shadow-sm"
+                    ? "bg-emerald-500 text-background shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
@@ -248,7 +213,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
               onClick={() => toggleSort(key)}
               className={`h-7 rounded-md px-2.5 text-xs font-medium gap-1 inline-flex items-center justify-center border transition-colors cursor-pointer ${
                 sortKey === key
-                  ? "bg-amber-500 text-background border-amber-500 hover:bg-amber-600 sort-active"
+                  ? "bg-emerald-500 text-background border-emerald-500 hover:bg-emerald-600 sort-active"
                   : "border-border bg-background hover:bg-muted hover:text-foreground"
               }`}
             >
@@ -259,7 +224,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
         </div>
       </div>
 
-      {/* ===== DESKTOP TABLE ===== */}
+      {/* ===== DESKTOP TABLE (md and up) ===== */}
       <div className="hidden overflow-x-auto rounded-lg border border-border md:block sticky-thead">
         <table className="w-full text-sm">
           <thead>
@@ -272,14 +237,14 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
               <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Liquidity</th>
               <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Volume</th>
               <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">TX (B/S)</th>
-              <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Risk</th>
-              <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Action</th>
+              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Token Info</th>
+                            <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Action</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={10} className="px-4 py-12 text-center text-muted-foreground">
+                <td colSpan={11} className="px-4 py-12 text-center text-muted-foreground">
                   {tab === "dipantau" ? "No tokens in watchlist. Click ☆ Watch on pair page." : "No pairs found"}
                 </td>
               </tr>
@@ -288,9 +253,6 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                 const isNew = Date.now() / 1000 - pair.createdAt < 86400;
                 const change = getChange(pair);
                 const isPositive = change >= 0;
-                const risk = getRiskScore(pair);
-                const flash = flashing[pair.address];
-
                 return (
                   <tr key={pair.address} className="row-glow border-b border-border/40 transition-colors last:border-0 hover:bg-muted/20">
                     <td className="px-3 py-2.5">
@@ -300,11 +262,11 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                           <span className="font-medium">{pair.token0.symbol}</span>
                           <span className="text-muted-foreground text-xs">/ {pair.token1.symbol}</span>
                           {isNew && (
-                            <span className="rounded bg-amber-500/20 px-1 py-0 text-[9px] font-bold text-amber-400">NEW</span>
+                            <span className="rounded bg-emerald-500/20 px-1 py-0 text-[9px] font-bold text-emerald-400">NEW</span>
                           )}
                           {pair.isSwapReal && (
-                            <span className="rounded bg-amber-500/20 px-1.5 py-0 text-[9px] font-bold text-amber-400 border border-amber-500/30 flex items-center gap-0.5">
-                              <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />LIVE
+                            <span className="rounded bg-emerald-500/20 px-1.5 py-0 text-[9px] font-bold text-emerald-400 border border-emerald-500/30 flex items-center gap-0.5">
+                              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />LIVE
                             </span>
                           )}
                         </div>
@@ -316,46 +278,31 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                         <Sparkline data={pair.sparkline} positive={isPositive} width={72} height={24} />
                       </Link>
                     </td>
-                    <td className={`px-3 py-2.5 text-right font-mono text-xs transition-colors ${flash === "green" ? "animate-flash-green" : flash === "red" ? "animate-flash-red" : ""}`}>
-                      {formatPrice(pair.priceToken0PerToken1)}
-                    </td>
-                    <td className={`px-3 py-2.5 text-right font-mono text-xs font-medium ${isPositive ? "text-amber-400" : "text-red-400"}`}>
-                      {formatPct(change)}
-                    </td>
+                    <td className="px-3 py-2.5 text-right font-mono text-xs">{formatPrice(pair.priceToken0PerToken1)}</td>
+                    <td className={`px-3 py-2.5 text-right font-mono text-xs font-medium ${isPositive ? "text-emerald-400" : "text-red-400"}`}>{formatPct(change)}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.marketCapUsd)}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.liquidityUsd)}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.volume24h)}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-xs">
-                      <span className="text-amber-400">{pair.buys24h}</span>
+                      <span className="text-emerald-400">{pair.buys24h}</span>
                       <span className="text-muted-foreground">/</span>
                       <span className="text-red-400">{pair.sells24h}</span>
                     </td>
-                    <td className="px-3 py-2.5 text-center">
-                      <div className="group relative inline-block">
-                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${risk.color} bg-muted/50 cursor-help`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${risk.level === "low" ? "bg-amber-400" : risk.level === "medium" ? "bg-orange-400" : "bg-red-400"}`} />
-                          {risk.score}%
-                        </span>
-                        {/* Tooltip */}
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50">
-                          <div className="rounded-lg border border-border bg-popover p-2 shadow-xl text-[10px] whitespace-nowrap">
-                            <div className="font-semibold text-foreground mb-1">Risk Breakdown</div>
-                            <div className="space-y-0.5 text-muted-foreground">
-                              <div>Top 10: {pair.top10Pct}%</div>
-                              <div>Dev: {pair.devPct}%</div>
-                              <div>Sniper: {pair.sniperPct}%</div>
-                              <div>Insider: {pair.insiderPct}%</div>
-                              <div>Bundler: {pair.bundlerPct}%</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    <td className="px-3 py-2.5 text-right font-mono text-xs text-muted-foreground">
+                      <div className="inline-grid grid-cols-3 gap-x-2 gap-y-0.5 text-[10px] items-center">
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>{pair.top10Pct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h20M3 6l4 4 5-6 5 6 4-4-2 12H5L3 6z"/></svg>{pair.devPct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>{pair.sniperPct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>{pair.insiderPct}%</span>
+  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12h.01M15 12h.01M9 15h.01M15 15h.01M12 2a8 8 0 0 0-8 8v12l3-2 2 2 3-2 3 2 2-2 3 2V10a8 8 0 0 0-8-8z"/></svg>{pair.bundlerPct}%</span>
+  <span className="flex items-center gap-0.5 text-emerald-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Paid</span>
+</div>
                     </td>
-                    <td className="px-3 py-2.5 text-center">
+                                        <td className="px-3 py-2.5 text-center">
                       <button
                         type="button"
                         onClick={() => setBuyPair(pair)}
-                        className="rounded-md bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/20 transition-colors cursor-pointer"
+                        className="rounded-md bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
                       >
                         Buy
                       </button>
@@ -368,7 +315,7 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
         </table>
       </div>
 
-      {/* ===== MOBILE CARDS ===== */}
+      {/* ===== MOBILE CARDS (below md) ===== */}
       <div className="space-y-2 md:hidden">
         {filtered.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
@@ -379,8 +326,6 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
             const isNew = Date.now() / 1000 - pair.createdAt < 86400;
             const change = getChange(pair);
             const isPositive = change >= 0;
-            const risk = getRiskScore(pair);
-
             return (
               <div key={pair.address} className="rounded-lg border border-border p-3">
                 <div className="flex items-start justify-between">
@@ -389,9 +334,9 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                       <TokenLogo symbol={pair.token0.symbol} size={28} />
                       <span className="font-medium">{pair.token0.symbol}</span>
                       <span className="text-muted-foreground text-xs">/ {pair.token1.symbol}</span>
-                      {isNew && <span className="rounded bg-amber-500/20 px-1 text-[9px] font-bold text-amber-400">NEW</span>}
+                      {isNew && <span className="rounded bg-emerald-500/20 px-1 text-[9px] font-bold text-emerald-400">NEW</span>}
                       {pair.isSwapReal && (
-                        <span className="rounded bg-amber-500/20 px-1 text-[9px] font-bold text-amber-400 border border-amber-500/30">LIVE</span>
+                        <span className="rounded bg-emerald-500/20 px-1 text-[9px] font-bold text-emerald-400 border border-emerald-500/30">LIVE</span>
                       )}
                     </div>
                     <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">{shortAddr(pair.address)}</div>
@@ -401,20 +346,20 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
                 <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm">{formatPrice(pair.priceToken0PerToken1)}</span>
-                    <span className={`font-mono text-xs font-medium ${isPositive ? "text-amber-400" : "text-red-400"}`}>{formatPct(change)}</span>
+                    <span className={`font-mono text-xs font-medium ${isPositive ? "text-emerald-400" : "text-red-400"}`}>{formatPct(change)}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setBuyPair(pair)}
-                    className="rounded-md bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/20 cursor-pointer"
+                    className="rounded-md bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 cursor-pointer"
                   >
                     Buy
                   </button>
                 </div>
-                <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
+                <div className="mt-2 grid grid-cols-3 gap-2 text-[10px] text-muted-foreground">
                   <div>Liq: <span className="font-mono text-foreground">{formatUsd(pair.liquidityUsd)}</span></div>
                   <div>Vol: <span className="font-mono text-foreground">{formatUsd(pair.volume24h)}</span></div>
-                  <div className={`font-medium ${risk.color}`}>Risk: {risk.score}%</div>
+                  <div>TX: <span className="text-emerald-400">{pair.buys24h}</span>/<span className="text-red-400">{pair.sells24h}</span></div>
                 </div>
               </div>
             );

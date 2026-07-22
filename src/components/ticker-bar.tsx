@@ -28,10 +28,10 @@ export function TickerBar() {
       <div className="flex items-center">
         {/* Left label */}
         <div className="flex items-center gap-1.5 px-3 py-1.5 border-r border-border bg-background/50 flex-shrink-0 z-10">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-400">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-amber-400">
             <path d="M3 17l6-6 4 4 8-8M21 7v6h-6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wide">Gainers</span>
+          <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wide">Gainers</span>
         </div>
 
         {/* Marquee */}
@@ -40,7 +40,7 @@ export function TickerBar() {
             <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 flex-shrink-0">
               <span className="text-xs font-semibold text-foreground">{t.symbol}</span>
               <span className="text-xs text-muted-foreground">{t.mcap}</span>
-              <span className={`text-xs font-medium ${t.change >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+              <span className={`text-xs font-medium ${t.change >= 0 ? "text-amber-400" : "text-red-400"}`}>
                 {t.change >= 0 ? "+" : ""}{t.change.toFixed(1)}%
               </span>
               <span className="text-muted-foreground/30 ml-1">|</span>
