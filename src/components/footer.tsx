@@ -1,30 +1,8 @@
-import Image from "next/image";
-
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background/50 mt-auto">
       <div className="w-full px-4 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2.5">
-            {/* Aperture logo — The Aperture Orbit */}
-            <Image
-              src="/aperture-logo.svg"
-              alt="Aperture"
-              width={20}
-              height={20}
-            />
-            <span className="text-sm font-bold">Aperture</span>
-            {/* Separator */}
-            <span className="h-3.5 w-px bg-border" />
-            {/* Arc logo — official */}
-            <Image
-              src="/arc-logo-official.svg"
-              alt="Arc™"
-              width={60}
-              height={20}
-              className="opacity-70"
-            />
-          </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <a href="https://arc.network" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Arc Network</a>
             <a href="https://github.com/Mckenzie347" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
