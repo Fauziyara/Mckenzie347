@@ -35,8 +35,8 @@ export function Header({ active }: { active?: string }) {
               <Image
                 src="/arc-logo-official.svg"
                 alt="Arc™ — Arc is a trademark of Circle Internet Group, Inc."
-                width={42}
-                height={14}
+                width={72}
+                height={25}
                 className="opacity-80"
                 priority
               />

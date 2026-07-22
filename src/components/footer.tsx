@@ -20,8 +20,8 @@ export function Footer() {
             <Image
               src="/arc-logo-official.svg"
               alt="Arc™"
-              width={36}
-              height={12}
+              width={60}
+              height={20}
               className="opacity-70"
             />
             <span className="text-xs text-muted-foreground">— DEX Scanner for Arc</span>
