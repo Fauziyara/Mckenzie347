@@ -24,7 +24,6 @@ export function Footer() {
               height={20}
               className="opacity-70"
             />
-            <span className="text-xs text-muted-foreground">— DEX Scanner for Arc</span>
           </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <a href="https://arc.network" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Arc Network</a>
