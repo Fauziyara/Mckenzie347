@@ -6,7 +6,6 @@ export function Footer() {
       <div className="w-full px-4 py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <a href="https://arc.network" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Arc Network</a>
             <a href="https://github.com/Mckenzie347" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
             <a href="/pulse" className="hover:text-foreground transition-colors">Pulse</a>
             <a href="/alat" className="hover:text-foreground transition-colors">Tools</a>
