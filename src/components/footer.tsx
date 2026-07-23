@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background/50 mt-auto">
@@ -11,9 +13,18 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-4 flex flex-col gap-1 border-t border-border/50 pt-4 text-[11px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>Data refreshes every 30s · Mock data for development</p>
+          <div className="flex items-center gap-1.5">
+            <span>Built on</span>
+            <Image
+              src="/arc-logo-official.svg"
+              alt="Arc™"
+              width={40}
+              height={14}
+              className="opacity-70"
+            />
+          </div>
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-            <p>⚠ Not financial advice · DYOR · Built on Arc</p>
+            <p>⚠ Not financial advice · DYOR</p>
             <p className="text-[10px] opacity-70">Arc is a trademark of Circle Internet Group, Inc. and/or its affiliates.</p>
           </div>
         </div>
