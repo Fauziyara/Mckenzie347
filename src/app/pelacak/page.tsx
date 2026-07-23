@@ -1,27 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { mockPairs } from "@/lib/mock-data";
-import { formatUsd, formatPrice, formatPct, timeAgo, shortAddr } from "@/lib/format";
-import { Sparkline } from "@/components/sparkline";
+import { mockPairs, type Pair } from "@/lib/mock-data";
+import { formatUsd, formatPrice, shortAddr } from "@/lib/format";
 import Link from "next/link";
 
 export default function PelacakPage() {
-  const [watchlist, setWatchlist] = useState<string[]>([]);
+  const [query, setQuery] = useState("");
+  const [result, setResult] = useState<"searching" | "notfound" | "found" | null>(null);
+  const [pair, setPair] = useState<Pair | null>(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("aperture-watchlist");
-    if (saved) setWatchlist(JSON.parse(saved));
-  }, []);
-
-  const watchedPairs = mockPairs.filter(p => watchlist.includes(p.address));
-
-  function removeWatch(addr: string) {
-    const updated = watchlist.filter(a => a !== addr);
-    setWatchlist(updated);
-    localStorage.setItem("aperture-watchlist", JSON.stringify(updated));
+  function search(e: React.FormEvent) {
+    e.preventDefault();
+    if (!query.trim()) return;
+    setResult("searching");
+    setTimeout(() => {
+      const q = query.toLowerCase();
+      const found = mockPairs.find(p =>
+        p.address.toLowerCase() === q ||
+        p.token0.address.toLowerCase() === q ||
+        p.token0.symbol.toLowerCase() === q ||
+        p.address.toLowerCase().includes(q) ||
+        p.token0.address.toLowerCase().includes(q)
+      );
+      if (found) {
+        setPair(found);
+        setResult("found");
+      } else {
+        setResult("notfound");
+      }
+    }, 300);
   }
 
   return (
@@ -30,67 +40,75 @@ export default function PelacakPage() {
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">Tracker</h1>
-          <p className="text-sm text-muted-foreground">{watchedPairs.length} pair dalam daftar pantauan</p>
+          <p className="text-sm text-muted-foreground">Cek token & pair by address atau symbol</p>
         </div>
 
-        {watchedPairs.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-12 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted/30">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-muted-foreground">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </div>
-            <p className="text-sm text-muted-foreground">Belum ada pair dipantau</p>
-            <Link href="/" className="mt-3 inline-block text-sm text-emerald-400 hover:underline">← Explore pairs</Link>
+        <form onSubmit={search} className="mb-6 flex gap-2">
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="0x... atau symbol (ARC, DEFI, dll)"
+            className="flex-1 rounded-lg border border-border bg-muted/30 px-4 py-2 text-sm outline-none focus:border-emerald-500/50"
+          />
+          <button
+            type="submit"
+            className="rounded-lg bg-emerald-500 px-6 py-2 text-sm font-medium text-background hover:bg-emerald-600 cursor-pointer"
+          >
+            Search
+          </button>
+        </form>
+
+        {result === "searching" && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted border-t-emerald-500" />
+            Mencari...
           </div>
-        ) : (
-          <div className="overflow-x-auto rounded-lg border border-border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-muted/30">
-                  <th className="px-3 py-2.5 text-left font-medium text-muted-foreground">Pair</th>
-                  <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Chart</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Price</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">24h</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Liquidity</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Volume</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {watchedPairs.map(pair => {
-                  const isPositive = pair.priceChange24h >= 0;
-                  return (
-                    <tr key={pair.address} className="border-b border-border/40 last:border-0 hover:bg-muted/20">
-                      <td className="px-3 py-2.5">
-                        <Link href={`/pair/${pair.address}`}>
-                          <div className="font-medium">{pair.token0.symbol}/{pair.token1.symbol}</div>
-                          <div className="font-mono text-[10px] text-muted-foreground">{shortAddr(pair.address)}</div>
-                        </Link>
-                      </td>
-                      <td className="px-3 py-2.5">
-                        <Link href={`/pair/${pair.address}`}>
-                          <Sparkline data={pair.sparkline} positive={isPositive} width={72} height={24} />
-                        </Link>
-                      </td>
-                      <td className="px-3 py-2.5 text-right font-mono text-xs">{formatPrice(pair.priceToken0PerToken1)}</td>
-                      <td className={`px-3 py-2.5 text-right font-mono text-xs ${isPositive ? "text-emerald-400" : "text-red-400"}`}>{formatPct(pair.priceChange24h)}</td>
-                      <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.liquidityUsd)}</td>
-                      <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.volume24h)}</td>
-                      <td className="px-3 py-2.5 text-right">
-                        <button
-                          type="button"
-                          onClick={() => removeWatch(pair.address)}
-                          className="text-xs text-red-400 hover:text-red-300 cursor-pointer"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        )}
+
+        {result === "notfound" && (
+          <div className="rounded-lg border border-border p-6 text-center">
+            <p className="text-sm text-muted-foreground">No pairs found for "{query}"</p>
+          </div>
+        )}
+
+        {result === "found" && pair && (
+          <div className="rounded-lg border border-border p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold">{pair.token0.symbol} / {pair.token1.symbol}</h2>
+                <p className="font-mono text-xs text-muted-foreground">{pair.address}</p>
+              </div>
+              <Link
+                href={`/pair/${pair.address}`}
+                className="rounded-md bg-emerald-500 px-4 py-1.5 text-xs font-medium text-background hover:bg-emerald-600"
+              >
+                View Detail →
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="rounded border border-border p-3">
+                <div className="text-xs text-muted-foreground">Price</div>
+                <div className="mt-1 font-mono text-sm">{formatPrice(pair.priceToken0PerToken1)}</div>
+              </div>
+              <div className="rounded border border-border p-3">
+                <div className="text-xs text-muted-foreground">Liquidity</div>
+                <div className="mt-1 font-mono text-sm">{formatUsd(pair.liquidityUsd)}</div>
+              </div>
+              <div className="rounded border border-border p-3">
+                <div className="text-xs text-muted-foreground">Volume 24h</div>
+                <div className="mt-1 font-mono text-sm">{formatUsd(pair.volume24h)}</div>
+              </div>
+              <div className="rounded border border-border p-3">
+                <div className="text-xs text-muted-foreground">Mkt Cap</div>
+                <div className="mt-1 font-mono text-sm">{formatUsd(pair.marketCapUsd)}</div>
+              </div>
+            </div>
+            <div className="mt-3 space-y-1 text-xs text-muted-foreground">
+              <div>Token 0: {pair.token0.symbol} — {shortAddr(pair.token0.address)}</div>
+              <div>Token 1: {pair.token1.symbol} — {shortAddr(pair.token1.address)}</div>
+              <div>Factory: {shortAddr(pair.factory)}</div>
+            </div>
           </div>
         )}
       </main>
