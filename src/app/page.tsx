@@ -4,6 +4,7 @@ import { ParticleField } from "@/components/particle-field";
 import { mockPairs } from "@/lib/mock-data";
 import { formatUsd } from "@/lib/format";
 import Image from "next/image";
+import { Reveal } from "@/components/reveal";
 
 export default function LandingPage() {
   const totalVolume = mockPairs.reduce((a, p) => a + p.volume24h, 0);
@@ -234,6 +235,7 @@ export default function LandingPage() {
           </section>
 
           {/* ===== 2. BRAND MARQUEE ===== */}
+          <Reveal delay={100}>
           <section className="py-8 border-y border-white/5">
             <div className="max-w-5xl mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
@@ -245,8 +247,10 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
+          </Reveal>
 
           {/* ===== 3. WORKFLOW STATS ===== */}
+          <Reveal delay={150}>
           <section className="py-20 px-4">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
@@ -273,8 +277,10 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
+          </Reveal>
 
           {/* ===== 4. BENEFITS MARQUEE ===== */}
+          <Reveal delay={100}>
           <section className="overflow-hidden border-y border-white/5 py-6" style={{ background: "rgba(16, 185, 129, 0.02)" }}>
             <div className="flex gap-8 animate-marquee whitespace-nowrap">
               {[...Array(2)].map((_, dup) => marqueeItems.map((text, i) => (
@@ -284,8 +290,10 @@ export default function LandingPage() {
               )))}
             </div>
           </section>
+          </Reveal>
 
           {/* ===== 5. FEATURES ===== */}
+          <Reveal delay={150}>
           <section className="py-20 sm:py-28 px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
@@ -325,8 +333,10 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
+          </Reveal>
 
           {/* ===== 6. ABOUT ===== */}
+          <Reveal delay={150}>
           <section className="py-20 sm:py-28 px-4 border-t border-white/5">
             <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
@@ -393,8 +403,10 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
+          </Reveal>
 
           {/* ===== 7. FINAL CTA ===== */}
+          <Reveal delay={100}>
           <section className="relative overflow-hidden px-4 py-20 sm:py-28 border-t border-white/5">
             <div className="absolute inset-0 pointer-events-none" style={{
               background: "radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.06), transparent 50%)"
@@ -420,6 +432,7 @@ export default function LandingPage() {
               </a>
             </div>
           </section>
+          </Reveal>
         </main>
         <Footer />
       </div>
