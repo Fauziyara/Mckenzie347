@@ -14,93 +14,81 @@ export function ParticleField() {
     let animationId: number;
     let particles: Particle[] = [];
 
+    // Exact Intellio colors: green #37B884, orange #EB7043, purple #6766FF
+    const colors = [
+      { r: 55, g: 184, b: 132 },   // #37B884 green
+      { r: 235, g: 112, b: 67 },   // #EB7043 orange
+      { r: 103, g: 102, b: 255 },  // #6766FF purple
+    ];
+
     type Particle = {
       x: number;
       y: number;
       vx: number;
       vy: number;
       radius: number;
-      color: string;
+      color: { r: number; g: number; b: number };
       opacity: number;
-      opacityDir: number;
-      opacitySpeed: number;
     };
 
-    const colors = [
-      "rgba(107, 159, 255, ",  // soft blue
-      "rgba(155, 127, 239, ",  // purple/violet
-      "rgba(255, 154, 60, ",   // orange/amber
-      "rgba(255, 255, 255, ",   // white
-      "rgba(94, 234, 181, ",   // emerald (Aperture touch)
-    ];
-
     function resize() {
-      canvas!.width = window.innerWidth;
-      canvas!.height = window.innerHeight;
+      if (!canvas || !ctx) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       initParticles();
     }
 
     function initParticles() {
       particles = [];
-      const count = Math.min(Math.floor((canvas!.width * canvas!.height) / 8000), 150);
+      // Intellio uses 38 particles
+      const count = 38;
       for (let i = 0; i < count; i++) {
         const colorIdx = Math.floor(Math.random() * colors.length);
         particles.push({
           x: Math.random() * canvas!.width,
           y: Math.random() * canvas!.height,
-          vx: (Math.random() - 0.5) * 0.15,
-          vy: (Math.random() - 0.5) * 0.15,
-          radius: Math.random() * 2 + 0.5,
+          // Intellio: speed 2, random direction
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          // Intellio: size 3, random
+          radius: Math.random() * 3 + 1,
           color: colors[colorIdx],
-          opacity: Math.random() * 0.6 + 0.2,
-          opacityDir: Math.random() > 0.5 ? 1 : -1,
-          opacitySpeed: Math.random() * 0.008 + 0.002,
+          // Intellio: opacity 1 (no twinkle)
+          opacity: 1,
         });
       }
     }
 
     function animate() {
-      if (!ctx) return;
-      ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const p of particles) {
-        // Move
+        // Move — Intellio speed 2, random direction, straight false
         p.x += p.vx;
         p.y += p.vy;
 
-        // Wrap around edges
-        if (p.x < 0) p.x = canvas!.width;
-        if (p.x > canvas!.width) p.x = 0;
-        if (p.y < 0) p.y = canvas!.height;
-        if (p.y > canvas!.height) p.y = 0;
-
-        // Twinkle effect
-        p.opacity += p.opacityDir * p.opacitySpeed;
-        if (p.opacity >= 0.8) {
-          p.opacity = 0.8;
-          p.opacityDir = -1;
-        }
-        if (p.opacity <= 0.15) {
-          p.opacity = 0.15;
-          p.opacityDir = 1;
+        // Intellio: out_mode 'out' — particles disappear and reappear
+        if (p.x < -10 || p.x > canvas.width + 10 || p.y < -10 || p.y > canvas.height + 10) {
+          p.x = Math.random() * canvas.width;
+          p.y = Math.random() * canvas.height;
+          p.vx = (Math.random() - 0.5) * 4;
+          p.vy = (Math.random() - 0.5) * 4;
         }
 
-        // Draw with glow
-        ctx!.beginPath();
-        ctx!.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx!.fillStyle = p.color + p.opacity + ")";
+        // Draw
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        const c = p.color;
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${p.opacity})`;
 
-        // Add glow for larger particles
-        if (p.radius > 1.5) {
-          ctx!.shadowBlur = 6;
-          ctx!.shadowColor = p.color + (p.opacity * 0.8) + ")";
-        } else {
-          ctx!.shadowBlur = 0;
-        }
+        // Glow effect
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgba(${c.r}, ${c.g}, ${c.b}, 0.6)`;
 
-        ctx!.fill();
+        ctx.fill();
       }
-      ctx!.shadowBlur = 0;
+      ctx.shadowBlur = 0;
 
       animationId = requestAnimationFrame(animate);
     }
@@ -118,8 +106,8 @@ export function ParticleField() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
+      className="absolute inset-0 pointer-events-none"
+      style={{ zIndex: 1 }}
     />
   );
 }

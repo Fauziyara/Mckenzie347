@@ -33,36 +33,43 @@ export default function LandingPage() {
   ];
 
   return (
-    <div style={{ background: "#0a0a1f" }}>
-      {/* Animated particle field — fixed full screen */}
-      <ParticleField />
-
-      {/* Light beams from top */}
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
-        {/* Center beam */}
+    <div className="relative min-h-screen" style={{ background: "#0A0014" }}>
+      {/* ===== Intellio-style light burst background ===== */}
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+        {/* Light burst from top center */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2" style={{
-          width: "600px", height: "100vh",
-          background: "linear-gradient(180deg, rgba(103, 102, 255, 0.12) 0%, transparent 50%)",
+          width: "100%", height: "100vh",
+          background: "radial-gradient(ellipse 800px 200px at 50% 0%, rgba(224, 208, 255, 0.5) 0%, rgba(139, 111, 217, 0.25) 20%, transparent 50%)",
+        }} />
+        {/* Left diagonal light ray */}
+        <div className="absolute top-0" style={{
+          width: "100%", height: "100vh",
+          background: "radial-gradient(ellipse 1200px 150px at 30% -5%, rgba(139, 111, 217, 0.15) 0%, transparent 60%)",
+        }} />
+        {/* Right diagonal light ray */}
+        <div className="absolute top-0" style={{
+          width: "100%", height: "100vh",
+          background: "radial-gradient(ellipse 1200px 150px at 70% -5%, rgba(139, 111, 217, 0.15) 0%, transparent 60%)",
+        }} />
+        {/* Diagonal streaks */}
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(135deg, transparent 0%, rgba(74, 45, 122, 0.15) 30%, transparent 60%)",
           filter: "blur(40px)",
+          mixBlendMode: "screen",
         }} />
-        {/* Left diagonal beam */}
-        <div className="absolute top-0" style={{
-          width: "400px", height: "100vh", left: "10%",
-          background: "linear-gradient(180deg, rgba(103, 102, 255, 0.08) 0%, transparent 40%)",
-          filter: "blur(30px)",
-          transform: "rotate(15deg)",
-          transformOrigin: "top center",
-        }} />
-        {/* Right diagonal beam */}
-        <div className="absolute top-0" style={{
-          width: "400px", height: "100vh", right: "10%",
-          background: "linear-gradient(180deg, rgba(103, 102, 255, 0.08) 0%, transparent 40%)",
-          filter: "blur(30px)",
-          transform: "rotate(-15deg)",
-          transformOrigin: "top center",
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(45deg, transparent 0%, rgba(74, 45, 122, 0.15) 30%, transparent 60%)",
+          filter: "blur(40px)",
+          mixBlendMode: "screen",
         }} />
       </div>
 
+      {/* ===== Animated particles (Intellio exact config) ===== */}
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
+        <ParticleField />
+      </div>
+
+      {/* ===== Content layer ===== */}
       <div className="relative" style={{ zIndex: 10 }}>
         <Header />
         <main className="flex-1">
@@ -70,10 +77,9 @@ export default function LandingPage() {
           <section className="min-h-screen flex items-center pt-20 relative">
             <div className="w-full px-4 py-20 sm:py-28">
               <div className="max-w-6xl mx-auto">
-                {/* Logo + Badge */}
-                <div className="flex flex-col items-center mb-8">
-                  <Image src="/aperture-logo.svg" alt="Aperture" width={72} height={72} priority className="mb-6" />
-                  <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1.5 text-xs font-medium text-emerald-400" style={{ backdropFilter: "blur(14px)" }}>
+                {/* Badge */}
+                <div className="flex justify-center mb-6">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-2 text-xs font-medium text-emerald-400" style={{ backdropFilter: "blur(14px)" }}>
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
@@ -82,16 +88,21 @@ export default function LandingPage() {
                   </div>
                 </div>
 
+                {/* Logo */}
+                <div className="flex justify-center mb-8">
+                  <Image src="/aperture-logo.svg" alt="Aperture" width={72} height={72} priority />
+                </div>
+
                 {/* Title */}
                 <h1 className="text-center text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter mb-6" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                  <span className="block text-white">Elevate Your</span>
+                  <span className="block text-white">Unlock DEX</span>
                   <span className="block mt-2" style={{
                     WebkitTextFillColor: "transparent",
-                    background: "linear-gradient(135deg, #6b9fff 0%, #9b7fef 38%, #5ee9b5 74%, #f97316 100%)",
+                    background: "linear-gradient(135deg, #37B884 0%, #6766FF 50%, #EB7043 100%)",
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                   }}>
-                    DEX Experience
+                    Trading Potential
                   </span>
                 </h1>
 
@@ -103,13 +114,16 @@ export default function LandingPage() {
 
                 {/* CTA */}
                 <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
-                  <a href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-3.5 text-sm font-semibold text-black transition-all hover:bg-emerald-400 hover:-translate-y-0.5" style={{ boxShadow: "0 16px 46px rgba(16,185,129,0.35), inset 0 1px rgba(255,255,255,0.5)" }}>
+                  <a href="/explore" className="group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-black transition-all hover:-translate-y-0.5" style={{
+                    background: "linear-gradient(135deg, #37B884, #5ee9b5)",
+                    boxShadow: "0 16px 46px rgba(55, 184, 132, 0.35), inset 0 1px rgba(255,255,255,0.5)",
+                  }}>
                     Launch App
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-0.5">
                       <path d="M5 12h14M13 5l7 7-7 7" />
                     </svg>
                   </a>
-                  <a href="/pulse" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:border-emerald-500/30" style={{ backdropFilter: "blur(10px)" }}>
+                  <a href="/pulse" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:border-white/40" style={{ backdropFilter: "blur(10px)" }}>
                     View Live Pulse
                   </a>
                 </div>
@@ -120,7 +134,7 @@ export default function LandingPage() {
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
               <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Scroll</span>
               <div className="relative w-px h-9 bg-white/20 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-emerald-500" style={{ animation: "scroll-bar 1.8s ease-in-out infinite" }} />
+                <div className="absolute top-0 left-0 w-full h-full" style={{ background: "#37B884", animation: "scroll-bar 1.8s ease-in-out infinite" }} />
               </div>
             </div>
           </section>
@@ -134,7 +148,7 @@ export default function LandingPage() {
                     fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif",
                     fontVariantNumeric: "tabular-nums",
                     WebkitTextFillColor: "transparent",
-                    background: "linear-gradient(135deg, #5ee9b5, #6b9fff)",
+                    background: "linear-gradient(135deg, #37B884, #6766FF)",
                     WebkitBackgroundClip: "text",
                     backgroundClip: "text",
                   }}>
@@ -164,7 +178,7 @@ export default function LandingPage() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
                 <div className="flex items-center justify-center gap-2 mb-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 14px rgba(16,185,129,0.8)" }} />
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#37B884", boxShadow: "0 0 14px rgba(55, 184, 132, 0.8)" }} />
                   <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Features</span>
                 </div>
                 <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
@@ -236,11 +250,11 @@ export default function LandingPage() {
           {/* ===== FINAL CTA ===== */}
           <section className="relative overflow-hidden px-4 py-20 sm:py-28 border-t border-white/5">
             <div className="absolute inset-0 pointer-events-none" style={{
-              background: "radial-gradient(circle at 50% 50%, rgba(16,185,129,0.06), transparent 50%)"
+              background: "radial-gradient(circle at 50% 50%, rgba(55, 184, 132, 0.06), transparent 50%)"
             }} />
             <div className="relative z-10 text-center max-w-lg mx-auto">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 14px rgba(16,185,129,0.8)" }} />
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#37B884", boxShadow: "0 0 14px rgba(55, 184, 132, 0.8)" }} />
                 <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Ready</span>
               </div>
               <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
@@ -249,7 +263,10 @@ export default function LandingPage() {
               <p className="text-white/50 text-sm mb-8">
                 Jump into the dashboard and track DEX pairs on Arc Network testnet.
               </p>
-              <a href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-sm font-semibold text-black transition-all hover:bg-emerald-400 hover:-translate-y-0.5" style={{ boxShadow: "0 16px 46px rgba(16,185,129,0.35), inset 0 1px rgba(255,255,255,0.5)" }}>
+              <a href="/explore" className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-black transition-all hover:-translate-y-0.5" style={{
+                background: "linear-gradient(135deg, #37B884, #5ee9b5)",
+                boxShadow: "0 16px 46px rgba(55, 184, 132, 0.35), inset 0 1px rgba(255,255,255,0.5)",
+              }}>
                 Launch App
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
                   <path d="M5 12h14M13 5l7 7-7 7" />
