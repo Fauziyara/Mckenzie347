@@ -18,7 +18,7 @@ const navItems = [
   { href: "/earn", label: "Earn", hasDropdown: false },
 ];
 
-export function Header({ active }: { active?: string }) {
+export function Header({ active, showTicker = true }: { active?: string; showTicker?: boolean }) {
   return (
     <>
       <header className="sticky top-0 z-50" style={{
@@ -129,7 +129,7 @@ export function Header({ active }: { active?: string }) {
           </div>
         </div>
       </header>
-      <TickerBar />
+      {showTicker && <TickerBar />}
     </>
   );
 }
