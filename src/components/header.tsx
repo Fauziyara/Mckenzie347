@@ -12,7 +12,6 @@ const navItems = [
   { href: "/earn", label: "Earn" },
   { href: "/swap", label: "Swap" },
   { href: "/alat", label: "Tools" },
-  { href: "/docs", label: "Docs" },
 ];
 
 export function Header({ active }: { active?: string }) {
