@@ -103,7 +103,7 @@ export default function LandingPage() {
 
               {/* Subtitle */}
               <p className="text-white/50 text-base sm:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-                Real-time DEX pair analytics built on Arc Network — track liquidity, volume, and swaps across all pairs. Monitor price movements, analyze trading activity, and execute on-chain swaps seamlessly.
+                Real-time DEX pair analytics built on Arc Network — track liquidity, volume, and swaps.
               </p>
 
               {/* CTA */}
