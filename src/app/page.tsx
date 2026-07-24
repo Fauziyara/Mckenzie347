@@ -45,7 +45,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="relative min-h-screen" className="landing-bg">
+    <div className="relative min-h-screen landing-bg">
       {/* ===== Emerald light glow from top ===== */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2" style={{
