@@ -42,19 +42,11 @@ export function Header({ active, showTicker = true }: { active?: string; showTic
                 Aperture
               </span>
             </a>
-            <span className="h-5 w-px bg-white/10 mx-1" />
-            <Image
-              src="/arc-logo-official.svg"
-              alt="Arc™ — Arc is a trademark of Circle Internet Group, Inc."
-              width={52}
-              height={18}
-              className="opacity-50"
-              priority
-            />
+
           </div>
 
-          {/* Center — Menu (Intellio style) */}
-          <nav className="hidden lg:flex items-center">
+            {/* Nav — right next to logo */}
+            <nav className="hidden lg:flex items-center">
             {navItems.map((item) => (
               <div key={item.label} className="relative group">
                 <Link
