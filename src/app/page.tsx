@@ -45,7 +45,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="relative min-h-screen" style={{ background: "linear-gradient(180deg, #021410 0%, #010a08 30%, #01100c 60%, #021410 100%)" }}>
+    <div className="relative min-h-screen" className="landing-bg">
       {/* ===== Emerald light glow from top ===== */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2" style={{
@@ -87,7 +87,7 @@ export default function LandingPage() {
               </div>
 
               {/* Headline */}
-              <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-bold tracking-tight mb-6 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1em" }}>
+              <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-bold tracking-tight mb-6 landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1em" }}>
                 Discover & Trade
               </h1>
               <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-bold tracking-tight mb-8" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1em" }}>
@@ -102,7 +102,7 @@ export default function LandingPage() {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-white/50 text-sm sm:text-base mb-10 max-w-3xl mx-auto leading-relaxed">
+              <p className="landing-text text-sm sm:text-base mb-10 max-w-3xl mx-auto leading-relaxed">
                 Real-time DEX pair analytics built on Arc Network — track liquidity, volume, and swaps.
               </p>
 
@@ -114,7 +114,7 @@ export default function LandingPage() {
                     <path d="M5 12h14M13 5l7 7-7 7" />
                   </svg>
                 </a>
-                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full border border-emerald-500/50 bg-transparent px-8 py-4 text-base font-semibold text-white transition-all hover:bg-emerald-500/10">
+                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full border border-emerald-500/50 bg-transparent px-8 py-4 text-base font-semibold landing-text-heading transition-all hover:bg-emerald-500/10">
                   Explore Pairs
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
                     <path d="M5 12h14M13 5l7 7-7 7" />
@@ -133,23 +133,23 @@ export default function LandingPage() {
                 boxShadow: "0 0 40px -10px rgba(16, 185, 129, 0.15)",
               }}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Dashboard</span>
-                  <span className="text-white/20">···</span>
+                  <span className="text-[10px] tracking-widest uppercase landing-text-subtle" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Dashboard</span>
+                  <span className="landing-text-muted">···</span>
                 </div>
                 <div className="rounded-xl p-4 mb-3" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))" }}>
-                  <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                  <div className="text-2xl font-bold landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                     {formatUsd(totalVolume)}
                   </div>
                   <div className="text-[10px] tracking-wider uppercase text-emerald-400 mt-1">24H Volume</div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-lg p-2.5" style={{ background: "rgba(255,255,255,0.03)" }}>
-                    <div className="text-xs font-bold text-white">{formatUsd(topPair.liquidityUsd)}</div>
-                    <div className="text-[9px] text-white/40">Top Pool</div>
+                  <div className="rounded-lg p-2.5" className="landing-card-inner">
+                    <div className="text-xs font-bold landing-text-heading">{formatUsd(topPair.liquidityUsd)}</div>
+                    <div className="text-[9px] landing-text-subtle">Top Pool</div>
                   </div>
-                  <div className="rounded-lg p-2.5" style={{ background: "rgba(255,255,255,0.03)" }}>
-                    <div className="text-xs font-bold text-white">{totalPairs}</div>
-                    <div className="text-[9px] text-white/40">Pairs</div>
+                  <div className="rounded-lg p-2.5" className="landing-card-inner">
+                    <div className="text-xs font-bold landing-text-heading">{totalPairs}</div>
+                    <div className="text-[9px] landing-text-subtle">Pairs</div>
                   </div>
                 </div>
                 {/* Mini chart */}
@@ -170,26 +170,26 @@ export default function LandingPage() {
                 {/* Top row — 3 stats */}
                 <div className="grid grid-cols-3 gap-3 mb-5">
                   <div>
-                    <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">Total Pairs</div>
-                    <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{totalPairs}</div>
+                    <div className="text-[10px] tracking-wider uppercase landing-text-subtle mb-1">Total Pairs</div>
+                    <div className="text-2xl font-bold landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{totalPairs}</div>
                     
                   </div>
                   <div>
-                    <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">24H Volume</div>
-                    <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalVolume)}</div>
+                    <div className="text-[10px] tracking-wider uppercase landing-text-subtle mb-1">24H Volume</div>
+                    <div className="text-2xl font-bold landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalVolume)}</div>
                     
                   </div>
                   <div>
-                    <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">Total TVL</div>
-                    <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalLiquidity)}</div>
+                    <div className="text-[10px] tracking-wider uppercase landing-text-subtle mb-1">Total TVL</div>
+                    <div className="text-2xl font-bold landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalLiquidity)}</div>
                     
                   </div>
                 </div>
                 {/* Bar chart */}
-                <div className="rounded-xl p-4" style={{ background: "rgba(0,0,0,0.3)" }}>
+                <div className="rounded-xl p-4" className="landing-card-inner">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-semibold text-white">Pair Performance</span>
-                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] text-white/60">24H ⌄</span>
+                    <span className="text-sm font-semibold landing-text-heading">Pair Performance</span>
+                    <span className="rounded-full border landing-border  px-3 py-1 text-[10px] landing-text-body">24H ⌄</span>
                   </div>
                   <div className="flex items-end gap-2 h-32">
                     {mockPairs.slice(0, 5).map((p, i) => {
@@ -204,7 +204,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex gap-2 mt-2">
                     {mockPairs.slice(0, 5).map((p, i) => (
-                      <div key={i} className="flex-1 text-center text-[8px] text-white/30 truncate">{p.token0.symbol}/{p.token1.symbol}</div>
+                      <div key={i} className="flex-1 text-center text-[8px] landing-text-muted truncate">{p.token0.symbol}/{p.token1.symbol}</div>
                     ))}
                   </div>
                 </div>
@@ -218,18 +218,18 @@ export default function LandingPage() {
                 boxShadow: "0 0 40px -10px rgba(16, 185, 129, 0.15)",
               }}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Live Feed</span>
-                  <span className="text-white/20">···</span>
+                  <span className="text-[10px] tracking-widest uppercase landing-text-subtle" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Live Feed</span>
+                  <span className="landing-text-muted">···</span>
                 </div>
                 <div className="rounded-xl p-4 mb-3" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))" }}>
                   <div className="text-2xl font-bold text-emerald-400" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{totalPairs}</div>
-                  <div className="text-[10px] tracking-wider uppercase text-white/50 mt-1">Pairs Tracked</div>
+                  <div className="text-[10px] tracking-wider uppercase landing-text mt-1">Pairs Tracked</div>
                 </div>
                 <div className="space-y-2">
                   {mockPairs.slice(0, 2).map((p, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-lg p-2" style={{ background: "rgba(255,255,255,0.02)" }}>
-                      <span className="text-xs text-white/70">{p.token0.symbol}/{p.token1.symbol}</span>
-                      <span className='text-xs font-bold text-white/60'>
+                    <div key={i} className="flex items-center justify-between rounded-lg p-2" className="landing-bg-hover">
+                      <span className="text-xs landing-text-body">{p.token0.symbol}/{p.token1.symbol}</span>
+                      <span className='text-xs font-bold landing-text-body'>
                         {p.volume24h > 1000 ? (p.volume24h/1000).toFixed(1) + 'K' : p.volume24h.toFixed(0)}
                       </span>
                     </div>
@@ -241,11 +241,11 @@ export default function LandingPage() {
 
           {/* ===== 2. BRAND MARQUEE ===== */}
           <Reveal delay={100}>
-          <section className="py-8 border-y border-white/5">
+          <section className="py-8 border-y landing-border">
             <div className="max-w-5xl mx-auto px-4">
               <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
                 {integrations.map((item, i) => (
-                  <span key={i} className="text-sm font-bold tracking-wider text-white/20" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                  <span key={i} className="text-sm font-bold tracking-wider landing-text-muted" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                     {item}
                   </span>
                 ))}
@@ -259,10 +259,10 @@ export default function LandingPage() {
           <section className="py-20 px-4">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-3" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight landing-text-heading mb-3" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                   Power Up Your Workflow
                 </h2>
-                <p className="text-white/40 text-sm max-w-md mx-auto">Real-time data infrastructure built for the Arc Network ecosystem</p>
+                <p className="landing-text-subtle text-sm max-w-md mx-auto">Real-time data infrastructure built for the Arc Network ecosystem</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                 {workflowStats.map((s, i) => (
@@ -276,7 +276,7 @@ export default function LandingPage() {
                     }}>
                       {s.value}<span className="text-2xl">{s.suffix}</span>
                     </div>
-                    <p className="text-white/40 text-xs max-w-[200px] mx-auto leading-relaxed">{s.label}</p>
+                    <p className="landing-text-subtle text-xs max-w-[200px] mx-auto leading-relaxed">{s.label}</p>
                   </div>
                 ))}
               </div>
@@ -286,10 +286,10 @@ export default function LandingPage() {
 
           {/* ===== 4. BENEFITS MARQUEE ===== */}
           <Reveal delay={100}>
-          <section className="overflow-hidden border-y border-white/5 py-6" style={{ background: "rgba(16, 185, 129, 0.02)" }}>
+          <section className="overflow-hidden border-y landing-border py-6" className="landing-bg-hover">
             <div className="flex gap-8 animate-marquee whitespace-nowrap">
               {[...Array(2)].map((_, dup) => marqueeItems.map((text, i) => (
-                <span key={`${dup}-${i}`} className="text-2xl sm:text-3xl font-bold tracking-tight text-white/10" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                <span key={`${dup}-${i}`} className="text-2xl sm:text-3xl font-bold tracking-tight landing-text-muted" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                   {text} <span className="text-emerald-500/30">●</span>
                 </span>
               )))}
@@ -304,12 +304,12 @@ export default function LandingPage() {
               <div className="text-center mb-16">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 10px rgba(16,185,129,0.6)" }} />
-                  <span className="text-[10px] tracking-widest uppercase text-white/30" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Features</span>
+                  <span className="text-[10px] tracking-widest uppercase landing-text-muted" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Features</span>
                 </div>
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                   Powerful Features
                 </h2>
-                <p className="text-white/40 text-sm max-w-lg mx-auto">
+                <p className="landing-text-subtle text-sm max-w-lg mx-auto">
                   Everything you need to scan, track, and trade on Arc Network — all in one platform.
                 </p>
               </div>
@@ -322,12 +322,12 @@ export default function LandingPage() {
                     backdropFilter: "blur(10px)",
                   }}>
                     <div className="flex items-center justify-between mb-6">
-                      <span className="text-[10px] tracking-widest uppercase text-white/20" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{f.num}</span>
+                      <span className="text-[10px] tracking-widest uppercase landing-text-muted" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{f.num}</span>
                       <span className="rounded-full border border-emerald-500/15 bg-emerald-500/5 px-2.5 py-1 text-[9px] tracking-wider uppercase text-emerald-400">{f.badge}</span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-4 text-white group-hover:text-emerald-400 transition-colors" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{f.title}</h3>
-                    <p className="text-xs sm:text-sm text-white/40 leading-relaxed">{f.desc}</p>
-                    <div className="mt-5 flex items-center gap-1.5 text-xs text-white/20 group-hover:text-emerald-400 transition-colors">
+                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-4 landing-text-heading group-hover:text-emerald-400 transition-colors" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{f.title}</h3>
+                    <p className="text-xs sm:text-sm landing-text-subtle leading-relaxed">{f.desc}</p>
+                    <div className="mt-5 flex items-center gap-1.5 text-xs landing-text-muted group-hover:text-emerald-400 transition-colors">
                       <span>Open</span>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
                         <path d="M5 12h14M13 5l7 7-7 7" />
@@ -342,24 +342,24 @@ export default function LandingPage() {
 
           {/* ===== 6. ABOUT ===== */}
           <Reveal delay={150}>
-          <section className="py-20 sm:py-28 px-4 border-t border-white/5">
+          <section className="py-20 sm:py-28 px-4 border-t landing-border">
             <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 10px rgba(16,185,129,0.6)" }} />
-                  <span className="text-[10px] tracking-widest uppercase text-white/30" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>About</span>
+                  <span className="text-[10px] tracking-widest uppercase landing-text-muted" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>About</span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-6 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-6 landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                   Smarter Trading
                 </h2>
-                <p className="text-white/40 text-sm mb-8 leading-relaxed">
+                <p className="landing-text-subtle text-sm mb-8 leading-relaxed">
                   Aperture brings real-time DEX analytics to Arc Network. Scan pairs, track swaps, manage your portfolio, and execute on-chain trades — all from a single, intuitive interface.
                 </p>
                 <div className="space-y-3">
                   {["Real-time pair scanner with live data", "On-chain swaps via Presto DEX", "Portfolio tracking with wallet integration", "LP farming with APY monitoring"].map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <span className="text-emerald-400 text-xs">◆</span>
-                      <span className="text-white/60 text-sm">{item}</span>
+                      <span className="landing-text-body text-sm">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -375,30 +375,30 @@ export default function LandingPage() {
                 boxShadow: "0 0 60px -20px rgba(16, 185, 129, 0.2)",
               }}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-semibold text-white">Top Pair Spotlight</span>
+                  <span className="text-sm font-semibold landing-text-heading">Top Pair Spotlight</span>
                   <span className="rounded-full border border-emerald-500/15 bg-emerald-500/5 px-2.5 py-1 text-[9px] tracking-wider uppercase text-emerald-400">Live</span>
                 </div>
-                <div className="rounded-xl p-4 mb-3" style={{ background: "rgba(0,0,0,0.3)" }}>
+                <div className="rounded-xl p-4 mb-3" className="landing-card-inner">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-bold text-white">{topPair.token0.symbol}/{topPair.token1.symbol}</span>
-                    <span className='text-sm font-bold text-white/60'>{formatUsd(topPair.volume24h)}</span>
+                    <span className="text-lg font-bold landing-text-heading">{topPair.token0.symbol}/{topPair.token1.symbol}</span>
+                    <span className='text-sm font-bold landing-text-body'>{formatUsd(topPair.volume24h)}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-3 mt-3">
                     <div>
-                      <div className="text-[10px] tracking-wider uppercase text-white/30">Volume</div>
-                      <div className="text-sm font-bold text-white">{formatUsd(topPair.volume24h)}</div>
+                      <div className="text-[10px] tracking-wider uppercase landing-text-muted">Volume</div>
+                      <div className="text-sm font-bold landing-text-heading">{formatUsd(topPair.volume24h)}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] tracking-wider uppercase text-white/30">Liquidity</div>
-                      <div className="text-sm font-bold text-white">{formatUsd(topPair.liquidityUsd)}</div>
+                      <div className="text-[10px] tracking-wider uppercase landing-text-muted">Liquidity</div>
+                      <div className="text-sm font-bold landing-text-heading">{formatUsd(topPair.liquidityUsd)}</div>
                     </div>
                     <div>
-                      <div className="text-[10px] tracking-wider uppercase text-white/30">Fee</div>
-                      <div className="text-sm font-bold text-white">0.3%</div>
+                      <div className="text-[10px] tracking-wider uppercase landing-text-muted">Fee</div>
+                      <div className="text-sm font-bold landing-text-heading">0.3%</div>
                     </div>
                     <div>
-                      <div className="text-[10px] tracking-wider uppercase text-white/30">Txns 24H</div>
-                      <div className="text-sm font-bold text-white">{topPair.txCount24h || "—"}</div>
+                      <div className="text-[10px] tracking-wider uppercase landing-text-muted">Txns 24H</div>
+                      <div className="text-sm font-bold landing-text-heading">{topPair.txCount24h || "—"}</div>
                     </div>
                   </div>
                 </div>
@@ -412,7 +412,7 @@ export default function LandingPage() {
 
           {/* ===== 7. FINAL CTA ===== */}
           <Reveal delay={100}>
-          <section className="relative overflow-hidden px-4 py-20 sm:py-28 border-t border-white/5">
+          <section className="relative overflow-hidden px-4 py-20 sm:py-28 border-t landing-border">
             <div className="absolute inset-0 pointer-events-none" style={{
               background: "radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.06), transparent 50%)"
             }} />
@@ -420,10 +420,10 @@ export default function LandingPage() {
               <div className="flex justify-center mb-6">
                 <Image src="/aperture-logo.svg" alt="Aperture" width={56} height={56} />
               </div>
-              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                 Start exploring.
               </h2>
-              <p className="text-white/40 text-sm mb-8">
+              <p className="landing-text-subtle text-sm mb-8">
                 Jump into the dashboard and track DEX pairs on Arc Network testnet.
               </p>
               <a href="/explore" className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-black transition-all hover:-translate-y-0.5" style={{

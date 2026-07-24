@@ -501,3 +501,56 @@ tr.row-glow:hover td:first-child {
   animation: shimmer 3s linear infinite;
 }
 .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ===== Landing page theme support ===== */
+/* Dark (default) — emerald dark bg */
+.dark .landing-bg {
+  background: linear-gradient(180deg, #021410 0%, #010a08 30%, #01100c 60%, #021410 100%) !important;
+}
+.dark .landing-glow {
+  background: radial-gradient(ellipse 900px 400px at 50% 0%, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.06) 30%, transparent 60%) !important;
+}
+.dark .landing-glow-side-1 {
+  background: radial-gradient(ellipse 1200px 300px at 25% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 55%) !important;
+}
+.dark .landing-glow-side-2 {
+  background: radial-gradient(ellipse 1200px 300px at 75% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 55%) !important;
+}
+.dark .landing-text { color: rgba(255,255,255,0.5) !important; }
+.dark .landing-text-heading { color: #fff !important; }
+.dark .landing-card { 
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(16, 185, 129, 0.1) !important;
+}
+.dark .landing-card-inner { background: rgba(0,0,0,0.3) !important; }
+.dark .landing-border { border-color: rgba(255,255,255,0.05) !important; }
+.dark .landing-text-muted { color: rgba(255,255,255,0.3) !important; }
+.dark .landing-text-subtle { color: rgba(255,255,255,0.4) !important; }
+.dark .landing-text-body { color: rgba(255,255,255,0.6) !important; }
+.dark .landing-bg-hover { background: rgba(255,255,255,0.02) !important; }
+
+/* Light mode — clean white with emerald accents */
+.landing-bg {
+  background: linear-gradient(180deg, #f0fdf9 0%, #ffffff 30%, #f5fdfb 60%, #f0fdf9 100%) !important;
+}
+.landing-glow {
+  background: radial-gradient(ellipse 900px 400px at 50% 0%, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 30%, transparent 60%) !important;
+}
+.landing-glow-side-1 {
+  background: radial-gradient(ellipse 1200px 300px at 25% 0%, rgba(16, 185, 129, 0.06) 0%, transparent 55%) !important;
+}
+.landing-glow-side-2 {
+  background: radial-gradient(ellipse 1200px 300px at 75% 0%, rgba(16, 185, 129, 0.06) 0%, transparent 55%) !important;
+}
+.landing-text { color: rgba(0,0,0,0.6) !important; }
+.landing-text-heading { color: #0a0a0a !important; }
+.landing-card { 
+  background: rgba(0,0,0,0.02) !important;
+  border-color: rgba(16, 185, 129, 0.15) !important;
+}
+.landing-card-inner { background: rgba(0,0,0,0.03) !important; }
+.landing-border { border-color: rgba(0,0,0,0.08) !important; }
+.landing-text-muted { color: rgba(0,0,0,0.3) !important; }
+.landing-text-subtle { color: rgba(0,0,0,0.4) !important; }
+.landing-text-body { color: rgba(0,0,0,0.6) !important; }
+.landing-bg-hover { background: rgba(0,0,0,0.03) !important; }
