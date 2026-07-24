@@ -10,6 +10,7 @@ export default function LandingPage() {
   const totalLiquidity = mockPairs.reduce((a, p) => a + p.liquidityUsd, 0);
   const totalPairs = mockPairs.length;
   const gainers = mockPairs.filter(p => p.priceChange24h > 0).length;
+  const topPair = [...mockPairs].sort((a, b) => b.volume24h - a.volume24h)[0];
 
   const stats = [
     { value: formatUsd(totalVolume), label: "24H Volume", suffix: "" },
@@ -32,127 +33,249 @@ export default function LandingPage() {
     { num: "06", title: "Earn", desc: "Stake LP tokens and farm rewards. Monitor APY, TVL, and reward pools.", href: "/earn", badge: "Farming" },
   ];
 
+  const workflowStats = [
+    { value: `${totalPairs}`, suffix: "+", label: "Total DEX pairs indexed across Arc Network" },
+    { value: "99", suffix: "%", label: "Uptime guarantee for real-time data feeds" },
+    { value: "10", suffix: "k+", label: "Data points processed every second on-chain" },
+  ];
+
+  const integrations = [
+    "PRESTO DEX", "ARC NETWORK", "WETH", "USDC", "WSOL", "ARC SCAN", "LP POOLS",
+  ];
+
   return (
     <div className="relative min-h-screen" style={{ background: "#000000" }}>
-      {/* ===== Subtle emerald light glow from top (like Intellio's purple glow) ===== */}
+      {/* ===== Emerald light glow from top ===== */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
-        {/* Main center glow — emerald, very subtle */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2" style={{
           width: "100%", height: "100vh",
-          background: "radial-gradient(ellipse 800px 250px at 50% 0%, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 55%)",
+          background: "radial-gradient(ellipse 800px 250px at 50% 0%, rgba(16, 185, 129, 0.10) 0%, rgba(16, 185, 129, 0.03) 25%, transparent 55%)",
         }} />
-        {/* Left ray */}
         <div className="absolute top-0" style={{
           width: "100%", height: "100vh",
-          background: "radial-gradient(ellipse 1200px 150px at 30% -5%, rgba(16, 185, 129, 0.05) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse 1200px 150px at 30% -5%, rgba(16, 185, 129, 0.04) 0%, transparent 60%)",
         }} />
-        {/* Right ray */}
         <div className="absolute top-0" style={{
           width: "100%", height: "100vh",
-          background: "radial-gradient(ellipse 1200px 150px at 70% -5%, rgba(16, 185, 129, 0.05) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse 1200px 150px at 70% -5%, rgba(16, 185, 129, 0.04) 0%, transparent 60%)",
         }} />
       </div>
 
-      {/* ===== Animated particles ===== */}
+      {/* ===== Particles ===== */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
         <ParticleField />
       </div>
 
-      {/* ===== Content layer ===== */}
+      {/* ===== Content ===== */}
       <div className="relative" style={{ zIndex: 10 }}>
         <Header />
         <main className="flex-1">
-          {/* ===== HERO ===== */}
-          <section className="min-h-screen flex items-center pt-20 relative">
-            <div className="w-full px-4 py-20 sm:py-28">
-              <div className="max-w-6xl mx-auto">
-                {/* Badge */}
-                <div className="flex justify-center mb-6">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/15 bg-emerald-500/5 px-4 py-2 text-xs font-medium text-emerald-400" style={{ backdropFilter: "blur(14px)" }}>
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-                    </span>
-                    <span className="tracking-wider uppercase text-[10px] font-bold">Arc Network — Testnet Live</span>
-                  </div>
-                </div>
 
-                {/* Logo */}
-                <div className="flex justify-center mb-8">
-                  <Image src="/aperture-logo.svg" alt="Aperture" width={72} height={72} priority />
-                </div>
-
-                {/* Title */}
-                <h1 className="text-center text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter mb-6" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                  <span className="block text-white">Unlock DEX</span>
-                  <span className="block mt-2" style={{
-                    WebkitTextFillColor: "transparent",
-                    background: "linear-gradient(135deg, #10b981 0%, #5ee9b5 50%, #f97316 100%)",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                  }}>
-                    Trading Potential
+          {/* ===== 1. HERO — badge + headline + subtitle + CTA + 3 dashboard mockups ===== */}
+          <section className="relative pt-32 pb-20 px-4">
+            <div className="max-w-6xl mx-auto text-center">
+              {/* Badge */}
+              <div className="flex justify-center mb-8">
+                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-5 py-2.5 text-sm font-medium text-emerald-400" style={{ backdropFilter: "blur(14px)" }}>
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                   </span>
-                </h1>
-
-                {/* Subtitle */}
-                <p className="text-center text-white/50 text-sm sm:text-base mb-10 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                  Real-time analytics · on-chain swaps · portfolio tracking<br />
-                  Everything you need to navigate DEX pairs on Arc Network.
-                </p>
-
-                {/* CTA */}
-                <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
-                  <a href="/explore" className="group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-black transition-all hover:-translate-y-0.5" style={{
-                    background: "linear-gradient(135deg, #10b981, #5ee9b5)",
-                    boxShadow: "0 0 30px rgba(16, 185, 129, 0.3), inset 0 1px rgba(255,255,255,0.5)",
-                  }}>
-                    Launch App
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-0.5">
-                      <path d="M5 12h14M13 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                  <a href="/pulse" className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:border-emerald-500/20" style={{ backdropFilter: "blur(10px)" }}>
-                    View Live Pulse
-                  </a>
+                  <span className="tracking-wider uppercase text-[11px] font-bold">Elevate Your DEX Workflow</span>
                 </div>
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-bold tracking-tight mb-6 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1em" }}>
+                Unlock DEX Potential
+              </h1>
+              <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-bold tracking-tight mb-8" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1em" }}>
+                <span style={{
+                  WebkitTextFillColor: "transparent",
+                  background: "linear-gradient(135deg, #10b981 0%, #5ee9b5 50%, #f97316 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                }}>
+                  Innovative Trading
+                </span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-white/50 text-base sm:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+                Real-time analytics, on-chain swaps, and portfolio tracking.<br />
+                Everything you need to navigate DEX pairs on Arc Network.
+              </p>
+
+              {/* CTA */}
+              <div className="flex justify-center mb-16">
+                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full border border-emerald-500/50 bg-transparent px-8 py-4 text-base font-semibold text-white transition-all hover:bg-emerald-500 hover:text-black" style={{ overflow: "hidden", position: "relative" }}>
+                  Launch App
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </a>
               </div>
             </div>
 
-            {/* Scroll cue */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-              <span className="text-[10px] tracking-widest uppercase text-white/30" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Scroll</span>
-              <div className="relative w-px h-9 bg-white/10 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full" style={{ background: "#10b981", animation: "scroll-bar 1.8s ease-in-out infinite" }} />
+            {/* 3 Dashboard Mockup Cards — like Intellio */}
+            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+              {/* Left card — small */}
+              <div className="lg:col-span-3 rounded-2xl p-5" style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(16, 185, 129, 0.1)",
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 0 40px -10px rgba(16, 185, 129, 0.15)",
+              }}>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Dashboard</span>
+                  <span className="text-white/20">···</span>
+                </div>
+                <div className="rounded-xl p-4 mb-3" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))" }}>
+                  <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                    {formatUsd(totalVolume)}
+                  </div>
+                  <div className="text-[10px] tracking-wider uppercase text-emerald-400 mt-1">24H Volume</div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="rounded-lg p-2.5" style={{ background: "rgba(255,255,255,0.03)" }}>
+                    <div className="text-xs font-bold text-white">{formatUsd(topPair.liquidityUsd)}</div>
+                    <div className="text-[9px] text-white/40">Top Pool</div>
+                  </div>
+                  <div className="rounded-lg p-2.5" style={{ background: "rgba(255,255,255,0.03)" }}>
+                    <div className="text-xs font-bold text-emerald-400">+{topPair.priceChange24h.toFixed(1)}%</div>
+                    <div className="text-[9px] text-white/40">Top Gain</div>
+                  </div>
+                </div>
+                {/* Mini chart */}
+                <div className="mt-3 flex items-end gap-1 h-12">
+                  {[40, 65, 35, 80, 55, 90, 45, 70].map((h, i) => (
+                    <div key={i} className="flex-1 rounded-t" style={{ height: `${h}%`, background: "linear-gradient(180deg, #10b981, rgba(16,185,129,0.1))" }} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Center card — big */}
+              <div className="lg:col-span-6 rounded-2xl p-6" style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(16, 185, 129, 0.1)",
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 0 60px -10px rgba(16, 185, 129, 0.2)",
+              }}>
+                {/* Top row — 3 stats */}
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                  <div>
+                    <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">Total Pairs</div>
+                    <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{totalPairs}</div>
+                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ +{gainers} gainers</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">24H Volume</div>
+                    <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalVolume)}</div>
+                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ +12.3%</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">Total TVL</div>
+                    <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalLiquidity)}</div>
+                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ +5.7%</div>
+                  </div>
+                </div>
+                {/* Bar chart */}
+                <div className="rounded-xl p-4" style={{ background: "rgba(0,0,0,0.3)" }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm font-semibold text-white">Pair Performance</span>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] text-white/60">24H ⌄</span>
+                  </div>
+                  <div className="flex items-end gap-2 h-32">
+                    {mockPairs.slice(0, 8).map((p, i) => {
+                      const h = Math.min(100, Math.max(20, (p.volume24h / topPair.volume24h) * 100));
+                      return (
+                        <div key={i} className="flex-1 rounded-t" style={{
+                          height: `${h}%`,
+                          background: "linear-gradient(180deg, #10b981, rgba(16,185,129,0.05))",
+                        }} />
+                      );
+                    })}
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    {mockPairs.slice(0, 8).map((p, i) => (
+                      <div key={i} className="flex-1 text-center text-[8px] text-white/30 truncate">{p.token0.symbol}/{p.token1.symbol}</div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right card — small */}
+              <div className="lg:col-span-3 rounded-2xl p-5" style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(16, 185, 129, 0.1)",
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 0 40px -10px rgba(16, 185, 129, 0.15)",
+              }}>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Live Feed</span>
+                  <span className="text-white/20">···</span>
+                </div>
+                <div className="rounded-xl p-4 mb-3" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))" }}>
+                  <div className="text-2xl font-bold text-emerald-400" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{gainers}</div>
+                  <div className="text-[10px] tracking-wider uppercase text-white/50 mt-1">Gainers Today</div>
+                </div>
+                <div className="space-y-2">
+                  {mockPairs.slice(0, 3).map((p, i) => (
+                    <div key={i} className="flex items-center justify-between rounded-lg p-2" style={{ background: "rgba(255,255,255,0.02)" }}>
+                      <span className="text-xs text-white/70">{p.token0.symbol}/{p.token1.symbol}</span>
+                      <span className={`text-xs font-bold ${p.priceChange24h > 0 ? "text-emerald-400" : "text-red-400"}`}>
+                        {p.priceChange24h > 0 ? "+" : ""}{p.priceChange24h.toFixed(1)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
 
-          {/* ===== STATS COUNTER ===== */}
-          <section className="px-4 py-16 border-y border-white/5">
-            <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-3xl sm:text-5xl font-bold tracking-tight" style={{
-                    fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif",
-                    fontVariantNumeric: "tabular-nums",
-                    WebkitTextFillColor: "transparent",
-                    background: "linear-gradient(135deg, #10b981, #5ee9b5)",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                  }}>
-                    {stat.value}{stat.suffix}
-                  </div>
-                  <div className="text-[10px] tracking-widest uppercase text-white/30 mt-2" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
+          {/* ===== 2. BRAND MARQUEE ===== */}
+          <section className="py-8 border-y border-white/5">
+            <div className="max-w-5xl mx-auto px-4">
+              <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+                {integrations.map((item, i) => (
+                  <span key={i} className="text-sm font-bold tracking-wider text-white/20" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
           </section>
 
-          {/* ===== MARQUEE ===== */}
-          <section className="overflow-hidden border-b border-white/5 py-6">
+          {/* ===== 3. WORKFLOW STATS ===== */}
+          <section className="py-20 px-4">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-3" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                  Power Up Your Workflow
+                </h2>
+                <p className="text-white/40 text-sm max-w-md mx-auto">Real-time data infrastructure built for the Arc Network ecosystem</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                {workflowStats.map((s, i) => (
+                  <div key={i} className="text-center">
+                    <div className="text-5xl sm:text-6xl font-bold mb-2" style={{
+                      fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif",
+                      WebkitTextFillColor: "transparent",
+                      background: "linear-gradient(135deg, #10b981, #5ee9b5)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                    }}>
+                      {s.value}<span className="text-2xl">{s.suffix}</span>
+                    </div>
+                    <p className="text-white/40 text-xs max-w-[200px] mx-auto leading-relaxed">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ===== 4. BENEFITS MARQUEE ===== */}
+          <section className="overflow-hidden border-y border-white/5 py-6" style={{ background: "rgba(16, 185, 129, 0.02)" }}>
             <div className="flex gap-8 animate-marquee whitespace-nowrap">
               {[...Array(2)].map((_, dup) => marqueeItems.map((text, i) => (
                 <span key={`${dup}-${i}`} className="text-2xl sm:text-3xl font-bold tracking-tight text-white/10" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
@@ -162,7 +285,7 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* ===== FEATURES ===== */}
+          {/* ===== 5. FEATURES ===== */}
           <section className="py-20 sm:py-28 px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
@@ -171,7 +294,7 @@ export default function LandingPage() {
                   <span className="text-[10px] tracking-widest uppercase text-white/30" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Features</span>
                 </div>
                 <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                  Powerful Tools for<br className="sm:hidden" /> DEX Trading
+                  Powerful Features
                 </h2>
                 <p className="text-white/40 text-sm max-w-lg mx-auto">
                   Everything you need to scan, track, and trade on Arc Network — all in one platform.
@@ -186,19 +309,11 @@ export default function LandingPage() {
                     backdropFilter: "blur(10px)",
                   }}>
                     <div className="flex items-center justify-between mb-6">
-                      <span className="text-[10px] tracking-widest uppercase text-white/20" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                        {f.num}
-                      </span>
-                      <span className="rounded-full border border-emerald-500/15 bg-emerald-500/5 px-2.5 py-1 text-[9px] tracking-wider uppercase text-emerald-400">
-                        {f.badge}
-                      </span>
+                      <span className="text-[10px] tracking-widest uppercase text-white/20" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{f.num}</span>
+                      <span className="rounded-full border border-emerald-500/15 bg-emerald-500/5 px-2.5 py-1 text-[9px] tracking-wider uppercase text-emerald-400">{f.badge}</span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-4 text-white group-hover:text-emerald-400 transition-colors" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                      {f.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-white/40 leading-relaxed">
-                      {f.desc}
-                    </p>
+                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-4 text-white group-hover:text-emerald-400 transition-colors" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{f.title}</h3>
+                    <p className="text-xs sm:text-sm text-white/40 leading-relaxed">{f.desc}</p>
                     <div className="mt-5 flex items-center gap-1.5 text-xs text-white/20 group-hover:text-emerald-400 transition-colors">
                       <span>Open</span>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
@@ -211,40 +326,82 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* ===== STATS BANNER ===== */}
-          <section className="px-4 py-16 border-t border-white/5">
-            <div className="max-w-4xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { label: "24H Volume", value: formatUsd(totalVolume) },
-                { label: "Total Liquidity", value: formatUsd(totalLiquidity) },
-                { label: "Gainers Today", value: `${gainers}/${totalPairs}` },
-                { label: "Network", value: "Arc Testnet" },
-              ].map((stat, i) => (
-                <div key={i} className="rounded-2xl p-5 text-center" style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.04)",
-                  backdropFilter: "blur(10px)",
-                }}>
-                  <div className="text-lg sm:text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                    {stat.value}
+          {/* ===== 6. ABOUT ===== */}
+          <section className="py-20 sm:py-28 px-4 border-t border-white/5">
+            <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 10px rgba(16,185,129,0.6)" }} />
+                  <span className="text-[10px] tracking-widest uppercase text-white/30" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>About</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-6 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                  Smarter Trading
+                </h2>
+                <p className="text-white/40 text-sm mb-8 leading-relaxed">
+                  Aperture brings real-time DEX analytics to Arc Network. Scan pairs, track swaps, manage your portfolio, and execute on-chain trades — all from a single, intuitive interface.
+                </p>
+                <div className="space-y-3">
+                  {["Real-time pair scanner with live data", "On-chain swaps via Presto DEX", "Portfolio tracking with wallet integration", "LP farming with APY monitoring"].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="text-emerald-400 text-xs">◆</span>
+                      <span className="text-white/60 text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <a href="/explore" className="inline-flex items-center gap-2 mt-8 rounded-full border border-emerald-500/30 bg-emerald-500/5 px-6 py-3 text-sm font-semibold text-emerald-400 transition-all hover:bg-emerald-500/10">
+                  Try for Free
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+                </a>
+              </div>
+              <div className="rounded-2xl p-6" style={{
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.05)",
+                backdropFilter: "blur(20px)",
+                boxShadow: "0 0 60px -20px rgba(16, 185, 129, 0.2)",
+              }}>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-semibold text-white">Top Pair Spotlight</span>
+                  <span className="rounded-full border border-emerald-500/15 bg-emerald-500/5 px-2.5 py-1 text-[9px] tracking-wider uppercase text-emerald-400">Live</span>
+                </div>
+                <div className="rounded-xl p-4 mb-3" style={{ background: "rgba(0,0,0,0.3)" }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-lg font-bold text-white">{topPair.token0.symbol}/{topPair.token1.symbol}</span>
+                    <span className={`text-sm font-bold ${topPair.priceChange24h > 0 ? "text-emerald-400" : "text-red-400"}`}>{topPair.priceChange24h > 0 ? "+" : ""}{topPair.priceChange24h.toFixed(2)}%</span>
                   </div>
-                  <div className="text-[9px] tracking-widest uppercase text-white/30 mt-1.5" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                    {stat.label}
+                  <div className="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <div className="text-[10px] tracking-wider uppercase text-white/30">Volume</div>
+                      <div className="text-sm font-bold text-white">{formatUsd(topPair.volume24h)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] tracking-wider uppercase text-white/30">Liquidity</div>
+                      <div className="text-sm font-bold text-white">{formatUsd(topPair.liquidityUsd)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] tracking-wider uppercase text-white/30">Fee</div>
+                      <div className="text-sm font-bold text-white">0.3%</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] tracking-wider uppercase text-white/30">Txns 24H</div>
+                      <div className="text-sm font-bold text-white">{topPair.txCount24h || "—"}</div>
+                    </div>
                   </div>
                 </div>
-              ))}
+                <a href={`/pair/${topPair.address}`} className="block text-center text-xs text-emerald-400 hover:text-emerald-300 transition-colors py-2">
+                  View Full Details →
+                </a>
+              </div>
             </div>
           </section>
 
-          {/* ===== FINAL CTA ===== */}
+          {/* ===== 7. FINAL CTA ===== */}
           <section className="relative overflow-hidden px-4 py-20 sm:py-28 border-t border-white/5">
             <div className="absolute inset-0 pointer-events-none" style={{
-              background: "radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.04), transparent 50%)"
+              background: "radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.06), transparent 50%)"
             }} />
             <div className="relative z-10 text-center max-w-lg mx-auto">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 10px rgba(16,185,129,0.6)" }} />
-                <span className="text-[10px] tracking-widest uppercase text-white/30" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Ready</span>
+              <div className="flex justify-center mb-6">
+                <Image src="/aperture-logo.svg" alt="Aperture" width={56} height={56} />
               </div>
               <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                 Start exploring.
