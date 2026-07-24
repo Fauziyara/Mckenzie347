@@ -42,7 +42,7 @@ export function ParticleField() {
 
     function initParticles() {
       particles = [];
-      const count = 38;
+      const count = 20;
       for (let i = 0; i < count; i++) {
         const colorIdx = Math.floor(Math.random() * colors.length);
         particles.push({

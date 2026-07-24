@@ -149,7 +149,7 @@ export default function LandingPage() {
                 </div>
                 {/* Mini chart */}
                 <div className="mt-3 flex items-end gap-1 h-12">
-                  {[40, 65, 35, 80, 55, 90, 45, 70].map((h, i) => (
+                  {[40, 65, 35, 80, 55].map((h, i) => (
                     <div key={i} className="flex-1 rounded-t" style={{ height: `${h}%`, background: "linear-gradient(180deg, #10b981, rgba(16,185,129,0.1))" }} />
                   ))}
                 </div>
@@ -187,7 +187,7 @@ export default function LandingPage() {
                     <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] text-white/60">24H ⌄</span>
                   </div>
                   <div className="flex items-end gap-2 h-32">
-                    {mockPairs.slice(0, 8).map((p, i) => {
+                    {mockPairs.slice(0, 5).map((p, i) => {
                       const h = Math.min(100, Math.max(20, (p.volume24h / topPair.volume24h) * 100));
                       return (
                         <div key={i} className="flex-1 rounded-t" style={{
@@ -198,7 +198,7 @@ export default function LandingPage() {
                     })}
                   </div>
                   <div className="flex gap-2 mt-2">
-                    {mockPairs.slice(0, 8).map((p, i) => (
+                    {mockPairs.slice(0, 5).map((p, i) => (
                       <div key={i} className="flex-1 text-center text-[8px] text-white/30 truncate">{p.token0.symbol}/{p.token1.symbol}</div>
                     ))}
                   </div>
@@ -221,7 +221,7 @@ export default function LandingPage() {
                   <div className="text-[10px] tracking-wider uppercase text-white/50 mt-1">Pairs Tracked</div>
                 </div>
                 <div className="space-y-2">
-                  {mockPairs.slice(0, 3).map((p, i) => (
+                  {mockPairs.slice(0, 2).map((p, i) => (
                     <div key={i} className="flex items-center justify-between rounded-lg p-2" style={{ background: "rgba(255,255,255,0.02)" }}>
                       <span className="text-xs text-white/70">{p.token0.symbol}/{p.token1.symbol}</span>
                       <span className='text-xs font-bold text-white/60'>

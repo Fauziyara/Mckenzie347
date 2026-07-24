@@ -1,5 +1,14 @@
+"use client";
 import Link from "next/link";
-import { WalletButton } from "@/components/wallet-button";
+import dynamic from "next/dynamic";
+const WalletButton = dynamic(() => import("@/components/wallet-button").then((m: any) => m.WalletButton), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center gap-1.5 rounded-md bg-emerald-500/50 px-3 py-1.5 text-xs font-semibold text-background opacity-50">
+      Connect
+    </div>
+  ),
+});
 import { TickerBar } from "@/components/ticker-bar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
