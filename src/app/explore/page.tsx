@@ -34,45 +34,6 @@ export default function Home() {
     <>
       <Header active="Explore" />
       <main className="w-full flex-1">
-        {/* Hero - full width left aligned */}
-        <section className="relative overflow-hidden border-b border-border/50">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/40 via-background to-background" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-dot-grid-emerald" />
-          <div className="relative w-full px-4 py-10 sm:py-14 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 mb-4">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              Arc Network — Testnet Live
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight mb-3">
-              Discover & Trade{" "}
-              <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-                DEX Pairs
-              </span>
-            </h1>
-            <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-xl mx-auto">
-              Real-time DEX pair analytics built on Arc Network — track liquidity volume and swaps
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="/swap"
-                className="btn-lift rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-background hover:bg-emerald-600 transition-colors"
-              >
-                Start Swapping
-              </a>
-              <a
-                href="#pairs"
-                className="btn-lift rounded-xl border border-border bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
-              >
-                Explore Pairs
-              </a>
-            </div>
-          </div>
-        </section>
-
         {/* Stats - full width */}
         <section className="border-b border-border/50 bg-muted/10">
           <div className="w-full px-4 py-5">
