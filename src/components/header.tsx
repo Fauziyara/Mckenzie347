@@ -4,82 +4,125 @@ import { TickerBar } from "@/components/ticker-bar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
 
+// Intellio-style menu: Home ▾, About, Pages ▾, Services, Blog ▾, Contact
 const navItems = [
-  { href: "/explore", label: "Explore" },
-  { href: "/pulse", label: "Pulse" },
-  { href: "/pelacak", label: "Tracker" },
-  { href: "/portofolio", label: "Portfolio" },
-  { href: "/earn", label: "Earn" },
-  { href: "/swap", label: "Swap" },
-  { href: "/alat", label: "Tools" },
+  { href: "/", label: "Home", hasDropdown: false },
+  { href: "/explore", label: "Explore", hasDropdown: false },
+  { href: "/pulse", label: "Pulse", hasDropdown: false },
+  { href: "#", label: "Tools", hasDropdown: true, submenu: [
+    { href: "/pelacak", label: "Tracker" },
+    { href: "/alat", label: "Watchlist" },
+    { href: "/swap", label: "Swap" },
+  ]},
+  { href: "/portofolio", label: "Portfolio", hasDropdown: false },
+  { href: "/earn", label: "Earn", hasDropdown: false },
 ];
 
 export function Header({ active }: { active?: string }) {
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
-        <div className="w-full flex h-12 items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            {/* Logo: Aperture (primary) | separator | Arc (infrastructure) */}
+      <header className="sticky top-0 z-50" style={{
+        background: "rgba(0, 0, 0, 0.6)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}>
+        {/* Top bar — Intellio style thin */}
+        <div className="w-full flex h-16 items-center justify-between px-6 lg:px-10">
+          {/* Left — Logo */}
+          <div className="flex items-center gap-3">
             <a href="/" className="flex items-center gap-2.5">
-              {/* Aperture logo — primary brand */}
               <Image
                 src="/aperture-logo.svg"
                 alt="Aperture"
-                width={32}
-                height={32}
+                width={36}
+                height={36}
                 priority
               />
-              <span className="text-base font-bold tracking-tight">Aperture</span>
-              {/* Separator */}
-              <span className="h-5 w-px bg-border mx-1" />
-              {/* Arc™ logo — infrastructure, smaller than Aperture */}
-              <Image
-                src="/arc-logo-official.svg"
-                alt="Arc™ — Arc is a trademark of Circle Internet Group, Inc."
-                width={52}
-                height={18}
-                className="opacity-60"
-                priority
-              />
+              <span className="text-lg font-bold tracking-tight text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                Aperture
+              </span>
             </a>
-            {/* Nav */}
-            <nav className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => (
+            <span className="h-5 w-px bg-white/10 mx-1" />
+            <Image
+              src="/arc-logo-official.svg"
+              alt="Arc™ — Arc is a trademark of Circle Internet Group, Inc."
+              width={52}
+              height={18}
+              className="opacity-50"
+              priority
+            />
+          </div>
+
+          {/* Center — Menu (Intellio style) */}
+          <nav className="hidden lg:flex items-center">
+            {navItems.map((item) => (
+              <div key={item.label} className="relative group">
                 <Link
-                  key={item.href}
                   href={item.href}
-                  className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                  className={`flex items-center gap-1 px-4 py-2 text-sm font-semibold capitalize transition-colors ${
                     active === item.label
-                      ? "bg-emerald-500/20 text-emerald-400"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-emerald-400"
+                      : "text-white/70 hover:text-white"
                   }`}
                 >
                   {item.label}
+                  {item.hasDropdown && (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="opacity-50">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  )}
                 </Link>
-              ))}
-            </nav>
-          </div>
-          <div className="flex items-center gap-2">
+                {/* Dropdown */}
+                {item.hasDropdown && item.submenu && (
+                  <div className="absolute top-full left-0 mt-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pt-2">
+                    <div className="rounded-xl py-2 min-w-[160px]" style={{
+                      background: "rgba(10, 10, 20, 0.95)",
+                      backdropFilter: "blur(20px)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+                    }}>
+                      {item.submenu.map((sub) => (
+                        <Link
+                          key={sub.href}
+                          href={sub.href}
+                          className="block px-4 py-2 text-sm text-white/60 hover:text-emerald-400 hover:bg-white/5 transition-colors"
+                        >
+                          {sub.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          {/* Right — CTA + Wallet (Intellio "Free Trail" button style) */}
+          <div className="flex items-center gap-3">
             <Link
               href="/pulse"
-              className="flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-2.5 py-1 transition-colors hover:bg-emerald-500/20"
+              className="hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors"
             >
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-              <span className="text-xs font-medium text-emerald-400">TESTNET LIVE</span>
+              <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-400">Testnet Live</span>
             </Link>
+            {/* Intellio "Free Trail" style button */}
             <a
               href="https://faucet.circle.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden items-center gap-1.5 rounded-md bg-blue-500/10 px-2.5 py-1 transition-colors hover:bg-blue-500/20 sm:flex"
-              title="Claim USDC/EURC testnet tokens"
+              className="hidden sm:flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+              style={{
+                background: "linear-gradient(135deg, #10b981, #5ee9b5)",
+                boxShadow: "0 4px 20px rgba(16, 185, 129, 0.25)",
+                color: "#000",
+              }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-blue-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M12 2v6m0 0c-2.5 0-5 1.5-5 4v8h10v-8c0-2.5-2.5-4-5-4z" />
                 <circle cx="12" cy="14" r="1.5" fill="currentColor" />
               </svg>
-              <span className="text-xs font-medium text-blue-400">Faucet</span>
+              Faucet
             </a>
             <ThemeToggle />
             <WalletButton />
