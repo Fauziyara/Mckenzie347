@@ -44,20 +44,20 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="relative min-h-screen" style={{ background: "#000000" }}>
+    <div className="relative min-h-screen" style={{ background: "linear-gradient(180deg, #021410 0%, #010a08 30%, #01100c 60%, #021410 100%)" }}>
       {/* ===== Emerald light glow from top ===== */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2" style={{
           width: "100%", height: "100vh",
-          background: "radial-gradient(ellipse 800px 250px at 50% 0%, rgba(16, 185, 129, 0.10) 0%, rgba(16, 185, 129, 0.03) 25%, transparent 55%)",
+          background: "radial-gradient(ellipse 900px 400px at 50% 0%, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.06) 30%, transparent 60%)",
         }} />
         <div className="absolute top-0" style={{
           width: "100%", height: "100vh",
-          background: "radial-gradient(ellipse 1200px 150px at 30% -5%, rgba(16, 185, 129, 0.04) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse 1200px 300px at 25% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 55%)",
         }} />
         <div className="absolute top-0" style={{
           width: "100%", height: "100vh",
-          background: "radial-gradient(ellipse 1200px 150px at 70% -5%, rgba(16, 185, 129, 0.04) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse 1200px 300px at 75% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 55%)",
         }} />
       </div>
 
