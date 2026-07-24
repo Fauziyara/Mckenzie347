@@ -142,8 +142,8 @@ export default function LandingPage() {
                     <div className="text-[9px] text-white/40">Top Pool</div>
                   </div>
                   <div className="rounded-lg p-2.5" style={{ background: "rgba(255,255,255,0.03)" }}>
-                    <div className="text-xs font-bold text-emerald-400">+{topPair.priceChange24h.toFixed(1)}%</div>
-                    <div className="text-[9px] text-white/40">Top Gain</div>
+                    <div className="text-xs font-bold text-white">{totalPairs}</div>
+                    <div className="text-[9px] text-white/40">Pairs</div>
                   </div>
                 </div>
                 {/* Mini chart */}
@@ -166,17 +166,17 @@ export default function LandingPage() {
                   <div>
                     <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">Total Pairs</div>
                     <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{totalPairs}</div>
-                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ Active pairs</div>
+                    
                   </div>
                   <div>
                     <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">24H Volume</div>
                     <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalVolume)}</div>
-                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ +12.3%</div>
+                    
                   </div>
                   <div>
                     <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">Total TVL</div>
                     <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{formatUsd(totalLiquidity)}</div>
-                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ +5.7%</div>
+                    
                   </div>
                 </div>
                 {/* Bar chart */}
@@ -223,8 +223,8 @@ export default function LandingPage() {
                   {mockPairs.slice(0, 3).map((p, i) => (
                     <div key={i} className="flex items-center justify-between rounded-lg p-2" style={{ background: "rgba(255,255,255,0.02)" }}>
                       <span className="text-xs text-white/70">{p.token0.symbol}/{p.token1.symbol}</span>
-                      <span className={`text-xs font-bold ${p.priceChange24h > 0 ? "text-emerald-400" : "text-red-400"}`}>
-                        {p.priceChange24h > 0 ? "+" : ""}{p.priceChange24h.toFixed(1)}%
+                      <span className='text-xs font-bold text-white/60'>
+                        {p.volume24h > 1000 ? (p.volume24h/1000).toFixed(1) + 'K' : p.volume24h.toFixed(0)}
                       </span>
                     </div>
                   ))}
@@ -366,7 +366,7 @@ export default function LandingPage() {
                 <div className="rounded-xl p-4 mb-3" style={{ background: "rgba(0,0,0,0.3)" }}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-lg font-bold text-white">{topPair.token0.symbol}/{topPair.token1.symbol}</span>
-                    <span className={`text-sm font-bold ${topPair.priceChange24h > 0 ? "text-emerald-400" : "text-red-400"}`}>{topPair.priceChange24h > 0 ? "+" : ""}{topPair.priceChange24h.toFixed(2)}%</span>
+                    <span className='text-sm font-bold text-white/60'>{formatUsd(topPair.volume24h)}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-3 mt-3">
                     <div>
