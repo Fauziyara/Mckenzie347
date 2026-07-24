@@ -166,7 +166,7 @@ export default function LandingPage() {
                   <div>
                     <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">Total Pairs</div>
                     <div className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{totalPairs}</div>
-                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ +{gainers} gainers</div>
+                    <div className="text-[10px] text-emerald-400 mt-0.5">↗ Active pairs</div>
                   </div>
                   <div>
                     <div className="text-[10px] tracking-wider uppercase text-white/40 mb-1">24H Volume</div>
@@ -216,8 +216,8 @@ export default function LandingPage() {
                   <span className="text-white/20">···</span>
                 </div>
                 <div className="rounded-xl p-4 mb-3" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))" }}>
-                  <div className="text-2xl font-bold text-emerald-400" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{gainers}</div>
-                  <div className="text-[10px] tracking-wider uppercase text-white/50 mt-1">Gainers Today</div>
+                  <div className="text-2xl font-bold text-emerald-400" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>{totalPairs}</div>
+                  <div className="text-[10px] tracking-wider uppercase text-white/50 mt-1">Pairs Tracked</div>
                 </div>
                 <div className="space-y-2">
                   {mockPairs.slice(0, 3).map((p, i) => (
