@@ -10,6 +10,18 @@ export default function LandingPage() {
   const totalPairs = mockPairs.length;
   const gainers = mockPairs.filter(p => p.priceChange24h > 0).length;
 
+  const stats = [
+    { value: formatUsd(totalVolume), label: "24H Volume", suffix: "" },
+    { value: "99.9", label: "Uptime", suffix: "%" },
+    { value: formatUsd(totalLiquidity), label: "Total Liquidity", suffix: "" },
+    { value: `${totalPairs}`, label: "DEX Pairs", suffix: "+" },
+  ];
+
+  const marqueeItems = [
+    "REAL-TIME ANALYTICS", "ON-CHAIN SWAPS", "PORTFOLIO TRACKING",
+    "LIVE PULSE FEED", "DEX PAIR SCANNER", "TOKEN TRACKER", "LP FARMING"
+  ];
+
   const features = [
     { num: "01", title: "Explore", desc: "Browse all DEX pairs on Arc testnet. Real-time liquidity, volume, and price data at your fingertips.", href: "/explore", badge: "Live" },
     { num: "02", title: "Pulse", desc: "Real-time swap feed with animated entries. Never miss a trade on Arc Network.", href: "/pulse", badge: "Real-time" },
@@ -22,33 +34,15 @@ export default function LandingPage() {
   return (
     <>
       <Header />
-      <main className="flex-1">
-        {/* ===== HERO ===== */}
-        <section className="relative overflow-hidden min-h-screen flex items-center">
-          {/* Aurora background */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 18% 22%, rgba(16,185,129,0.15), transparent 32%), radial-gradient(circle at 82% 18%, rgba(255,140,0,0.06), transparent 28%), radial-gradient(circle at 52% 58%, rgba(16,185,129,0.08), transparent 34%), linear-gradient(transparent, var(--background) 82%)" }} />
-            <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
-          </div>
-
-          {/* Floating orbs */}
-          <div className="absolute pointer-events-none" style={{
-            width: "clamp(260px,38vw,560px)", height: "clamp(260px,38vw,560px)",
-            top: "9vh", right: "-8vw", borderRadius: "9999px",
-            background: "radial-gradient(circle, rgba(16,185,129,0.12), rgba(20,184,166,0.05) 34%, transparent 68%)",
-            filter: "blur(10px)", opacity: 0.6
-          }} />
-
+      <main className="flex-1 intellio-grain">
+        {/* ===== HERO — Intellio style ===== */}
+        <section className="intellio-hero min-h-screen flex items-center pt-20 relative">
           {/* Content */}
           <div className="relative z-10 w-full px-4 py-20 sm:py-28">
-            <div className="max-w-5xl mx-auto">
-              {/* Logo */}
-              <div className="mb-8 flex justify-center">
-                <Image src="/aperture-logo.svg" alt="Aperture" width={80} height={80} priority />
-              </div>
-
-              {/* Badge */}
-              <div className="flex justify-center mb-6">
+            <div className="max-w-6xl mx-auto">
+              {/* Logo + Badge */}
+              <div className="flex flex-col items-center mb-8">
+                <Image src="/aperture-logo.svg" alt="Aperture" width={72} height={72} priority className="mb-6 intellio-float" />
                 <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1.5 text-xs font-medium text-emerald-400" style={{ backdropFilter: "blur(14px)" }}>
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -59,68 +53,76 @@ export default function LandingPage() {
               </div>
 
               {/* Title */}
-              <h1 className="text-center text-5xl sm:text-7xl font-bold tracking-tighter mb-6" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                <span className="block">The DEX Scanner</span>
+              <h1 className="text-center text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter mb-6" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                <span className="block text-white">Elevate Your</span>
                 <span className="block mt-2" style={{
                   WebkitTextFillColor: "transparent",
                   background: "linear-gradient(135deg, #10b981 0%, #5ee9b5 38%, #14b8a6 74%, #f97316 100%)",
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                 }}>
-                  built on Arc.
+                  DEX Experience
                 </span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-center text-muted-foreground text-sm sm:text-base mb-10 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+              <p className="text-center text-white/70 text-sm sm:text-base mb-10 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
                 Real-time analytics · on-chain swaps · portfolio tracking<br />
                 Everything you need to navigate DEX pairs on Arc Network.
               </p>
 
               {/* CTA */}
               <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
-                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-3.5 text-sm font-semibold text-black transition-all hover:bg-emerald-400 hover:-translate-y-0.5" style={{ boxShadow: "0 16px 46px rgba(16,185,129,0.25), inset 0 1px rgba(255,255,255,0.5)" }}>
+                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-3.5 text-sm font-semibold text-black transition-all hover:bg-emerald-400 hover:-translate-y-0.5" style={{ boxShadow: "0 16px 46px rgba(16,185,129,0.35), inset 0 1px rgba(255,255,255,0.5)" }}>
                   Launch App
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-0.5">
                     <path d="M5 12h14M13 5l7 7-7 7" />
                   </svg>
                 </a>
-                <a href="/swap" className="inline-flex items-center gap-2 rounded-full border border-border bg-transparent px-7 py-3.5 text-sm font-semibold text-foreground transition-all hover:bg-muted/50 hover:border-emerald-500/30">
-                  Start Swapping
+                <a href="/pulse" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:border-emerald-500/30" style={{ backdropFilter: "blur(10px)" }}>
+                  View Live Pulse
                 </a>
               </div>
+            </div>
+          </div>
 
-              {/* Floating stat cards */}
-              <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
-                {[
-                  { label: "24H VOLUME", value: formatUsd(totalVolume) },
-                  { label: "LIQUIDITY", value: formatUsd(totalLiquidity) },
-                  { label: "DEX PAIRS", value: `${totalPairs}` },
-                ].map((stat, i) => (
-                  <div key={i} className="rounded-2xl p-4 text-center" style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)), rgba(14,14,18,0.72)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    backdropFilter: "blur(22px)",
-                    boxShadow: "inset 0 1px rgba(255,255,255,0.06), 0 24px 80px rgba(0,0,0,0.2)",
-                  }}>
-                    <div className="text-xl sm:text-2xl font-bold text-foreground" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", fontVariantNumeric: "tabular-nums" }}>
-                      {stat.value}
-                    </div>
-                    <div className="text-[9px] tracking-widest uppercase text-muted-foreground mt-1" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* Scroll cue */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
+            <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Scroll</span>
+            <div className="relative w-px h-9 bg-white/20 overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-full bg-emerald-500" style={{ animation: "scroll-bar 1.8s ease-in-out infinite" }} />
             </div>
           </div>
         </section>
 
+        {/* ===== STATS COUNTER ===== */}
+        <section className="intellio-stats-bg px-4 py-16 border-y border-white/5">
+          <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {stats.map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className="text-3xl sm:text-5xl font-bold tracking-tight" style={{
+                  fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif",
+                  fontVariantNumeric: "tabular-nums",
+                  WebkitTextFillColor: "transparent",
+                  background: "linear-gradient(135deg, #10b981, #5ee9b5)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                }}>
+                  {stat.value}{stat.suffix}
+                </div>
+                <div className="text-[10px] tracking-widest uppercase text-white/40 mt-2" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ===== MARQUEE ===== */}
-        <section className="overflow-hidden border-y border-border/30 py-6">
+        <section className="intellio-marquee-bg overflow-hidden border-b border-white/5 py-6">
           <div className="flex gap-8 animate-marquee whitespace-nowrap">
-            {[...Array(2)].map((_, dup) => ["REAL-TIME ANALYTICS", "ON-CHAIN SWAPS", "PORTFOLIO TRACKING", "LIVE PULSE FEED", "DEX PAIR SCANNER", "TOKEN TRACKER", "LP FARMING"].map((text, i) => (
-              <span key={i} className="text-2xl sm:text-3xl font-bold tracking-tight text-muted-foreground/30" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+            {[...Array(2)].map((_, dup) => marqueeItems.map((text, i) => (
+              <span key={`${dup}-${i}`} className="text-2xl sm:text-3xl font-bold tracking-tight text-white/15" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                 {text} <span className="text-emerald-500/40">●</span>
               </span>
             )))}
@@ -128,43 +130,41 @@ export default function LandingPage() {
         </section>
 
         {/* ===== FEATURES ===== */}
-        <section className="py-20 sm:py-28 px-4">
+        <section className="intellio-section py-20 sm:py-28 px-4">
           <div className="max-w-6xl mx-auto">
             {/* Section header */}
-            <div className="flex items-end justify-between mb-12 pb-6 border-b border-border/30">
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 14px rgba(16,185,129,0.8)" }} />
-                  <span className="text-[10px] tracking-widest uppercase text-muted-foreground" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Features</span>
-                </div>
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                  Everything you need.
-                </h2>
+            <div className="text-center mb-16">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 14px rgba(16,185,129,0.8)" }} />
+                <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>Features</span>
               </div>
-              <span className="hidden sm:block text-xs tracking-widest uppercase text-muted-foreground" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                06 modules
-              </span>
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                Powerful Tools for<br className="sm:hidden" /> DEX Trading
+              </h2>
+              <p className="text-white/50 text-sm max-w-lg mx-auto">
+                Everything you need to scan, track, and trade on Arc Network — all in one platform.
+              </p>
             </div>
 
-            {/* Feature grid — 3 columns with 1px gap */}
+            {/* Feature grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.06)" }}>
               {features.map((f) => (
-                <a key={f.title} href={f.href} className="group block p-6 sm:p-8 transition-all hover:bg-emerald-500/5" style={{ background: "var(--background)" }}>
+                <a key={f.title} href={f.href} className="intellio-feature-card group block p-6 sm:p-8" style={{ background: "var(--background)" }}>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="text-[10px] tracking-widest uppercase text-muted-foreground/50" style={{ fontFamily: "ui-monospace, SFMono-Regular, Meno, monospace" }}>
+                    <span className="text-[10px] tracking-widest uppercase text-white/30" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
                       {f.num}
                     </span>
                     <span className="rounded-full border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 text-[9px] tracking-wider uppercase text-emerald-400">
                       {f.badge}
                     </span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-4 group-hover:text-emerald-400 transition-colors" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-4 text-white group-hover:text-emerald-400 transition-colors" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                     {f.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-xs sm:text-sm text-white/50 leading-relaxed">
                     {f.desc}
                   </p>
-                  <div className="mt-5 flex items-center gap-1.5 text-xs text-muted-foreground/50 group-hover:text-emerald-400 transition-colors">
+                  <div className="mt-5 flex items-center gap-1.5 text-xs text-white/30 group-hover:text-emerald-400 transition-colors">
                     <span>Open</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
                       <path d="M5 12h14M13 5l7 7-7 7" />
@@ -177,7 +177,7 @@ export default function LandingPage() {
         </section>
 
         {/* ===== STATS BANNER ===== */}
-        <section className="px-4 py-16 border-t border-border/30">
+        <section className="intellio-stats-bg px-4 py-16 border-t border-white/5">
           <div className="max-w-4xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { label: "24H Volume", value: formatUsd(totalVolume) },
@@ -189,10 +189,10 @@ export default function LandingPage() {
                 background: "linear-gradient(135deg, rgba(255,255,255,0.04), transparent)",
                 border: "1px solid rgba(255,255,255,0.05)",
               }}>
-                <div className="text-lg sm:text-2xl font-bold text-foreground" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+                <div className="text-lg sm:text-2xl font-bold text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                   {stat.value}
                 </div>
-                <div className="text-[9px] tracking-widest uppercase text-muted-foreground mt-1.5" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+                <div className="text-[9px] tracking-widest uppercase text-white/40 mt-1.5" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
                   {stat.label}
                 </div>
               </div>
@@ -200,26 +200,22 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ===== CTA ===== */}
-        <section className="relative overflow-hidden px-4 py-20 sm:py-28 border-t border-border/30">
-          {/* Glow bg */}
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: "radial-gradient(circle at 50% 50%, rgba(16,185,129,0.08), transparent 50%)"
-          }} />
+        {/* ===== FINAL CTA ===== */}
+        <section className="intellio-cta-bg relative overflow-hidden px-4 py-20 sm:py-28 border-t border-white/5">
           <div className="relative z-10 text-center max-w-lg mx-auto">
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 14px rgba(16,185,129,0.8)" }} />
-              <span className="text-[10px] tracking-widest uppercase text-muted-foreground" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+              <span className="text-[10px] tracking-widest uppercase text-white/40" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
                 Ready
               </span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
               Start exploring.
             </h2>
-            <p className="text-muted-foreground text-sm mb-8">
+            <p className="text-white/50 text-sm mb-8">
               Jump into the dashboard and track DEX pairs on Arc Network testnet.
             </p>
-            <a href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-sm font-semibold text-black transition-all hover:bg-emerald-400 hover:-translate-y-0.5" style={{ boxShadow: "0 16px 46px rgba(16,185,129,0.25), inset 0 1px rgba(255,255,255,0.5)" }}>
+            <a href="/explore" className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-sm font-semibold text-black transition-all hover:bg-emerald-400 hover:-translate-y-0.5" style={{ boxShadow: "0 16px 46px rgba(16,185,129,0.35), inset 0 1px rgba(255,255,255,0.5)" }}>
               Launch App
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
                 <path d="M5 12h14M13 5l7 7-7 7" />
