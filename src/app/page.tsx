@@ -119,11 +119,11 @@ export default function LandingPage() {
         {/* ===== MARQUEE ===== */}
         <section className="overflow-hidden border-y border-border/30 py-6">
           <div className="flex gap-8 animate-marquee whitespace-nowrap">
-            {["REAL-TIME ANALYTICS", "ON-CHAIN SWAPS", "PORTFOLIO TRACKING", "LIVE PULSE FEED", "DEX PAIR SCANNER", "TOKEN TRACKER", "LP FARMING"].map((text, i) => (
+            {[...Array(2)].map((_, dup) => ["REAL-TIME ANALYTICS", "ON-CHAIN SWAPS", "PORTFOLIO TRACKING", "LIVE PULSE FEED", "DEX PAIR SCANNER", "TOKEN TRACKER", "LP FARMING"].map((text, i) => (
               <span key={i} className="text-2xl sm:text-3xl font-bold tracking-tight text-muted-foreground/30" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                 {text} <span className="text-emerald-500/40">●</span>
               </span>
-            ))}
+            )))}
           </div>
         </section>
 
