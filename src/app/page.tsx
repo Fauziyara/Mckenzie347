@@ -143,11 +143,11 @@ export default function LandingPage() {
                   <div className="text-[10px] tracking-wider uppercase text-emerald-400 mt-1">24H Volume</div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-lg p-2.5" className="landing-card-inner">
+                  <div className="rounded-lg p-2.5 landing-card-inner">
                     <div className="text-xs font-bold landing-text-heading">{formatUsd(topPair.liquidityUsd)}</div>
                     <div className="text-[9px] landing-text-subtle">Top Pool</div>
                   </div>
-                  <div className="rounded-lg p-2.5" className="landing-card-inner">
+                  <div className="rounded-lg p-2.5 landing-card-inner">
                     <div className="text-xs font-bold landing-text-heading">{totalPairs}</div>
                     <div className="text-[9px] landing-text-subtle">Pairs</div>
                   </div>
@@ -186,7 +186,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 {/* Bar chart */}
-                <div className="rounded-xl p-4" className="landing-card-inner">
+                <div className="rounded-xl p-4 landing-card-inner">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-semibold landing-text-heading">Pair Performance</span>
                     <span className="rounded-full border landing-border  px-3 py-1 text-[10px] landing-text-body">24H ⌄</span>
@@ -227,7 +227,7 @@ export default function LandingPage() {
                 </div>
                 <div className="space-y-2">
                   {mockPairs.slice(0, 2).map((p, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-lg p-2" className="landing-bg-hover">
+                    <div key={i} className="flex items-center justify-between rounded-lg p-2 landing-bg-hover">
                       <span className="text-xs landing-text-body">{p.token0.symbol}/{p.token1.symbol}</span>
                       <span className='text-xs font-bold landing-text-body'>
                         {p.volume24h > 1000 ? (p.volume24h/1000).toFixed(1) + 'K' : p.volume24h.toFixed(0)}
@@ -286,7 +286,7 @@ export default function LandingPage() {
 
           {/* ===== 4. BENEFITS MARQUEE ===== */}
           <Reveal delay={100}>
-          <section className="overflow-hidden border-y landing-border py-6" className="landing-bg-hover">
+          <section className="overflow-hidden border-y landing-border py-6 landing-bg-hover">
             <div className="flex gap-8 animate-marquee whitespace-nowrap">
               {[...Array(2)].map((_, dup) => marqueeItems.map((text, i) => (
                 <span key={`${dup}-${i}`} className="text-2xl sm:text-3xl font-bold tracking-tight landing-text-muted" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
@@ -378,7 +378,7 @@ export default function LandingPage() {
                   <span className="text-sm font-semibold landing-text-heading">Top Pair Spotlight</span>
                   <span className="rounded-full border border-emerald-500/15 bg-emerald-500/5 px-2.5 py-1 text-[9px] tracking-wider uppercase text-emerald-400">Live</span>
                 </div>
-                <div className="rounded-xl p-4 mb-3" className="landing-card-inner">
+                <div className="rounded-xl p-4 mb-3 landing-card-inner">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-lg font-bold landing-text-heading">{topPair.token0.symbol}/{topPair.token1.symbol}</span>
                     <span className='text-sm font-bold landing-text-body'>{formatUsd(topPair.volume24h)}</span>
