@@ -17,7 +17,7 @@ const navItems = [
   { href: "/earn", label: "Earn", hasDropdown: false },
 ];
 
-export function Header({ active, showTicker = true }: { active?: string; showTicker?: boolean }) {
+export function Header({ active, showTicker = true, showFaucet = true }: { active?: string; showTicker?: boolean; showFaucet?: boolean }) {
   return (
     <>
       <header className="sticky top-0 z-50" style={{
@@ -95,6 +95,7 @@ export function Header({ active, showTicker = true }: { active?: string; showTic
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
               <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-400">Testnet Live</span>
             </Link>
+            {showFaucet && (
             <a
               href="https://faucet.circle.com/"
               target="_blank"
@@ -112,6 +113,7 @@ export function Header({ active, showTicker = true }: { active?: string; showTic
               </svg>
               Faucet
             </a>
+            )}
             <ThemeToggle />
             <WalletButton />
           </div>

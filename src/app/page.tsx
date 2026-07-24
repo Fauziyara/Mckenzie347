@@ -68,7 +68,7 @@ export default function LandingPage() {
 
       {/* ===== Content ===== */}
       <div className="relative" style={{ zIndex: 10 }}>
-        <Header showTicker={false} />
+        <Header showTicker={false} showFaucet={false} />
         <main className="flex-1">
 
           {/* ===== 1. HERO — badge + headline + subtitle + CTA + 3 dashboard mockups ===== */}
