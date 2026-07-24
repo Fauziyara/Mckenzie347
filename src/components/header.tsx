@@ -4,7 +4,6 @@ import { TickerBar } from "@/components/ticker-bar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
 
-// Intellio-style menu: Home ▾, About, Pages ▾, Services, Blog ▾, Contact
 const navItems = [
   { href: "/", label: "Home", hasDropdown: false },
   { href: "/explore", label: "Explore", hasDropdown: false },
@@ -26,10 +25,9 @@ export function Header({ active, showTicker = true }: { active?: string; showTic
         backdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}>
-        {/* Top bar — Intellio style thin */}
-        <div className="w-full flex h-16 items-center justify-between px-6 lg:px-10">
+        <div className="relative w-full flex h-16 items-center justify-between px-6 lg:px-10">
           {/* Left — Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 z-10">
             <a href="/" className="flex items-center gap-2.5">
               <Image
                 src="/aperture-logo.svg"
@@ -42,11 +40,10 @@ export function Header({ active, showTicker = true }: { active?: string; showTic
                 Aperture
               </span>
             </a>
-
           </div>
 
-            {/* Nav — right next to logo */}
-            <nav className="hidden lg:flex items-center">
+          {/* Center — Menu (absolute centered, Intellio style) */}
+          <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => (
               <div key={item.label} className="relative group">
                 <Link
@@ -89,8 +86,8 @@ export function Header({ active, showTicker = true }: { active?: string; showTic
             ))}
           </nav>
 
-          {/* Right — CTA + Wallet (Intellio "Free Trail" button style) */}
-          <div className="flex items-center gap-3">
+          {/* Right — CTA + Wallet */}
+          <div className="flex items-center gap-3 z-10">
             <Link
               href="/pulse"
               className="hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors"
@@ -98,12 +95,11 @@ export function Header({ active, showTicker = true }: { active?: string; showTic
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
               <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-400">Testnet Live</span>
             </Link>
-            {/* Intellio "Free Trail" style button */}
             <a
               href="https://faucet.circle.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+              className="hidden sm:flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all hover:-translate-y-0.5"
               style={{
                 background: "linear-gradient(135deg, #10b981, #5ee9b5)",
                 boxShadow: "0 4px 20px rgba(16, 185, 129, 0.25)",
