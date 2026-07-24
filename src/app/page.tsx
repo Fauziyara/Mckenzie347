@@ -82,13 +82,13 @@ export default function LandingPage() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                   </span>
-                  <span className="tracking-wider uppercase text-[11px] font-bold">Elevate Your DEX Workflow</span>
+                  <span className="tracking-wider uppercase text-[11px] font-bold">Arc Network — Testnet Live</span>
                 </div>
               </div>
 
               {/* Headline */}
               <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-bold tracking-tight mb-6 text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1em" }}>
-                Unlock DEX Potential
+                Discover & Trade
               </h1>
               <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-bold tracking-tight mb-8" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1em" }}>
                 <span style={{
@@ -97,20 +97,25 @@ export default function LandingPage() {
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                 }}>
-                  Innovative Trading
+                  DEX Pairs
                 </span>
               </h1>
 
               {/* Subtitle */}
               <p className="text-white/50 text-base sm:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
-                Real-time analytics, on-chain swaps, and portfolio tracking.<br />
-                Everything you need to navigate DEX pairs on Arc Network.
+                Real-time DEX pair analytics built on Arc Network — track liquidity, volume, and swaps.
               </p>
 
               {/* CTA */}
-              <div className="flex justify-center mb-16">
-                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full border border-emerald-500/50 bg-transparent px-8 py-4 text-base font-semibold text-white transition-all hover:bg-emerald-500 hover:text-black" style={{ overflow: "hidden", position: "relative" }}>
-                  Launch App
+              <div className="flex justify-center gap-4 mb-16">
+                <a href="/swap" className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-semibold transition-all hover:-translate-y-0.5" style={{ background: "linear-gradient(135deg, #10b981, #5ee9b5)", boxShadow: "0 4px 20px rgba(16, 185, 129, 0.3)", color: "#000" }}>
+                  Start Swapping
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
+                    <path d="M5 12h14M13 5l7 7-7 7" />
+                  </svg>
+                </a>
+                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full border border-emerald-500/50 bg-transparent px-8 py-4 text-base font-semibold text-white transition-all hover:bg-emerald-500/10">
+                  Explore Pairs
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
                     <path d="M5 12h14M13 5l7 7-7 7" />
                   </svg>
