@@ -97,13 +97,12 @@ export function Header({ active, showTicker = true, showFaucet = true }: { activ
 
           {/* Right — CTA + Wallet */}
           <div className="flex items-center gap-3 z-10">
-            <Link
-              href="/pulse"
-              className="hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors"
+            <div
+              className="hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors cursor-default"
             >
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
               <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-400">Testnet Live</span>
-            </Link>
+            </div>
             {showFaucet && (
             <a
               href="https://faucet.circle.com/"
