@@ -11,17 +11,17 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Aperture — DEX Scanner for Arc™",
-  description: "See liquidity on Arc. Real-time DEX pair scanner for Arc network — track pairs, liquidity, volume, and transactions.",
-  keywords: ["Arc", "DEX", "scanner", "liquidity", "pairs", "DeFi", "blockchain"],
+  title: "Aperture — DEX Scanner",
+  description: "Aperture is a real-time DEX pair scanner built on Arc Network. Track pairs, liquidity, volume, and transactions.",
+  keywords: ["Aperture", "DEX", "scanner", "liquidity", "pairs", "DeFi", "Arc Network"],
   icons: {
     icon: "/aperture-logo.svg",
     shortcut: "/aperture-logo.svg",
     apple: "/aperture-logo.svg",
   },
   openGraph: {
-    title: "Aperture — DEX Scanner for Arc™",
-    description: "See liquidity on Arc. Real-time DEX pair scanner for Arc network.",
+    title: "Aperture — DEX Scanner",
+    description: "Aperture is a real-time DEX pair scanner built on Arc Network.",
     type: "website",
   },
 };

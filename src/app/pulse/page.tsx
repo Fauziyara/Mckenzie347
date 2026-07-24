@@ -296,7 +296,7 @@ export default function PulsePage() {
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Arc Pulse</h1>
+            <h1 className="text-2xl font-bold text-foreground">Aperture Pulse</h1>
             <p className="text-sm text-muted-foreground">
               Real-time DEX activity feed
             </p>

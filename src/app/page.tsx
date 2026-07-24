@@ -45,16 +45,16 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              Arc Testnet Live
+              Arc Network — Testnet Live
             </div>
             <h1 className="text-3xl sm:text-5xl font-bold tracking-tight mb-3">
               Discover & Trade{" "}
               <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-                Arc Tokens
+                DEX Pairs
               </span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-xl mx-auto">
-              Real-time analytics on-chain swaps and portfolio tracking for the Arc ecosystem
+              Real-time DEX pair analytics built on Arc Network — track liquidity volume and swaps
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a

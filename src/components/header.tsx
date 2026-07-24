@@ -20,26 +20,26 @@ export function Header({ active }: { active?: string }) {
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="w-full flex h-12 items-center justify-between px-4">
           <div className="flex items-center gap-6">
-            {/* Logo: Aperture | separator | Arc */}
+            {/* Logo: Aperture (primary) | separator | Arc (infrastructure) */}
             <a href="/" className="flex items-center gap-2.5">
-              {/* Aperture logo — The Aperture Orbit */}
+              {/* Aperture logo — primary brand */}
               <Image
                 src="/aperture-logo.svg"
                 alt="Aperture"
-                width={24}
-                height={24}
+                width={32}
+                height={32}
                 priority
               />
               <span className="text-base font-bold tracking-tight">Aperture</span>
               {/* Separator */}
-              <span className="h-4 w-px bg-border mx-0.5" />
-              {/* Arc logo — official from Circle Brand Kit */}
+              <span className="h-5 w-px bg-border mx-1" />
+              {/* Arc™ logo — infrastructure, smaller than Aperture */}
               <Image
                 src="/arc-logo-official.svg"
                 alt="Arc™ — Arc is a trademark of Circle Internet Group, Inc."
-                width={72}
-                height={25}
-                className="opacity-80"
+                width={52}
+                height={18}
+                className="opacity-60"
                 priority
               />
             </a>

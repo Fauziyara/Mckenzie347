@@ -35,7 +35,7 @@ const isBrowser = typeof window !== "undefined";
 // Wagmi adapter untuk Reown AppKit
 export const wagmiAdapter = new WagmiAdapter({
   networks: [arcTestnet],
-  projectId: "arc-dashboard-testnet",
+  projectId: "aperture-dex-scanner",
   ssr: true,
   storage: createStorage({
     storage: isBrowser ? window.localStorage : (noopStorage as any),
@@ -45,16 +45,16 @@ export const wagmiAdapter = new WagmiAdapter({
   },
 });
 
-// Create AppKit instance
+// Create AppKit instance — Aperture branding (NOT Arc)
 export const appKit = createAppKit({
   adapters: [wagmiAdapter],
   networks: [arcTestnet],
-  projectId: "arc-dashboard-testnet",
+  projectId: "aperture-dex-scanner",
   metadata: {
-    name: "Arc Dashboard",
-    description: "Arc Network Dashboard — DEX Scanner & Analytics",
-    url: "https://arc-dashboard.vercel.app",
-    icons: ["https://arc.network/favicon.ico"],
+    name: "Aperture",
+    description: "Aperture — DEX Scanner built on Arc Network",
+    url: "https://aperture.app",
+    icons: ["/aperture-logo.svg"],
   },
   features: {
     analytics: false,
@@ -63,7 +63,7 @@ export const appKit = createAppKit({
   },
   themeMode: "dark",
   themeVariables: {
-    "--w3m-accent": "#10b981", // emerald-500
+    "--w3m-accent": "#10b981",
     "--w3m-border-radius-master": "2px",
   },
 });
