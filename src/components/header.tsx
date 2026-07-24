@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
 
 const navItems = [
-  { href: "/", label: "Explore" },
+  { href: "/explore", label: "Explore" },
   { href: "/pulse", label: "Pulse" },
   { href: "/pelacak", label: "Tracker" },
   { href: "/portofolio", label: "Portfolio" },
