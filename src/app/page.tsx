@@ -102,7 +102,7 @@ export default function LandingPage() {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-white/50 text-base sm:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-white/50 text-sm sm:text-base mb-10 max-w-3xl mx-auto leading-relaxed">
                 Real-time DEX pair analytics built on Arc Network — track liquidity, volume, and swaps.
               </p>
 
