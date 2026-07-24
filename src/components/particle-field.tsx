@@ -14,12 +14,13 @@ export function ParticleField() {
     let animationId: number;
     let particles: Particle[] = [];
 
-    // Aperture emerald palette — green, teal, orange accent
+    // Mostly white with few emerald + orange accents — like distant stars
     const colors = [
-      { r: 16, g: 185, b: 129 },    // #10b981 emerald
-      { r: 20, g: 184, b: 166 },    // #14b8a6 teal
-      { r: 94, g: 234, b: 181 },    // #5ee9b5 light emerald
-      { r: 249, g: 115, b: 22 },    // #f97316 orange accent
+      { r: 255, g: 255, b: 255 },    // white (dominant)
+      { r: 255, g: 255, b: 255 },    // white
+      { r: 255, g: 255, b: 255 },    // white
+      { r: 16, g: 185, b: 129 },     // emerald (rare)
+      { r: 249, g: 115, b: 22 },     // orange (rare)
     ];
 
     type Particle = {
