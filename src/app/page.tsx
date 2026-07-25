@@ -1,387 +1,1927 @@
 "use client";
 
+import { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ParticleField } from "@/components/particle-field";
 import { mockPairs } from "@/lib/mock-data";
 import { formatUsd } from "@/lib/format";
 import { Reveal } from "@/components/reveal";
-import { useState } from "react";
 
-const stats = [
-  { value: "0%", label: "Downtime", sub: "99.9% uptime SLA" },
-  { value: "12K+", label: "Pairs Tracked", sub: "Across Arc Network" },
-  { value: "0.3s", label: "Latency", sub: "Real-time indexing" },
-  { value: "24/7", label: "Monitoring", sub: "Always watching" },
-];
+/* ──────────────────────────────────────────────────────────────────────────
+   MintWeb3 Framer template clone — adapted for "Aperture" DEX Scanner.
+   Colors are inlined to guarantee an exact palette match.
+   ────────────────────────────────────────────────────────────────────────── */
 
-const features = [
-  { icon: "cube", title: "Immutable Ledger", desc: "Every swap, liquidity change, and price movement is permanently recorded on Arc's public ledger." },
-  { icon: "verify", title: "Math-Based Proof", desc: "Cryptographic verification ensures all pair data is accurate and tamper-proof." },
-  { icon: "global", title: "Global Consensus", desc: "Decentralized validation across nodes — no single point of failure." },
-  { icon: "route", title: "Cryptographic Routing", desc: "Securely routing assets through validated liquidity pools." },
-  { icon: "bolt", title: "Sub-second Finality", desc: "Instant transaction settlement across global rails." },
-  { icon: "bridge", title: "Omni-chain Bridging", desc: "Syncing assets perfectly across protocols and chains." },
-];
+const COLORS = {
+  baseBg: "#0f0807",
+  secondaryBg: "#363030",
+  accent: "#ec5c33",
+  textPrimary: "#ffffff",
+  textSecondary: "#fffcf7",
+  textMuted: "#5d5958",
+  cream: "#f8ebe5",
+  creamInk: "#0f0807",
+};
 
-const securityPoints = [
-  { label: "Cold Storage", value: "100%" },
-  { label: "HSM Nodes", value: "24" },
-  { label: "Multi-Sig", value: "5/7" },
-  { label: "Jurisdictions", value: "12" },
-];
+const HEADING_FONT = "'Space Grotesk', 'Open Runde', Inter, sans-serif";
+const BODY_FONT = "Inter, sans-serif";
 
-const community = [
-  { name: "X / Twitter", handle: "@aperture_dex", members: "Latest updates, pair alerts, and announcements", icon: "x" },
-  { name: "Discord", handle: "discord.gg/aperture", members: "Community support, discussions, and direct assistance", icon: "discord" },
-  { name: "Telegram", handle: "t.me/aperture_dex", members: "Real-time updates, support channels, and community chat", icon: "telegram" },
-  { name: "GitHub", handle: "github.com/aperture", members: "Open-source tools, SDKs, and developer resources", icon: "github" },
-];
+/* ── small decorative helpers ─────────────────────────────────────────── */
 
-const testimonials = [
-  { quote: "Aperture provided the real-time analytics and deterministic finality we were searching for. Their DEX scanner redefined how we track liquidity.", name: "Michael Chen", role: "CTO, Sentinel Capital" },
-  { quote: "Integrating Aperture's data elevated our approach to decentralized trading. The seamless on-chain operations are unmatched.", name: "Aisha Malik", role: "Lead Blockchain Engineer" },
-  { quote: "Aperture's deterministic finality and liquidity solutions empowered us to optimize asset allocation across pairs.", name: "Louis Ramirez", role: "Head of Product Development" },
-];
+const CRYPTO_LOGOS = ["ETH", "USDC", "SOL", "WBTC", "ARB"] as const;
 
-const faqs = [
-  { q: "Is Aperture backed by real on-chain data?", a: "Yes. Aperture indexes real-time data directly from Arc Network's public ledger. Every pair, swap, and liquidity change is verified on-chain." },
-  { q: "How does Aperture verify total volume?", a: "Aperture uses cryptographic proofs embedded in Arc's protocol to ensure that volume data matches actual on-chain transactions. No estimates, no approximations." },
-  { q: "How does Aperture handle network congestion?", a: "Aperture dynamically adjusts indexing throughput using adaptive parameters. When demand spikes, the system prioritizes critical pair data to maintain sub-second latency." },
-  { q: "What defines Aperture's security architecture?", a: "Aperture's security is built on a Zero-Trust framework, combining cryptographic verification, decentralized consensus, and institutional-grade infrastructure." },
-  { q: "Can I audit the Aperture protocol?", a: "Yes. Aperture is fully transparent. All indexing logic, pair calculations, and data pipelines are open to independent audit." },
-  { q: "How does Aperture bridge legacy finance?", a: "Aperture connects traditional financial systems with decentralized protocols through secure interoperability layers on Arc Network." },
-];
-
-function FeatureIcon({ name }: { name: string }) {
-  const icons: Record<string, React.ReactNode> = {
-    cube: <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />,
-    verify: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
-    global: <><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></>,
-    route: <><circle cx="6" cy="19" r="3" /><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" /><circle cx="18" cy="5" r="3" /></>,
-    bolt: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
-    bridge: <path d="M6 9V3h12v6M6 18v3h12v-3M3 12h18M6 9c0 3 6 3 6 3s6 0 6-3" />,
-  };
+function PixelColumn() {
+  // cascading pixelated squares — 8px each
+  const squares = Array.from({ length: 18 });
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      {icons[name] || icons.cube}
-    </svg>
-  );
-}
-
-function SocialIcon({ name }: { name: string }) {
-  const icons: Record<string, React.ReactNode> = {
-    x: <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />,
-    discord: <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.056c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />,
-    telegram: <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.751-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />,
-    github: <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />,
-  };
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-      {icons[name] || icons.x}
-    </svg>
-  );
-}
-
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-white/5">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between py-5 text-left transition-colors hover:text-emerald-400"
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 14,
+      }}
+      aria-hidden
+    >
+      {squares.map((_, i) => {
+        const stagger = Math.abs(i - 8);
+        return (
+          <div
+            key={i}
+            style={{
+              width: 8,
+              height: 8,
+              background:
+                i % 3 === 0
+                  ? COLORS.accent
+                  : i % 3 === 1
+                  ? COLORS.creamInk
+                  : "rgba(15,8,7,0.35)",
+              opacity: Math.max(0.15, 1 - stagger * 0.08),
+            }}
+          />
+        );
+      })}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          marginTop: 6,
+        }}
       >
-        <span className="text-sm font-medium pr-4">{q}</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </button>
-      {open && (
-        <div className="pb-5 text-sm leading-relaxed opacity-60 transition-all">
-          {a}
-        </div>
-      )}
+        {CRYPTO_LOGOS.map((sym) => (
+          <div
+            key={sym}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              border: `1px solid rgba(15,8,7,0.25)`,
+              background: "rgba(255,255,255,0.55)",
+              color: COLORS.creamInk,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: BODY_FONT,
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: 0.4,
+            }}
+          >
+            {sym}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-export default function Home() {
-  const topPair = mockPairs[0];
-  const totalVolume = mockPairs.reduce((a, p) => a + p.volume24h, 0);
+function CrosshatchBg({ color = COLORS.cream }: { color?: string }) {
+  return (
+    <div
+      aria-hidden
+      style={{
+        position: "absolute",
+        inset: 0,
+        backgroundColor: color,
+        backgroundImage:
+          "linear-gradient(rgba(15,8,7,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(15,8,7,0.05) 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+    />
+  );
+}
+
+function SectionDivider() {
+  return (
+    <div
+      style={{
+        height: 1,
+        width: "100%",
+        background:
+          "linear-gradient(90deg, transparent, rgba(255,252,247,0.18), transparent)",
+      }}
+    />
+  );
+}
+
+/* ── header ──────────────────────────────────────────────────────────── */
+
+function MintHeader() {
+  const navLeft = ["Home", "About", "Security", "Contact"];
+  return (
+    <header
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        background: "rgba(15,8,7,0.85)",
+        backdropFilter: "blur(12px)",
+        borderBottom: `1px solid rgba(255,252,247,0.08)`,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1280,
+          margin: "0 auto",
+          padding: "16px 32px",
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+          gap: 24,
+        }}
+      >
+        {/* left nav */}
+        <nav
+          style={{
+            display: "flex",
+            gap: 28,
+            fontFamily: BODY_FONT,
+            fontSize: 14,
+            color: COLORS.textSecondary,
+          }}
+        >
+          {navLeft.map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              style={{
+                color: COLORS.textSecondary,
+                textDecoration: "none",
+                opacity: 0.8,
+                transition: "opacity 0.2s, color 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.color = COLORS.accent;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "0.8";
+                e.currentTarget.style.color = COLORS.textSecondary;
+              }}
+            >
+              {item}
+            </a>
+          ))}
+        </nav>
+
+        {/* center logo */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            fontFamily: HEADING_FONT,
+            fontWeight: 700,
+            fontSize: 20,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              width: 10,
+              height: 10,
+              background: COLORS.accent,
+              borderRadius: 2,
+              transform: "rotate(45deg)",
+            }}
+          />
+          <span style={{ color: COLORS.accent }}>Aperture</span>
+        </div>
+
+        {/* right */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            justifyContent: "flex-end",
+          }}
+        >
+          <button
+            aria-label="Search"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: COLORS.textSecondary,
+              cursor: "pointer",
+              padding: 4,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="11"
+                cy="11"
+                r="7"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <line
+                x1="16.5"
+                y1="16.5"
+                x2="21"
+                y2="21"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+          <button
+            style={{
+              fontFamily: BODY_FONT,
+              fontSize: 14,
+              color: COLORS.textSecondary,
+              background: "transparent",
+              border: `1px solid ${COLORS.textSecondary}`,
+              borderRadius: 999,
+              padding: "9px 20px",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = COLORS.textSecondary;
+              e.currentTarget.style.color = COLORS.baseBg;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = COLORS.textSecondary;
+            }}
+          >
+            Explore Pairs
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ── hero ────────────────────────────────────────────────────────────── */
+
+function Hero() {
+  return (
+    <section
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        background: COLORS.cream,
+        color: COLORS.creamInk,
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <CrosshatchBg />
+
+      {/* left decorative column */}
+      <div
+        style={{
+          position: "absolute",
+          left: 64,
+          top: 0,
+          bottom: 0,
+          display: "flex",
+          alignItems: "center",
+          zIndex: 2,
+        }}
+        aria-hidden
+      >
+        <PixelColumn />
+      </div>
+
+      {/* right decorative column */}
+      <div
+        style={{
+          position: "absolute",
+          right: 64,
+          top: 0,
+          bottom: 0,
+          display: "flex",
+          alignItems: "center",
+          zIndex: 2,
+        }}
+        aria-hidden
+      >
+        <PixelColumn />
+      </div>
+
+      {/* center content */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 3,
+          maxWidth: 760,
+          textAlign: "center",
+          padding: "120px 32px",
+          fontFamily: BODY_FONT,
+        }}
+      >
+        <Reveal>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "rgba(15,8,7,0.06)",
+              border: "1px solid rgba(15,8,7,0.12)",
+              borderRadius: 999,
+              padding: "6px 14px",
+              fontSize: 12,
+              fontWeight: 500,
+              color: COLORS.creamInk,
+              marginBottom: 32,
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 10v4h4l5 5V5L7 10H3z"
+                fill="currentColor"
+              />
+              <path
+                d="M16 8a5 5 0 010 8"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                fill="none"
+              />
+            </svg>
+            Block 845,231 — 12 Active Pairs
+          </div>
+        </Reveal>
+
+        <Reveal delay={100}>
+          <h1
+            style={{
+              fontFamily: HEADING_FONT,
+              fontWeight: 700,
+              fontSize: "clamp(40px, 6vw, 72px)",
+              lineHeight: 1.04,
+              letterSpacing: "-0.03em",
+              color: COLORS.creamInk,
+              margin: 0,
+            }}
+          >
+            The Foundation Of
+            <br />
+            DEX Intelligence
+          </h1>
+        </Reveal>
+
+        <Reveal delay={200}>
+          <p
+            style={{
+              fontFamily: BODY_FONT,
+              fontSize: 17,
+              lineHeight: 1.6,
+              color: "rgba(15,8,7,0.7)",
+              maxWidth: 560,
+              margin: "28px auto 0",
+            }}
+          >
+            A transparent, decentralized DEX scanner built on Arc Network —
+            designed to serve as the immutable foundation for real-time pair
+            analytics and on-chain swaps.
+          </p>
+        </Reveal>
+
+        <Reveal delay={300}>
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              justifyContent: "center",
+              marginTop: 40,
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              style={{
+                fontFamily: BODY_FONT,
+                fontSize: 15,
+                fontWeight: 600,
+                color: COLORS.textPrimary,
+                background: COLORS.accent,
+                border: "none",
+                borderRadius: 999,
+                padding: "14px 28px",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                boxShadow: "0 8px 24px rgba(236,92,51,0.3)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              Start Exploring
+            </button>
+            <button
+              style={{
+                fontFamily: BODY_FONT,
+                fontSize: 15,
+                fontWeight: 600,
+                color: COLORS.creamInk,
+                background: "transparent",
+                border: `1px solid ${COLORS.creamInk}`,
+                borderRadius: 999,
+                padding: "14px 28px",
+                cursor: "pointer",
+                transition: "background 0.2s, color 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = COLORS.creamInk;
+                e.currentTarget.style.color = COLORS.cream;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = COLORS.creamInk;
+              }}
+            >
+              Read Docs
+            </button>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ── trusted by ──────────────────────────────────────────────────────── */
+
+function TrustedBy() {
+  const brands = ["Arc Network", "Circle", "USDC", "WETH", "SOL"];
+  return (
+    <section
+      style={{
+        background: COLORS.baseBg,
+        padding: "64px 32px",
+        fontFamily: BODY_FONT,
+      }}
+    >
+      <Reveal>
+        <p
+          style={{
+            textAlign: "center",
+            color: COLORS.textMuted,
+            fontSize: 13,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            margin: 0,
+          }}
+        >
+          Trusted by the global DEX ecosystem
+        </p>
+      </Reveal>
+      <Reveal delay={120}>
+        <div
+          style={{
+            display: "flex",
+            gap: 64,
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 32,
+            flexWrap: "wrap",
+          }}
+        >
+          {brands.map((b) => (
+            <span
+              key={b}
+              style={{
+                fontFamily: HEADING_FONT,
+                fontSize: 20,
+                fontWeight: 600,
+                color: COLORS.textMuted,
+                opacity: 0.7,
+                letterSpacing: "-0.01em",
+                transition: "opacity 0.2s, color 0.2s",
+                cursor: "default",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.color = COLORS.textSecondary;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "0.7";
+                e.currentTarget.style.color = COLORS.textMuted;
+              }}
+            >
+              {b}
+            </span>
+          ))}
+        </div>
+      </Reveal>
+      <div style={{ marginTop: 64 }}>
+        <SectionDivider />
+      </div>
+    </section>
+  );
+}
+
+/* ── feature section ─────────────────────────────────────────────────── */
+
+function FeatureSection() {
+  const pair = mockPairs[0];
+  const tags = ["Immutable Ledger", "Math-Based Proof", "Global Consensus"];
+  return (
+    <section
+      id="about"
+      style={{
+        background: COLORS.baseBg,
+        padding: "120px 32px",
+        fontFamily: BODY_FONT,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1180,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 80,
+          alignItems: "center",
+        }}
+      >
+        <Reveal>
+          <div>
+            <h2
+              style={{
+                fontFamily: HEADING_FONT,
+                fontSize: "clamp(32px, 4vw, 48px)",
+                lineHeight: 1.08,
+                letterSpacing: "-0.03em",
+                color: COLORS.textPrimary,
+                margin: 0,
+              }}
+            >
+              The Foundation Of Digital Sovereignty
+            </h2>
+            <p
+              style={{
+                color: COLORS.textMuted,
+                fontSize: 16,
+                lineHeight: 1.7,
+                marginTop: 24,
+                maxWidth: 460,
+              }}
+            >
+              Aperture runs on Arc Network's mathematically proven consensus —
+              every pair, every swap, every liquidity event is recorded to an
+              immutable ledger that no single party can rewrite.
+            </p>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                flexWrap: "wrap",
+                marginTop: 28,
+              }}
+            >
+              {tags.map((t) => (
+                <span
+                  key={t}
+                  style={{
+                    fontSize: 12,
+                    color: COLORS.textSecondary,
+                    background: "rgba(236,92,51,0.1)",
+                    border: `1px solid rgba(236,92,51,0.3)`,
+                    borderRadius: 999,
+                    padding: "6px 14px",
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+            <a
+              href="#security"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                marginTop: 32,
+                color: COLORS.accent,
+                textDecoration: "none",
+                fontSize: 15,
+                fontWeight: 600,
+                borderBottom: `1px solid ${COLORS.accent}`,
+                paddingBottom: 2,
+              }}
+            >
+              Explore Security
+              <span aria-hidden>→</span>
+            </a>
+          </div>
+        </Reveal>
+
+        <Reveal delay={150}>
+          <div
+            style={{
+              background: COLORS.secondaryBg,
+              borderRadius: 20,
+              padding: 28,
+              fontFamily: BODY_FONT,
+              boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 24,
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: COLORS.textMuted,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Live Pair
+                </div>
+                <div
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: COLORS.textPrimary,
+                    fontFamily: HEADING_FONT,
+                    marginTop: 4,
+                  }}
+                >
+                  {pair?.token0?.symbol ?? "ETH"} /{" "}
+                  {pair?.token1?.symbol ?? "USDC"}
+                </div>
+              </div>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  color: COLORS.accent,
+                  background: "rgba(236,92,51,0.12)",
+                  borderRadius: 999,
+                  padding: "4px 10px",
+                }}
+              >
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: COLORS.accent,
+                  }}
+                />
+                LIVE
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 16,
+              }}
+            >
+              {[
+                { label: "Volume 24h", value: formatUsd(pair?.volume24h ?? 0) },
+                {
+                  label: "Liquidity",
+                  value: formatUsd(pair?.liquidityUsd ?? 0),
+                },
+                { label: "Tx 24h", value: `${pair?.txCount24h ?? 0}` },
+                {
+                  label: "Fee Tier",
+                  value: `0.3%`,
+                },
+                {
+                  label: "Price Δ 24h",
+                  value: `${(pair?.priceChange24h ?? 0).toFixed(2)}%`,
+                },
+                {
+                  label: "Market Cap",
+                  value: formatUsd(pair?.marketCapUsd ?? 0),
+                },
+              ].map((row) => (
+                <div
+                  key={row.label}
+                  style={{
+                    background: "rgba(255,252,247,0.04)",
+                    borderRadius: 12,
+                    padding: "14px 16px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: COLORS.textMuted,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {row.label}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 600,
+                      color: COLORS.textPrimary,
+                      marginTop: 6,
+                      fontFamily: HEADING_FONT,
+                    }}
+                  >
+                    {row.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ── stats bar ───────────────────────────────────────────────────────── */
+
+function StatsBar() {
+  const stats = [
+    { value: "12K+", label: "Pairs Tracked" },
+    { value: "0.3s", label: "Latency" },
+    { value: "99.9%", label: "Uptime" },
+    { value: "24/7", label: "Monitoring" },
+  ];
+  return (
+    <section
+      style={{
+        background: COLORS.baseBg,
+        padding: "96px 32px",
+        borderTop: `1px solid rgba(255,252,247,0.06)`,
+        borderBottom: `1px solid rgba(255,252,247,0.06)`,
+        fontFamily: BODY_FONT,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1180,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: 32,
+        }}
+      >
+        {stats.map((s, i) => (
+          <Reveal key={s.label} delay={i * 100}>
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  fontFamily: HEADING_FONT,
+                  fontSize: "clamp(40px, 5vw, 64px)",
+                  fontWeight: 700,
+                  color: COLORS.accent,
+                  letterSpacing: "-0.03em",
+                  lineHeight: 1,
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                style={{
+                  marginTop: 12,
+                  fontSize: 13,
+                  color: COLORS.textMuted,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {s.label}
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── security grid ───────────────────────────────────────────────────── */
+
+function SecurityGrid() {
+  const cards = [
+    {
+      title: "Cryptographic Routing",
+      desc: "Securely moving assets through validated nodes.",
+      icon: (
+        <path
+          d="M12 2l8 4v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-4z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+      ),
+    },
+    {
+      title: "Sub-second Finality",
+      desc: "Instant transaction settlement across global rails.",
+      icon: (
+        <>
+          <circle
+            cx="12"
+            cy="12"
+            r="9"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          />
+          <path
+            d="M12 7v5l3 2"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            fill="none"
+          />
+        </>
+      ),
+    },
+    {
+      title: "Omni-chain Bridging",
+      desc: "Syncing assets perfectly across protocols.",
+      icon: (
+        <>
+          <path
+            d="M4 12h14"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+          <path
+            d="M13 7l5 5-5 5"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+        </>
+      ),
+    },
+    {
+      title: "Algorithmic Auditing",
+      desc: "Real-time verification of every supply change.",
+      icon: (
+        <>
+          <rect
+            x="4"
+            y="4"
+            width="16"
+            height="16"
+            rx="2"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          />
+          <path
+            d="M8 12l3 3 5-6"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+        </>
+      ),
+    },
+    {
+      title: "Compliance Automations",
+      desc: "Built-in checks for regulatory standards.",
+      icon: (
+        <>
+          <path
+            d="M6 4h12v4a6 6 0 01-12 0V4z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20h6M12 14v6"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+        </>
+      ),
+    },
+    {
+      title: "Collaborative Custody",
+      desc: "Multi-sig infrastructure for institutional teams.",
+      icon: (
+        <>
+          <circle
+            cx="8"
+            cy="10"
+            r="3"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          />
+          <circle
+            cx="16"
+            cy="10"
+            r="3"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          />
+          <path
+            d="M3 20c0-3 2.5-5 5-5s5 2 5 5M11 20c0-3 2.5-5 5-5s5 2 5 5"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </>
+      ),
+    },
+  ];
 
   return (
-    <div className="relative min-h-screen landing-bg overflow-hidden">
-      <ParticleField />
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
-        <div className="landing-glow absolute top-0 left-1/2 -translate-x-1/2" />
-        <div className="landing-glow-side-1 absolute top-0 left-0" />
-        <div className="landing-glow-side-2 absolute top-0 right-0" />
+    <section
+      id="security"
+      style={{
+        background: COLORS.baseBg,
+        padding: "120px 32px",
+        fontFamily: BODY_FONT,
+      }}
+    >
+      <Reveal>
+        <h2
+          style={{
+            fontFamily: HEADING_FONT,
+            fontSize: "clamp(32px, 4vw, 48px)",
+            letterSpacing: "-0.03em",
+            color: COLORS.textPrimary,
+            textAlign: "center",
+            margin: "0 auto 16px",
+            maxWidth: 720,
+          }}
+        >
+          Institutional-Grade Security Infrastructure
+        </h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <p
+          style={{
+            textAlign: "center",
+            color: COLORS.textMuted,
+            fontSize: 16,
+            maxWidth: 560,
+            margin: "0 auto 64px",
+          }}
+        >
+          Every layer of the Aperture stack is engineered for deterministic
+          guarantees and auditability.
+        </p>
+      </Reveal>
+
+      <div
+        style={{
+          maxWidth: 1180,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 24,
+        }}
+      >
+        {cards.map((c, i) => (
+          <Reveal key={c.title} delay={i * 80}>
+            <div
+              style={{
+                background: COLORS.secondaryBg,
+                borderRadius: 16,
+                padding: 32,
+                height: "100%",
+                transition: "transform 0.3s, border-color 0.3s",
+                border: "1px solid rgba(255,252,247,0.04)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.borderColor =
+                  "rgba(236,92,51,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.borderColor =
+                  "rgba(255,252,247,0.04)";
+              }}
+            >
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 10,
+                  background: "rgba(236,92,51,0.12)",
+                  color: COLORS.accent,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 20,
+                }}
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  {c.icon}
+                </svg>
+              </div>
+              <h3
+                style={{
+                  fontFamily: HEADING_FONT,
+                  fontSize: 19,
+                  fontWeight: 600,
+                  color: COLORS.textPrimary,
+                  margin: "0 0 10px",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                {c.title}
+              </h3>
+              <p
+                style={{
+                  color: COLORS.textMuted,
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                {c.desc}
+              </p>
+            </div>
+          </Reveal>
+        ))}
       </div>
+    </section>
+  );
+}
 
-      <div className="relative" style={{ zIndex: 1 }}>
-        <Header showTicker={false} showFaucet={false} />
-        <main className="w-full flex-1">
-          {/* ===== HERO — MintWeb3 style ===== */}
-          <section className="relative min-h-screen flex items-center justify-center px-4 pt-20">
-            <div className="max-w-4xl mx-auto text-center">
-              {/* Block ticker */}
-              <Reveal delay={0}>
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-xs font-mono landing-text-subtle mb-8" style={{ backdropFilter: "blur(14px)" }}>
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-                  Block 845,231 — {mockPairs.length} Active Pairs
-                </div>
-              </Reveal>
+/* ── security points bar ─────────────────────────────────────────────── */
 
-              {/* Headline — spread letter style like MintWeb3 */}
-              <Reveal delay={100}>
-                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1.1em", letterSpacing: "-0.02em" }}>
-                  The Foundation Of
-                </h1>
-              </Reveal>
-              <Reveal delay={200}>
-                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-8" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1.1em", letterSpacing: "-0.02em" }}>
-                  <span style={{
-                    WebkitTextFillColor: "transparent",
-                    background: "linear-gradient(135deg, #10b981 0%, #5ee9b5 50%, #14b8a6 100%)",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                  }}>
-                    DEX Intelligence
-                  </span>
-                </h1>
-              </Reveal>
-
-              <Reveal delay={300}>
-                <p className="landing-text text-sm sm:text-base mb-10 max-w-xl mx-auto leading-relaxed">
-                  A transparent, decentralized DEX scanner built on Arc Network — designed to serve as the immutable foundation for real-time pair analytics, on-chain swaps, and portfolio tracking.
-                </p>
-              </Reveal>
-
-              <Reveal delay={400}>
-                <div className="flex justify-center gap-4 mb-16">
-                  <a href="/explore" className="group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all hover:-translate-y-0.5" style={{ background: "linear-gradient(135deg, #10b981, #5ee9b5)", boxShadow: "0 4px 24px rgba(16, 185, 129, 0.3)", color: "#000" }}>
-                    Start Exploring
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
-                      <path d="M5 12h14M13 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                  <a href="#security" className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 px-7 py-3.5 text-sm font-semibold landing-text-heading transition-all hover:bg-emerald-500/5">
-                    Read Whitepaper
-                  </a>
-                </div>
-              </Reveal>
+function SecurityPoints() {
+  const items = [
+    { value: "100%", label: "Cold Storage" },
+    { value: "24", label: "HSM Nodes" },
+    { value: "5/7", label: "Multi-Sig" },
+    { value: "12", label: "Jurisdictions" },
+  ];
+  return (
+    <section
+      style={{
+        background: COLORS.baseBg,
+        padding: "48px 32px",
+        borderTop: `1px solid rgba(255,252,247,0.06)`,
+        borderBottom: `1px solid rgba(255,252,247,0.06)`,
+        fontFamily: BODY_FONT,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1180,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: 24,
+        }}
+      >
+        {items.map((it, i) => (
+          <Reveal key={it.label} delay={i * 80}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 12,
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: HEADING_FONT,
+                  fontSize: 36,
+                  fontWeight: 700,
+                  color: COLORS.accent,
+                  letterSpacing: "-0.03em",
+                }}
+              >
+                {it.value}
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  color: COLORS.textMuted,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {it.label}
+              </span>
             </div>
-          </section>
-
-          {/* ===== TRUSTED BY ===== */}
-          <Reveal>
-            <section className="py-12 border-y landing-border">
-              <p className="text-center text-xs tracking-widest uppercase landing-text-muted mb-8">Trusted by the global DEX ecosystem</p>
-              <div className="flex flex-wrap items-center justify-center gap-8 px-4">
-                {["Arc Network", "Circle", "USDC", "WETH", "WBTC", "SOL", "ARB"].map((brand, i) => (
-                  <span key={i} className="text-sm font-bold tracking-wider landing-text-muted" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                    {brand}
-                  </span>
-                ))}
-              </div>
-            </section>
           </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
 
-          {/* ===== FEATURE SPOTLIGHT — alternating layout ===== */}
-          <Reveal>
-            <section className="py-20 sm:py-32 px-4">
-              <div className="max-w-5xl mx-auto">
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                  <div>
-                    <span className="text-xs tracking-widest uppercase landing-text-muted mb-4 block">The Foundation</span>
-                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-6 landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                      Real-time pair analytics, verified on-chain
-                    </h2>
-                    <p className="landing-text-subtle text-sm mb-6 leading-relaxed">
-                      Aperture indexes every liquidity pool, swap, and price movement on Arc Network. No estimates — just deterministic, mathematically verified data.
-                    </p>
-                    <div className="flex flex-wrap gap-3">
-                      <span className="rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-xs landing-text-subtle">Immutable Ledger</span>
-                      <span className="rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-xs landing-text-subtle">Math-Based Proof</span>
-                      <span className="rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-xs landing-text-subtle">Global Consensus</span>
-                    </div>
+/* ── live data ───────────────────────────────────────────────────────── */
+
+function LiveData() {
+  return (
+    <section
+      style={{
+        background: COLORS.baseBg,
+        padding: "120px 32px",
+        fontFamily: BODY_FONT,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1180,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 48,
+          alignItems: "center",
+        }}
+      >
+        <Reveal>
+          <div>
+            <span
+              style={{
+                fontSize: 12,
+                color: COLORS.accent,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                fontWeight: 600,
+              }}
+            >
+              Developer API
+            </span>
+            <h2
+              style={{
+                fontFamily: HEADING_FONT,
+                fontSize: "clamp(30px, 4vw, 44px)",
+                letterSpacing: "-0.03em",
+                color: COLORS.textPrimary,
+                margin: "16px 0 20px",
+              }}
+            >
+              REST & WebSocket APIs with comprehensive SDKs
+            </h2>
+            <p
+              style={{
+                color: COLORS.textMuted,
+                fontSize: 16,
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              Stream every pair update, swap, and liquidity event in real time.
+              Type-safe SDKs for TypeScript, Python, and Rust — all backed by
+              Arc Network's deterministic finality.
+            </p>
+            <div
+              style={{
+                marginTop: 28,
+                background: "#1a0f0e",
+                border: `1px solid rgba(255,252,247,0.08)`,
+                borderRadius: 12,
+                padding: "18px 20px",
+                fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace",
+                fontSize: 14,
+                color: COLORS.textSecondary,
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              <span
+                style={{
+                  display: "flex",
+                  gap: 6,
+                }}
+                aria-hidden
+              >
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: "#ff5f56",
+                  }}
+                />
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: "#ffbd2e",
+                  }}
+                />
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: "#27c93f",
+                  }}
+                />
+              </span>
+              <span>
+                <span style={{ color: COLORS.textMuted }}>$ </span>
+                npm install @aperture/sdk
+              </span>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={150}>
+          <div
+            style={{
+              background: COLORS.secondaryBg,
+              borderRadius: 20,
+              padding: 28,
+              boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 12,
+                color: COLORS.textMuted,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                marginBottom: 18,
+              }}
+            >
+              Live Network Data
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 16,
+              }}
+            >
+              {[
+                { label: "Block Height", value: "845,231" },
+                { label: "BTC / USD", value: "$68,420" },
+                { label: "Hash Rate", value: "612 EH/s" },
+                { label: "Active Pairs", value: "12,847" },
+                { label: "24h Volume", value: "$1.2B" },
+                { label: "Finality", value: "0.3s" },
+              ].map((row) => (
+                <div
+                  key={row.label}
+                  style={{
+                    background: "rgba(255,252,247,0.04)",
+                    borderRadius: 12,
+                    padding: "16px 18px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: COLORS.textMuted,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {row.label}
                   </div>
-                  <div className="rounded-2xl border landing-border p-6 landing-card">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs tracking-widest uppercase landing-text-muted">Live Preview</span>
-                      <span className="text-xs landing-text-subtle font-mono">{topPair.token0.symbol}/{topPair.token1.symbol}</span>
-                    </div>
-                    <div className="text-3xl font-bold landing-text-heading mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                      {formatUsd(topPair.volume24h)}
-                    </div>
-                    <div className="text-xs landing-text-subtle mb-6">24H Volume</div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-xs"><span className="landing-text-muted">Liquidity</span><span className="landing-text-body font-mono">{formatUsd(topPair.liquidityUsd)}</span></div>
-                      <div className="flex justify-between text-xs"><span className="landing-text-muted">Fee Tier</span><span className="landing-text-body font-mono">0.3%</span></div>
-                      <div className="flex justify-between text-xs"><span className="landing-text-muted">Transactions 24H</span><span className="landing-text-body font-mono">{topPair.txCount24h}</span></div>
-                    </div>
+                  <div
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 600,
+                      color: COLORS.textPrimary,
+                      marginTop: 6,
+                      fontFamily: HEADING_FONT,
+                    }}
+                  >
+                    {row.value}
                   </div>
                 </div>
-              </div>
-            </section>
-          </Reveal>
-
-          {/* ===== STATS — big numbers ===== */}
-          <Reveal>
-            <section className="py-20 px-4 border-y landing-border">
-              <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                {stats.map((s, i) => (
-                  <div key={i}>
-                    <div className="text-4xl sm:text-5xl font-bold mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", background: "linear-gradient(135deg, #10b981, #5ee9b5)", WebkitTextFillColor: "transparent", WebkitBackgroundClip: "text", backgroundClip: "text" }}>
-                      {s.value}
-                    </div>
-                    <div className="text-sm font-semibold landing-text-heading mb-1">{s.label}</div>
-                    <div className="text-xs landing-text-muted">{s.sub}</div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </Reveal>
-
-          {/* ===== SECURITY GRID ===== */}
-          <section id="security" className="py-20 sm:py-28 px-4">
-            <Reveal>
-              <div className="max-w-3xl mx-auto text-center mb-16">
-                <span className="text-xs tracking-widest uppercase landing-text-muted mb-4 block">Security Verified Through Absolute Logic</span>
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                  Institutional-grade infrastructure
-                </h2>
-              </div>
-            </Reveal>
-            <div className="max-w-5xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {features.map((f, i) => (
-                <Reveal key={i} delay={i * 80}>
-                  <div className="rounded-xl border landing-border p-6 landing-card transition-all hover:border-emerald-500/30 h-full">
-                    <div className="mb-4 text-emerald-400">
-                      <FeatureIcon name={f.icon} />
-                    </div>
-                    <h3 className="text-lg font-bold mb-2 landing-text-heading" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{f.title}</h3>
-                    <p className="text-xs landing-text-subtle leading-relaxed">{f.desc}</p>
-                  </div>
-                </Reveal>
               ))}
             </div>
-          </section>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-          {/* ===== SECURITY POINTS — horizontal bar ===== */}
-          <Reveal>
-            <section className="py-16 px-4 border-y landing-border">
-              <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                {securityPoints.map((p, i) => (
-                  <div key={i}>
-                    <div className="text-3xl font-bold landing-text-heading mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{p.value}</div>
-                    <div className="text-xs tracking-widest uppercase landing-text-muted">{p.label}</div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </Reveal>
+/* ── community ───────────────────────────────────────────────────────── */
 
-          {/* ===== COMMUNITY ===== */}
-          <section className="py-20 sm:py-28 px-4">
-            <Reveal>
-              <div className="max-w-3xl mx-auto text-center mb-14">
-                <span className="text-xs tracking-widest uppercase landing-text-muted mb-4 block">Leaders in DEX infrastructure</span>
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight landing-text-heading mb-4" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                  Built by the community
-                </h2>
-                <p className="landing-text-subtle text-sm max-w-lg mx-auto">
-                  We follow institutional-grade security protocols and math-based verification to keep your DEX intelligence absolute.
-                </p>
+function Community() {
+  const cards = [
+    {
+      name: "X / Twitter",
+      handle: "@aperture_dex",
+      desc: "Latest updates, pair alerts, and announcements",
+      icon: (
+        <path
+          d="M18 4l-5 6 5 8h-3l-3.5-5.6L7 18H5l5.3-6.4L5 4h3l3.3 5L15 4h3z"
+          fill="currentColor"
+        />
+      ),
+    },
+    {
+      name: "Discord",
+      handle: "discord.gg/aperture",
+      desc: "Community support, discussions, and direct assistance",
+      icon: (
+        <path
+          d="M19 6.5A14 14 0 0015.5 5l-.3.5a11 11 0 014 2.3 13 13 0 00-11 0 11 11 0 014-2.3L12 5A14 14 0 005 6.5 18 18 0 003 16a13 13 0 004 2l.7-1c-.8-.3-1.5-.7-2.2-1.2l.5-.4a12 12 0 0012 0l.5.4c-.7.5-1.4.9-2.2 1.2L17 18a13 13 0 004-2 18 18 0 00-2-9.5zM9.5 14.5c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8zm5 0c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8z"
+          fill="currentColor"
+        />
+      ),
+    },
+    {
+      name: "Telegram",
+      handle: "t.me/aperture_dex",
+      desc: "Real-time updates, support channels, and community chat",
+      icon: (
+        <path
+          d="M21 5L3 11.5l5 1.8 2 5 2.5-3 4.5 3.5L21 5zm-4 2L9 13l-.5 3L7 14l10-7z"
+          fill="currentColor"
+        />
+      ),
+    },
+    {
+      name: "GitHub",
+      handle: "github.com/aperture",
+      desc: "Open-source tools, SDKs, and developer resources",
+      icon: (
+        <path
+          d="M12 2a10 10 0 00-3.2 19.5c.5.1.7-.2.7-.5v-2c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.300-4.6-1.1-4.6-5a4 4 0 011-2.7c-.1-.3-.5-1.3.1-2.7 0 0 .8-.3 2.7 1a9.4 9.4 0 015 0c1.9-1.3 2.7-1 2.7-1 .6 1.4.2 2.4.1 2.7a4 4 0 011 2.7c0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0012 2z"
+          fill="currentColor"
+        />
+      ),
+    },
+  ];
+
+  return (
+    <section
+      style={{
+        background: COLORS.baseBg,
+        padding: "120px 32px",
+        fontFamily: BODY_FONT,
+      }}
+    >
+      <Reveal>
+        <h2
+          style={{
+            fontFamily: HEADING_FONT,
+            fontSize: "clamp(30px, 4vw, 44px)",
+            letterSpacing: "-0.03em",
+            color: COLORS.textPrimary,
+            textAlign: "center",
+            margin: "0 auto 16px",
+          }}
+        >
+          Join The Aperture Community
+        </h2>
+      </Reveal>
+      <Reveal delay={120}>
+        <p
+          style={{
+            textAlign: "center",
+            color: COLORS.textMuted,
+            fontSize: 16,
+            maxWidth: 520,
+            margin: "0 auto 64px",
+          }}
+        >
+          Connect with traders, developers, and the team across every major
+          platform.
+        </p>
+      </Reveal>
+
+      <div
+        style={{
+          maxWidth: 1180,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: 20,
+        }}
+      >
+        {cards.map((c, i) => (
+          <Reveal key={c.name} delay={i * 80}>
+            <div
+              style={{
+                background: COLORS.secondaryBg,
+                borderRadius: 16,
+                padding: 28,
+                height: "100%",
+                transition: "transform 0.3s, border-color 0.3s",
+                border: "1px solid rgba(255,252,247,0.04)",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-4px)";
+                e.currentTarget.style.borderColor =
+                  "rgba(236,92,51,0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.borderColor =
+                  "rgba(255,252,247,0.04)";
+              }}
+            >
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  color: COLORS.accent,
+                  marginBottom: 18,
+                }}
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  {c.icon}
+                </svg>
               </div>
-            </Reveal>
-            <div className="max-w-4xl mx-auto grid sm:grid-cols-2 gap-4">
-              {community.map((c, i) => (
-                <Reveal key={i} delay={i * 80}>
-                  <div className="flex items-center gap-4 rounded-xl border landing-border p-5 landing-card transition-all hover:border-emerald-500/30">
-                    <div className="text-emerald-400 flex-shrink-0">
-                      <SocialIcon name={c.icon} />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold landing-text-heading">{c.name}</div>
-                      <div className="text-xs landing-text-muted font-mono">{c.handle}</div>
-                      <div className="text-xs landing-text-subtle mt-1">{c.members}</div>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
+              <h3
+                style={{
+                  fontFamily: HEADING_FONT,
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: COLORS.textPrimary,
+                  margin: "0 0 6px",
+                }}
+              >
+                {c.name}
+              </h3>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: COLORS.accent,
+                  marginBottom: 12,
+                  fontWeight: 500,
+                }}
+              >
+                {c.handle}
+              </div>
+              <p
+                style={{
+                  color: COLORS.textMuted,
+                  fontSize: 13,
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                {c.desc}
+              </p>
             </div>
-          </section>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
 
-          {/* ===== TESTIMONIALS ===== */}
-          <Reveal>
-            <section className="py-20 px-4 border-y landing-border">
-              <div className="max-w-5xl mx-auto">
-                <div className="grid md:grid-cols-3 gap-6">
-                  {testimonials.map((t, i) => (
-                    <div key={i} className="rounded-xl border landing-border p-6 landing-card">
-                      <p className="text-sm landing-text-body leading-relaxed mb-4 italic">"{t.quote}"</p>
-                      <div>
-                        <div className="text-sm font-semibold landing-text-heading">{t.name}</div>
-                        <div className="text-xs landing-text-muted">{t.role}</div>
-                      </div>
-                    </div>
-                  ))}
+/* ── testimonials ────────────────────────────────────────────────────── */
+
+function Testimonials() {
+  const quotes = [
+    {
+      quote:
+        "Aperture provided the real-time analytics and deterministic finality we were searching for.",
+      name: "Michael Chen",
+      role: "CTO, Sentinel Capital",
+    },
+    {
+      quote:
+        "Integrating Aperture's protocol redefined our approach to decentralized trading.",
+      name: "Aisha Malik",
+      role: "Lead Blockchain Engineer",
+    },
+    {
+      quote:
+        "Aperture's deterministic finality empowered us to optimize asset allocation across pairs.",
+      name: "Louis Ramirez",
+      role: "Head of Product",
+    },
+  ];
+  return (
+    <section
+      style={{
+        background: COLORS.baseBg,
+        padding: "120px 32px",
+        fontFamily: BODY_FONT,
+        borderTop: `1px solid rgba(255,252,247,0.06)`,
+      }}
+    >
+      <Reveal>
+        <h2
+          style={{
+            fontFamily: HEADING_FONT,
+            fontSize: "clamp(30px, 4vw, 44px)",
+            letterSpacing: "-0.03em",
+            color: COLORS.textPrimary,
+            textAlign: "center",
+            margin: "0 auto 64px",
+          }}
+        >
+          Validated By The Sovereign Network
+        </h2>
+      </Reveal>
+
+      <div
+        style={{
+          maxWidth: 1180,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 24,
+        }}
+      >
+        {quotes.map((q, i) => (
+          <Reveal key={q.name} delay={i * 100}>
+            <div
+              style={{
+                background: COLORS.secondaryBg,
+                borderRadius: 16,
+                padding: 32,
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: HEADING_FONT,
+                  fontSize: 48,
+                  color: COLORS.accent,
+                  lineHeight: 0.6,
+                  marginBottom: 12,
+                  opacity: 0.5,
+                }}
+                aria-hidden
+              >
+                "
+              </div>
+              <p
+                style={{
+                  color: COLORS.textSecondary,
+                  fontSize: 16,
+                  lineHeight: 1.7,
+                  margin: "0 0 28px",
+                  flex: 1,
+                }}
+              >
+                {q.quote}
+              </p>
+              <div>
+                <div
+                  style={{
+                    fontFamily: HEADING_FONT,
+                    fontWeight: 600,
+                    color: COLORS.textPrimary,
+                    fontSize: 15,
+                  }}
+                >
+                  {q.name}
+                </div>
+                <div
+                  style={{
+                    color: COLORS.textMuted,
+                    fontSize: 13,
+                    marginTop: 2,
+                  }}
+                >
+                  {q.role}
                 </div>
               </div>
-            </section>
-          </Reveal>
-
-          {/* ===== FAQ ===== */}
-          <section className="py-20 sm:py-28 px-4">
-            <Reveal>
-              <div className="max-w-2xl mx-auto text-center mb-12">
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight landing-text-heading mb-4" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
-                  Frequently Asked Questions
-                </h2>
-              </div>
-            </Reveal>
-            <div className="max-w-2xl mx-auto">
-              {faqs.map((f, i) => (
-                <Reveal key={i} delay={i * 50}>
-                  <FaqItem q={f.q} a={f.a} />
-                </Reveal>
-              ))}
             </div>
-          </section>
-
-          {/* ===== FINAL CTA ===== */}
-          <Reveal>
-            <section className="relative overflow-hidden px-4 py-20 sm:py-28 border-t landing-border text-center">
-              <div className="max-w-3xl mx-auto">
-                <h2 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6 landing-text-heading" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1.1em" }}>
-                  Start Your DEX
-                </h2>
-                <h2 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif", lineHeight: "1.1em" }}>
-                  <span style={{
-                    WebkitTextFillColor: "transparent",
-                    background: "linear-gradient(135deg, #10b981 0%, #5ee9b5 50%, #14b8a6 100%)",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                  }}>
-                    Intelligence Journey
-                  </span>
-                </h2>
-                <p className="landing-text-subtle text-sm mb-8 max-w-lg mx-auto">
-                  Our protocol provides the deterministic finality and institutional-grade security required to navigate DEX pairs with confidence.
-                </p>
-                <a href="/explore" className="group inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-semibold transition-all hover:-translate-y-0.5" style={{ background: "linear-gradient(135deg, #10b981, #5ee9b5)", boxShadow: "0 4px 24px rgba(16, 185, 129, 0.3)", color: "#000" }}>
-                  Get Access
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
-                    <path d="M5 12h14M13 5l7 7-7 7" />
-                  </svg>
-                </a>
-              </div>
-            </section>
           </Reveal>
-        </main>
-        <Footer />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── FAQ accordion ───────────────────────────────────────────────────── */
+
+function FaqItem({
+  q,
+  a,
+  open,
+  onToggle,
+}: {
+  q: string;
+  a: string;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div
+      style={{
+        borderBottom: `1px solid rgba(255,252,247,0.08)`,
+      }}
+    >
+      <button
+        onClick={onToggle}
+        style={{
+          width: "100%",
+          textAlign: "left",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          padding: "24px 0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 16,
+          fontFamily: BODY_FONT,
+          color: COLORS.textPrimary,
+          fontSize: 17,
+          fontWeight: 500,
+        }}
+      >
+        <span>{q}</span>
+        <span
+          style={{
+            color: COLORS.accent,
+            fontSize: 22,
+            transition: "transform 0.3s",
+            transform: open ? "rotate(45deg)" : "rotate(0deg)",
+            flexShrink: 0,
+          }}
+          aria-hidden
+        >
+          +
+        </span>
+      </button>
+      <div
+        style={{
+          maxHeight: open ? 200 : 0,
+          overflow: "hidden",
+          transition: "max-height 0.35s ease",
+        }}
+      >
+        <p
+          style={{
+            color: COLORS.textMuted,
+            fontSize: 15,
+            lineHeight: 1.7,
+            margin: "0 0 24px",
+            paddingRight: 32,
+          }}
+        >
+          {a}
+        </p>
       </div>
     </div>
+  );
+}
+
+function Faq() {
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const faqs = [
+    {
+      q: "Is Aperture backed by real on-chain data?",
+      a: "Yes. Every pair, swap, and liquidity event is read directly from Arc Network's ledger — no off-chain aggregation, no synthetic values. What you see is what the chain produced.",
+    },
+    {
+      q: "How does Aperture verify total volume?",
+      a: "Volume is summed from verified swap events emitted by Arc Network pool contracts. Each event is independently replayable, so any observer can recompute the published totals.",
+    },
+    {
+      q: "How does Aperture handle network congestion?",
+      a: "Arc Network's deterministic finality means there is no mempool backlog in the traditional sense. Aperture streams finalized state at sub-second cadence regardless of network load.",
+    },
+    {
+      q: "What defines Aperture's security architecture?",
+      a: "A combination of cryptographic routing, multi-sig custody, HSM-backed nodes, and algorithmic auditing — every layer independently verifiable and documented in the security model.",
+    },
+    {
+      q: "Can I audit the Aperture protocol?",
+      a: "Yes. The scanner is open-source and every verification routine is published. You can replay any historical pair state and confirm it matches what the UI displayed.",
+    },
+    {
+      q: "How does Aperture bridge legacy finance?",
+      a: "Through compliance automations and institutional custody integrations. Aperture exposes the same pair data to both DeFi-native and TradFi-facing systems without compromising on transparency.",
+    },
+  ];
+  return (
+    <section
+      style={{
+        background: COLORS.baseBg,
+        padding: "120px 32px",
+        fontFamily: BODY_FONT,
+        borderTop: `1px solid rgba(255,252,247,0.06)`,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 760,
+          margin: "0 auto",
+        }}
+      >
+        <Reveal>
+          <h2
+            style={{
+              fontFamily: HEADING_FONT,
+              fontSize: "clamp(30px, 4vw, 44px)",
+              letterSpacing: "-0.03em",
+              color: COLORS.textPrimary,
+              textAlign: "center",
+              margin: "0 auto 64px",
+            }}
+          >
+            Decoding The Future Of DEX Trading
+          </h2>
+        </Reveal>
+        <Reveal delay={100}>
+          <div>
+            {faqs.map((f, i) => (
+              <FaqItem
+                key={f.q}
+                q={f.q}
+                a={f.a}
+                open={openIdx === i}
+                onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+              />
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ── final CTA ───────────────────────────────────────────────────────── */
+
+function FinalCta() {
+  return (
+    <section
+      style={{
+        position: "relative",
+        background: COLORS.baseBg,
+        padding: "140px 32px",
+        textAlign: "center",
+        fontFamily: BODY_FONT,
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          opacity: 0.4,
+          pointerEvents: "none",
+        }}
+        aria-hidden
+      >
+        <ParticleField />
+      </div>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: 720,
+          margin: "0 auto",
+        }}
+      >
+        <Reveal>
+          <h2
+            style={{
+              fontFamily: HEADING_FONT,
+              fontSize: "clamp(36px, 5vw, 60px)",
+              letterSpacing: "-0.03em",
+              color: COLORS.textPrimary,
+              margin: 0,
+              lineHeight: 1.05,
+            }}
+          >
+            Start Your Aperture Integration
+          </h2>
+        </Reveal>
+        <Reveal delay={120}>
+          <p
+            style={{
+              color: COLORS.textMuted,
+              fontSize: 17,
+              lineHeight: 1.7,
+              margin: "24px auto 40px",
+              maxWidth: 560,
+            }}
+          >
+            Our protocol provides the deterministic finality and
+            institutional-grade security required to navigate DEX pairs with
+            confidence.
+          </p>
+        </Reveal>
+        <Reveal delay={220}>
+          <button
+            style={{
+              fontFamily: BODY_FONT,
+              fontSize: 16,
+              fontWeight: 600,
+              color: COLORS.textPrimary,
+              background: COLORS.accent,
+              border: "none",
+              borderRadius: 999,
+              padding: "16px 36px",
+              cursor: "pointer",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              boxShadow: "0 12px 32px rgba(236,92,51,0.35)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            Get Access
+          </button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ── page ────────────────────────────────────────────────────────────── */
+
+export default function LandingMintClone() {
+  return (
+    <main
+      style={{
+        background: COLORS.baseBg,
+        color: COLORS.textSecondary,
+        fontFamily: BODY_FONT,
+        minHeight: "100vh",
+      }}
+    >
+      <Header showTicker={false} showFaucet={false} />
+      <MintHeader />
+
+      <Hero />
+      <TrustedBy />
+      <FeatureSection />
+      <StatsBar />
+      <SecurityGrid />
+      <SecurityPoints />
+      <LiveData />
+      <Community />
+      <Testimonials />
+      <Faq />
+      <FinalCta />
+
+      <Footer />
+    </main>
   );
 }
