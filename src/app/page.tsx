@@ -321,19 +321,19 @@ export default function LandingPage() {
 
           {/* Center: Nav links */}
           <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-            <a href="#explore" style={navLinkStyle}>Explore</a>
-            <a href="#pairs" style={navLinkStyle}>Pairs</a>
-            <a href="#api" style={navLinkStyle}>API</a>
-            <a href="#docs" style={navLinkStyle}>Docs</a>
+            <a href="/explore" style={navLinkStyle}>Explore</a>
+            <a href="/explore" style={navLinkStyle}>Pairs</a>
+            <a href="/explore" style={navLinkStyle}>API</a>
+            <a href="https://docs.aperture.xyz" style={navLinkStyle}>Docs</a>
           </div>
 
           {/* Right: Auth */}
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <a href="#signin" style={{ ...navLinkStyle, textDecoration: "none" }}>
+            <a href="/explore" style={{ ...navLinkStyle, textDecoration: "none" }}>
               Sign in
             </a>
             <a
-              href="#app"
+              href="/explore"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -420,10 +420,10 @@ export default function LandingPage() {
             </Reveal>
             <Reveal delay={300}>
               <div style={{ display: "flex", gap: "12px" }}>
-                <a href="#explore" style={primaryBtn}>
+                <a href="/explore" style={primaryBtn}>
                   Explore pairs →
                 </a>
-                <a href="#docs" style={secondaryBtn}>
+                <a href="https://docs.aperture.xyz" style={secondaryBtn}>
                   Read docs
                 </a>
               </div>
@@ -575,7 +575,7 @@ export default function LandingPage() {
                   <p style={{ fontSize: "15px", color: COLOR.textSecondary, lineHeight: 1.5, margin: "0 0 20px", fontFamily: FONT_SANS }}>
                     {f.desc}
                   </p>
-                  <a href="#learn" style={{ fontSize: "14px", fontWeight: 500, color: COLOR.arcBlue, textDecoration: "none", fontFamily: FONT_SANS }}>
+                  <a href="/explore" style={{ fontSize: "14px", fontWeight: 500, color: COLOR.arcBlue, textDecoration: "none", fontFamily: FONT_SANS }}>
                     Learn more →
                   </a>
                 </div>
@@ -914,7 +914,7 @@ export default function LandingPage() {
           <Reveal delay={300}>
             <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
               <a
-                href="#explore"
+                href="/explore"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -931,7 +931,7 @@ export default function LandingPage() {
                 Explore pairs →
               </a>
               <a
-                href="#docs"
+                href="https://docs.aperture.xyz"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
