@@ -1,479 +1,758 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { Reveal } from "@/components/reveal";
 import { mockPairs } from "@/lib/mock-data";
 import { formatUsd } from "@/lib/format";
 
-// ─── Style constants ───────────────────────────────────────────────
-const FONT_SANS = "'Inter', -apple-system, system-ui, sans-serif";
-const FONT_MONO = "'JetBrains Mono', ui-monospace, monospace";
+/* ------------------------------------------------------------------ */
+/*  Small helpers                                                      */
+/* ------------------------------------------------------------------ */
 
-const COLOR = {
-  white: "#FFFFFF",
-  dark: "#0A2540",
-  grayBg: "#F6F9FC",
-  textPrimary: "#1A1F36",
-  textSecondary: "#425466",
-  textCaption: "#6B7C93",
-  arcBlue: "#2f578c",
-  orange: "#ff8c00",
-  coolBlue: "#5B8DEF",
-  borderLight: "#E3E8EE",
-  rowBorder: "#F1F5F9",
-  green: "#00D4A0",
-  greenBg: "#E8F8F0",
-  redBg: "#FEE2E2",
-  redText: "#DC2626",
-} as const;
-
-const CARD_SHADOW = "0 1px 2px rgba(10,37,64,0.04), 0 12px 32px rgba(10,37,64,0.06)";
-const CARD_SHADOW_HERO = "0 1px 2px rgba(10,37,64,0.04), 0 24px 48px rgba(10,37,64,0.08)";
-
-// ─── Small inline icon components (24x24, Arc blue) ────────────────
-function IconGrid() {
+function ApertureLogo({ color = "#0A2540" }: { color?: string }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <rect x="14" y="14" width="7" height="7" rx="1" />
-    </svg>
-  );
-}
-
-function IconList() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="8" y1="6" x2="21" y2="6" />
-      <line x1="8" y1="12" x2="21" y2="12" />
-      <line x1="8" y1="18" x2="21" y2="18" />
-      <line x1="3" y1="6" x2="3.01" y2="6" />
-      <line x1="3" y1="12" x2="3.01" y2="12" />
-      <line x1="3" y1="18" x2="3.01" y2="18" />
-    </svg>
-  );
-}
-
-function IconChart() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 3v18h18" />
-      <path d="M7 14l4-4 4 3 5-6" />
-    </svg>
-  );
-}
-
-function IconShield() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" />
-      <path d="M9 12l2 2 4-4" />
-    </svg>
-  );
-}
-
-function IconCode() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="16 18 22 12 16 6" />
-      <polyline points="8 6 2 12 8 18" />
-    </svg>
-  );
-}
-
-function IconCube() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-      <line x1="12" y1="22.08" x2="12" y2="12" />
-    </svg>
-  );
-}
-
-// ─── Aperture logo SVG ─────────────────────────────────────────────
-function ApertureLogo({ size = 28 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="14" stroke={COLOR.arcBlue} strokeWidth="2" />
-      <circle cx="16" cy="16" r="6" stroke={COLOR.arcBlue} strokeWidth="2" />
-      <path d="M16 2 L16 10" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" />
-      <path d="M27.86 9 L21.2 12.85" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" />
-      <path d="M27.86 23 L21.2 19.15" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" />
-      <path d="M16 30 L16 22" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" />
-      <path d="M4.14 23 L10.8 19.15" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" />
-      <path d="M4.14 9 L10.8 12.85" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-// ─── Gradient mesh blobs ───────────────────────────────────────────
-function GradientMesh({ dark = false }: { dark?: boolean }) {
-  const opacityScale = dark ? 0.7 : 1;
-  return (
-    <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
-      <div
-        style={{
-          position: "absolute",
-          top: "-100px",
-          right: "-50px",
-          width: "500px",
-          height: "500px",
-          borderRadius: "50%",
-          background: COLOR.orange,
-          filter: "blur(120px)",
-          opacity: 0.15 * opacityScale,
-        }}
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="12" r="10" stroke={color} strokeWidth="1.6" />
+      <path
+        d="M12 2 L12 9 M22 12 L15 12 M12 22 L12 15 M2 12 L9 12"
+        stroke={color}
+        strokeWidth="1.6"
+        strokeLinecap="round"
       />
-      <div
-        style={{
-          position: "absolute",
-          top: "40%",
-          left: "-100px",
-          width: "400px",
-          height: "400px",
-          borderRadius: "50%",
-          background: COLOR.arcBlue,
-          filter: "blur(100px)",
-          opacity: 0.1 * opacityScale,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: "-80px",
-          right: "20%",
-          width: "350px",
-          height: "350px",
-          borderRadius: "50%",
-          background: COLOR.coolBlue,
-          filter: "blur(80px)",
-          opacity: 0.08 * opacityScale,
-        }}
-      />
+      <circle cx="12" cy="12" r="2.4" fill={color} />
+    </svg>
+  );
+}
+
+/* Card hover hook --------------------------------------------------- */
+function useCardHover() {
+  const [hovered, setHovered] = useState(false);
+  return {
+    hovered,
+    bind: {
+      onMouseEnter: () => setHovered(true),
+      onMouseLeave: () => setHovered(false),
+    },
+  };
+}
+
+/* Feature card ------------------------------------------------------ */
+type Feature = {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+};
+
+const FEATURES: Feature[] = [
+  {
+    title: "Pair Discovery",
+    desc: "Every liquidity pool on Arc, indexed the instant it's created.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#635BFF" strokeWidth="1.6" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#635BFF" strokeWidth="1.6" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#635BFF" strokeWidth="1.6" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#635BFF" strokeWidth="1.6" />
+      </svg>
+    ),
+  },
+  {
+    title: "Swap History",
+    desc: "Complete on-chain swap logs with price impact, gas, and sender analysis.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <line x1="4" y1="6" x2="20" y2="6" stroke="#635BFF" strokeWidth="1.6" strokeLinecap="round" />
+        <line x1="4" y1="12" x2="20" y2="12" stroke="#635BFF" strokeWidth="1.6" strokeLinecap="round" />
+        <line x1="4" y1="18" x2="14" y2="18" stroke="#635BFF" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    title: "Liquidity Tracking",
+    desc: "Live liquidity curves and TVL monitoring across all verified pairs.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M3 17 C7 17 7 9 11 9 C15 9 15 13 21 7"
+          stroke="#635BFF"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <path
+          d="M3 21 C7 21 7 17 11 17 C15 17 15 19 21 15"
+          stroke="#635BFF"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.5"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: "Price Feeds",
+    desc: "Math-verified price data — no oracles, no estimates, no approximations.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 3 L20 6 V11 C20 16 16 20 12 21 C8 20 4 16 4 11 V6 Z"
+          stroke="#635BFF"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 12 L11.5 14.5 L15.5 9.5"
+          stroke="#635BFF"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: "Analytics API",
+    desc: "Full programmatic access via REST and WebSocket. npm install @aperture/sdk",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M8 6 L3 12 L8 18"
+          stroke="#635BFF"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M16 6 L21 12 L16 18"
+          stroke="#635BFF"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <line x1="13.5" y1="4" x2="10.5" y2="20" stroke="#635BFF" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    title: "Block Scanner",
+    desc: "Real-time block heights, transaction indexing, and contract event monitoring.",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"
+          stroke="#635BFF"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <path d="M3 7 L12 12 L21 7" stroke="#635BFF" strokeWidth="1.6" strokeLinejoin="round" />
+        <line x1="12" y1="12" x2="12" y2="22" stroke="#635BFF" strokeWidth="1.6" />
+      </svg>
+    ),
+  },
+];
+
+/* Terminal code lines ------------------------------------------------ */
+type CodeLine = { text: string; color?: string };
+
+const CODE_LINES: CodeLine[] = [
+  { text: "$ npm install @aperture/sdk", color: "#FFFFFF" },
+  { text: "" },
+  { text: "// Initialize the client", color: "rgba(255,255,255,0.4)" },
+  { text: "import { Aperture } from '@aperture/sdk'", color: "#635BFF" },
+  { text: "" },
+  { text: "const client = new Aperture({", color: "#FFFFFF" },
+  { text: "  network: 'arc-testnet',", color: "#00D66F" },
+  { text: "  wsUrl: 'wss://api.aperture.xyz'", color: "#00D66F" },
+  { text: "})", color: "#FFFFFF" },
+  { text: "" },
+  { text: "// Fetch all pairs", color: "rgba(255,255,255,0.4)" },
+  { text: "const pairs = await client.getPairs()", color: "#FFFFFF" },
+];
+
+/* Checkmark row ------------------------------------------------------ */
+function CheckRow({ items }: { items: string[] }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "24px" }}>
+      {items.map((t) => (
+        <div key={t} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="#635BFF" opacity="0.12" />
+            <path
+              d="M7 12.5 L10.5 16 L17.5 8.5"
+              stroke="#635BFF"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span style={{ fontSize: "16px", color: "#0A2540", fontWeight: 400 }}>{t}</span>
+        </div>
+      ))}
     </div>
   );
 }
 
-// ─── Checkmark icon ────────────────────────────────────────────────
-function CheckIcon() {
+/* Single feature card ------------------------------------------------ */
+function FeatureCard({ feature }: { feature: Feature }) {
+  const { hovered, bind } = useCardHover();
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={COLOR.arcBlue} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
+    <div
+      {...bind}
+      style={{
+        background: "#FFFFFF",
+        borderRadius: "8px",
+        boxShadow: hovered
+          ? "0 8px 24px rgba(0,0,0,0.08)"
+          : "0 1px 2px rgba(0,0,0,0.04)",
+        padding: "32px",
+        transition: "box-shadow 0.2s ease",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div>{feature.icon}</div>
+      <h3
+        style={{
+          fontSize: "24px",
+          fontWeight: 500,
+          color: "#0A2540",
+          letterSpacing: "-0.01em",
+          margin: "16px 0 0 0",
+        }}
+      >
+        {feature.title}
+      </h3>
+      <p
+        style={{
+          fontSize: "16px",
+          fontWeight: 400,
+          color: "#425466",
+          lineHeight: 1.5,
+          margin: "8px 0 0 0",
+        }}
+      >
+        {feature.desc}
+      </p>
+      <a
+        href="/explore"
+        style={{
+          marginTop: "16px",
+          fontSize: "14px",
+          fontWeight: 400,
+          color: "#635BFF",
+          textDecoration: "none",
+          alignSelf: "flex-start",
+        }}
+      >
+        Learn more →
+      </a>
+    </div>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// PAGE
-// ═══════════════════════════════════════════════════════════════════
+/* ------------------------------------------------------------------ */
+/*  Main page component                                                */
+/* ------------------------------------------------------------------ */
+
 export default function LandingPage() {
+  /* 1. Scroll-aware nav */
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  /* 2. Animated block counter */
+  const [blockNum, setBlockNum] = useState(845231);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBlockNum((prev) => prev + Math.floor(Math.random() * 3) + 1);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const pair = mockPairs[0];
-  const priceChange = pair.priceChange24h ?? 0;
-  const isPositive = priceChange >= 0;
 
-  const features = [
-    { icon: <IconGrid />, title: "Pair Discovery", desc: "Every liquidity pool on Arc, indexed the instant it's created. Real-time discovery with full metadata." },
-    { icon: <IconList />, title: "Swap History", desc: "Complete on-chain swap logs with price impact, gas costs, and sender analysis for every transaction." },
-    { icon: <IconChart />, title: "Liquidity Tracking", desc: "Live liquidity curves and TVL monitoring across all verified pairs. Track depth changes in real time." },
-    { icon: <IconShield />, title: "Price Feeds", desc: "Math-verified price data sourced directly from the ledger. No oracles, no estimates, no approximations." },
-    { icon: <IconCode />, title: "Analytics API", desc: "Full programmatic access via REST and WebSocket. npm install @aperture/sdk and start building." },
-    { icon: <IconCube />, title: "Block Scanner", desc: "Real-time block heights, transaction indexing, and contract event monitoring across Arc Network." },
+  /* Footer link groups */
+  const footerCols = [
+    {
+      title: "PRODUCT",
+      links: [
+        { label: "Explore", href: "/explore" },
+        { label: "Pairs", href: "/explore" },
+        { label: "Swap", href: "/explore" },
+        { label: "Portfolio", href: "/explore" },
+      ],
+    },
+    {
+      title: "RESOURCES",
+      links: [
+        { label: "Docs", href: "https://docs.aperture.xyz" },
+        { label: "API", href: "/explore" },
+        { label: "GitHub", href: "/explore" },
+        { label: "Status", href: "/explore" },
+      ],
+    },
+    {
+      title: "COMPANY",
+      links: [
+        { label: "About", href: "/explore" },
+        { label: "Blog", href: "/explore" },
+        { label: "Contact", href: "/explore" },
+        { label: "Privacy", href: "/explore" },
+      ],
+    },
   ];
-
-  const trustedLogos = ["PROJECTA", "DEXLAB", "ARCSCAN", "LIQUIDITY", "SWAPNET", "CHAINFLOW"];
-
-  const recentSwaps = [
-    { type: "BUY", amount: "12,400.00", price: "$1.0044" },
-    { type: "SELL", amount: "8,200.50", price: "$1.0046" },
-    { type: "BUY", amount: "45,000.00", price: "$1.0045" },
-    { type: "SELL", amount: "3,150.75", price: "$1.0043" },
-  ];
-
-  const stats = [
-    { value: "845,231", label: "LATEST BLOCK" },
-    { value: formatUsd(pair.volume24h), label: "24H VOLUME" },
-    { value: "12", label: "ACTIVE PAIRS" },
-    { value: "22.018", label: "GAS PRICE (GWEI)" },
-  ];
-
-  const steps = [
-    { num: "01", title: "Open Explorer", desc: "Visit the dashboard to see all pairs on Arc Network in real time. No account needed." },
-    { num: "02", title: "Track Data", desc: "Monitor swaps, liquidity, and price feeds for any pair. Set up alerts for price changes." },
-    { num: "03", title: "Build with API", desc: "Install the SDK and access everything programmatically. npm install @aperture/sdk" },
-  ];
-
-  const devFeatures = [
-    "REST API for pair/swap data",
-    "WebSocket for real-time updates",
-    "TypeScript SDK with full types",
-    "Rate limit: 1000 req/min",
-  ];
-
-  const codeLines = [
-    { text: "$ npm install @aperture/sdk", color: "#FFFFFF" },
-    { text: "", color: "" },
-    { text: "// Initialize the client", color: "#6B7C93" },
-    { text: "import { Aperture } from '@aperture/sdk'", color: "#5B8DEF" },
-    { text: "", color: "" },
-    { text: "const client = new Aperture({", color: "#FFFFFF" },
-    { text: "  network: 'arc-testnet',", color: "#00D4A0" },
-    { text: "  wsUrl: 'wss://api.aperture.xyz'", color: "#00D4A0" },
-    { text: "})", color: "#FFFFFF" },
-    { text: "", color: "" },
-    { text: "// Fetch all pairs", color: "#6B7C93" },
-    { text: "const pairs = await client.getPairs()", color: "#FFFFFF" },
-  ];
-
-  // ─── Nav link helper ─────────────────────────────────────────
-  const navLinkStyle: React.CSSProperties = {
-    fontSize: "15px",
-    fontWeight: 500,
-    color: COLOR.textSecondary,
-    textDecoration: "none",
-    fontFamily: FONT_SANS,
-  };
-
-  // ─── Button styles ───────────────────────────────────────────
-  const primaryBtn: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    background: COLOR.dark,
-    color: COLOR.white,
-    borderRadius: "999px",
-    padding: "12px 24px",
-    fontSize: "15px",
-    fontWeight: 500,
-    fontFamily: FONT_SANS,
-    textDecoration: "none",
-    border: "none",
-    cursor: "pointer",
-  };
-  const secondaryBtn: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    background: COLOR.white,
-    color: COLOR.dark,
-    borderRadius: "999px",
-    padding: "12px 24px",
-    fontSize: "15px",
-    fontWeight: 500,
-    fontFamily: FONT_SANS,
-    textDecoration: "none",
-    border: `1px solid ${COLOR.borderLight}`,
-    cursor: "pointer",
-  };
-
-  // ─── SVG area chart data ─────────────────────────────────────
-  const chartPoints = [40, 55, 48, 62, 58, 72, 68, 80, 75, 85, 90, 88];
-  const chartWidth = 320;
-  const chartHeight = 120;
-  const chartMax = Math.max(...chartPoints);
-  const chartMin = Math.min(...chartPoints);
-  const chartRange = chartMax - chartMin || 1;
-  const pointStep = chartWidth / (chartPoints.length - 1);
-  const areaPath =
-    `M 0 ${chartHeight - ((chartPoints[0] - chartMin) / chartRange) * chartHeight}` +
-    chartPoints
-      .slice(1)
-      .map((p, i) => ` L ${(i + 1) * pointStep} ${chartHeight - ((p - chartMin) / chartRange) * chartHeight}`)
-      .join("") +
-    ` L ${chartWidth} ${chartHeight} L 0 ${chartHeight} Z`;
-  const linePath =
-    `M 0 ${chartHeight - ((chartPoints[0] - chartMin) / chartRange) * chartHeight}` +
-    chartPoints
-      .slice(1)
-      .map((p, i) => ` L ${(i + 1) * pointStep} ${chartHeight - ((p - chartMin) / chartRange) * chartHeight}`)
-      .join("");
 
   return (
-    <div style={{ fontFamily: FONT_SANS, background: COLOR.white, color: COLOR.textPrimary, margin: 0, padding: 0 }}>
-      {/* ═══ 1. NAV ═══ */}
+    <div
+      style={{
+        fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
+        background: "#FFFFFF",
+        color: "#0A2540",
+        margin: 0,
+      }}
+    >
+      {/* Embedded hover styles for nav links + footer links */}
+      <style>{`
+        .nav-link { transition: color 0.2s ease; }
+        .nav-link:hover { color: #635BFF !important; }
+        .footer-link { transition: color 0.2s ease; }
+        .footer-link:hover { color: #FFFFFF !important; }
+        .text-link:hover { text-decoration: underline; }
+        @import url('https://rsms.me/inter/inter.css');
+      `}</style>
+
+      {/* ============================================================ */}
+      {/* 1. NAV                                                       */}
+      {/* ============================================================ */}
       <nav
         style={{
           position: "sticky",
           top: 0,
           zIndex: 100,
           height: "68px",
-          background: COLOR.white,
           display: "flex",
           alignItems: "center",
+          background: isScrolled ? "#FFFFFF" : "transparent",
+          boxShadow: isScrolled ? "0 1px 0 rgba(0,0,0,0.06)" : "none",
+          transition: "background-color 0.2s ease, box-shadow 0.2s ease",
         }}
       >
         <div
           style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
+            maxWidth: "1080px",
             width: "100%",
+            margin: "0 auto",
             padding: "0 24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          {/* Left: Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <ApertureLogo size={28} />
-            <span style={{ fontSize: "18px", fontWeight: 700, color: COLOR.textPrimary, fontFamily: FONT_SANS }}>
-              Aperture
-            </span>
+          {/* Left: logo */}
+          <a href="/explore" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
+            <ApertureLogo color="#0A2540" />
+            <span style={{ fontSize: "16px", fontWeight: 500, color: "#0A2540" }}>Aperture</span>
+          </a>
+
+          {/* Center: nav links */}
+          <div style={{ display: "flex", gap: "28px" }}>
+            {[
+              { label: "Explore", href: "/explore" },
+              { label: "Pairs", href: "/explore" },
+              { label: "API", href: "/explore" },
+              { label: "Docs", href: "https://docs.aperture.xyz" },
+            ].map((l) => (
+              <a
+                key={l.label}
+                href={l.href}
+                className="nav-link"
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  color: "#0A2540",
+                  textDecoration: "none",
+                }}
+              >
+                {l.label}
+              </a>
+            ))}
           </div>
 
-          {/* Center: Nav links */}
-          <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-            <a href="/explore" style={navLinkStyle}>Explore</a>
-            <a href="/explore" style={navLinkStyle}>Pairs</a>
-            <a href="/explore" style={navLinkStyle}>API</a>
-            <a href="https://docs.aperture.xyz" style={navLinkStyle}>Docs</a>
-          </div>
-
-          {/* Right: Auth */}
+          {/* Right: auth */}
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <a href="/explore" style={{ ...navLinkStyle, textDecoration: "none" }}>
+            <a
+              href="/explore"
+              className="nav-link"
+              style={{
+                fontSize: "14px",
+                fontWeight: 400,
+                color: "#425466",
+                textDecoration: "none",
+              }}
+            >
               Sign in
             </a>
             <a
               href="/explore"
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                background: COLOR.dark,
-                color: COLOR.white,
-                borderRadius: "999px",
-                padding: "10px 18px",
-                fontSize: "15px",
-                fontWeight: 500,
-                fontFamily: FONT_SANS,
+                background: "#635BFF",
+                color: "#FFFFFF",
+                borderRadius: "4px",
+                padding: "8px 16px",
+                fontSize: "14px",
+                fontWeight: 400,
                 textDecoration: "none",
+                transition: "background-color 0.2s ease",
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#5247DB")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#635BFF")}
             >
-              Go to app →
+              Go to app
             </a>
           </div>
         </div>
       </nav>
 
-      {/* ═══ 2. HERO ═══ */}
-      <section style={{ position: "relative", background: COLOR.white, overflow: "hidden" }}>
-        <GradientMesh />
+      {/* ============================================================ */}
+      {/* 2. HERO                                                      */}
+      {/* ============================================================ */}
+      <section
+        style={{
+          position: "relative",
+          background: "#FFFFFF",
+          minHeight: "80vh",
+          padding: "120px 0 80px",
+          overflow: "hidden",
+        }}
+      >
+        {/* Gradient mesh — 4 overlapping blurred blobs in top-right */}
+        <div
+          style={{
+            position: "absolute",
+            top: "-200px",
+            right: "-150px",
+            width: "500px",
+            height: "500px",
+            background: "radial-gradient(circle, #FF6BCB 0%, transparent 70%)",
+            filter: "blur(150px)",
+            opacity: 0.6,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "100px",
+            right: "-100px",
+            width: "400px",
+            height: "400px",
+            background: "radial-gradient(circle, #FF8A4C 0%, transparent 70%)",
+            filter: "blur(120px)",
+            opacity: 0.5,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "0px",
+            right: "50px",
+            width: "350px",
+            height: "350px",
+            background: "radial-gradient(circle, #8B5CF6 0%, transparent 70%)",
+            filter: "blur(100px)",
+            opacity: 0.4,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "-100px",
+            left: "40%",
+            width: "300px",
+            height: "300px",
+            background: "radial-gradient(circle, #635BFF 0%, transparent 70%)",
+            filter: "blur(100px)",
+            opacity: 0.3,
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Content */}
         <div
           style={{
             position: "relative",
-            zIndex: 1,
-            maxWidth: "1200px",
+            maxWidth: "1080px",
             margin: "0 auto",
-            padding: "80px 24px 100px",
-            display: "grid",
-            gridTemplateColumns: "55% 45%",
-            gap: "48px",
-            alignItems: "center",
+            padding: "0 24px",
           }}
         >
-          {/* LEFT */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ maxWidth: "60%", display: "flex", flexDirection: "column", gap: "24px" }}>
+            {/* Animated counter */}
             <Reveal delay={0}>
-              <span
-                style={{
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  color: COLOR.textCaption,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  fontFamily: FONT_SANS,
-                }}
-              >
-                DEX INTELLIGENCE • ARC NETWORK
-              </span>
+              <div style={{ fontSize: "14px", fontWeight: 400, color: "#6B7C93" }}>
+                Block {blockNum.toLocaleString()} • 12 active pairs
+              </div>
             </Reveal>
-            <Reveal delay={100}>
+
+            {/* H1 */}
+            <Reveal delay={80}>
               <h1
                 style={{
-                  fontSize: "60px",
-                  fontWeight: 700,
-                  color: COLOR.textPrimary,
+                  fontSize: "56px",
+                  fontWeight: 300,
+                  color: "#0A2540",
                   letterSpacing: "-0.02em",
-                  lineHeight: 1.05,
+                  lineHeight: 1.1,
                   margin: 0,
-                  fontFamily: FONT_SANS,
                 }}
               >
-                Scan every pair
-                <br />
-                on Arc Network.
+                Scan every <span style={{ color: "#00D66F" }}>pair</span> on Arc Network.
               </h1>
             </Reveal>
-            <Reveal delay={200}>
+
+            {/* Subheadline */}
+            <Reveal delay={160}>
               <p
                 style={{
-                  fontSize: "19px",
+                  fontSize: "20px",
                   fontWeight: 400,
-                  color: COLOR.textSecondary,
-                  maxWidth: "480px",
+                  color: "#425466",
+                  maxWidth: "520px",
                   lineHeight: 1.5,
                   margin: 0,
-                  fontFamily: FONT_SANS,
                 }}
               >
                 Real-time pair data, on-chain swap history, and verified liquidity analytics. No
                 estimates — just deterministic data from Arc's public ledger.
               </p>
             </Reveal>
-            <Reveal delay={300}>
-              <div style={{ display: "flex", gap: "12px" }}>
-                <a href="/explore" style={primaryBtn}>
-                  Explore pairs →
+
+            {/* Buttons */}
+            <Reveal delay={240}>
+              <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
+                <a
+                  href="/explore"
+                  style={{
+                    background: "#635BFF",
+                    color: "#FFFFFF",
+                    borderRadius: "4px",
+                    padding: "12px 18px",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    textDecoration: "none",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
+                    transition: "background-color 0.2s ease, box-shadow 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "#5247DB";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "#635BFF";
+                  }}
+                >
+                  Explore pairs
                 </a>
-                <a href="https://docs.aperture.xyz" style={secondaryBtn}>
+                <a
+                  href="https://docs.aperture.xyz"
+                  style={{
+                    background: "transparent",
+                    border: "1px solid #E3E8EE",
+                    color: "#0A2540",
+                    borderRadius: "4px",
+                    padding: "12px 18px",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                    textDecoration: "none",
+                    transition: "background-color 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#F6F9FC")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
                   Read docs
                 </a>
               </div>
             </Reveal>
           </div>
+        </div>
+      </section>
 
-          {/* RIGHT: Scanner card */}
-          <Reveal delay={200}>
-            <div
+      {/* ============================================================ */}
+      {/* 3. TRUSTED BY                                                */}
+      {/* ============================================================ */}
+      <section style={{ background: "#FFFFFF", padding: "60px 0 40px" }}>
+        <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "0 24px" }}>
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "14px",
+              fontWeight: 400,
+              color: "#6B7C93",
+              margin: "0 0 32px 0",
+            }}
+          >
+            Trusted by teams building on Arc
+          </p>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "48px",
+            }}
+          >
+            {["PROJECTA", "DEXLAB", "ARCSCAN", "LIQUIDITY", "SWAPNET", "CHAINFLOW"].map((n) => (
+              <span
+                key={n}
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  color: "#6B7C93",
+                  opacity: 0.5,
+                  letterSpacing: "0.02em",
+                }}
+              >
+                {n}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 4. FEATURES                                                  */}
+      {/* ============================================================ */}
+      <section style={{ background: "#FFFFFF", padding: "96px 0" }}>
+        <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "0 24px" }}>
+          <Reveal>
+            <div style={{ fontSize: "14px", fontWeight: 400, color: "#6B7C93", textTransform: "uppercase" }}>
+              FEATURES
+            </div>
+            <h2
               style={{
-                background: COLOR.white,
-                borderRadius: "14px",
-                boxShadow: CARD_SHADOW_HERO,
-                padding: "24px",
-                fontFamily: FONT_SANS,
+                fontSize: "40px",
+                fontWeight: 300,
+                color: "#0A2540",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
+                margin: "16px 0 0 0",
               }}
             >
-              {/* Top bar */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: COLOR.green }} />
-                  <span style={{ fontSize: "14px", fontWeight: 500, color: COLOR.textPrimary, fontFamily: FONT_SANS }}>LIVE</span>
-                </div>
-                <span style={{ fontSize: "14px", fontWeight: 500, color: COLOR.textCaption, textTransform: "uppercase", fontFamily: FONT_SANS }}>
+              Everything you need to scan Arc Network.
+            </h2>
+          </Reveal>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "20px",
+              marginTop: "48px",
+            }}
+          >
+            {FEATURES.map((f, i) => (
+              <Reveal key={f.title} delay={i * 80}>
+                <FeatureCard feature={f} />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 5. SHOWCASE                                                  */}
+      {/* ============================================================ */}
+      <section style={{ background: "#F6F9FC", padding: "120px 0" }}>
+        <div
+          style={{
+            maxWidth: "1080px",
+            margin: "0 auto",
+            padding: "0 24px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "64px",
+            alignItems: "center",
+          }}
+        >
+          {/* LEFT */}
+          <Reveal>
+            <div>
+              <div style={{ fontSize: "14px", fontWeight: 400, color: "#6B7C93", textTransform: "uppercase" }}>
+                LIVE DATA
+              </div>
+              <h2
+                style={{
+                  fontSize: "40px",
+                  fontWeight: 300,
+                  color: "#0A2540",
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.1,
+                  margin: "16px 0 0 0",
+                }}
+              >
+                Verified on-chain, in real time.
+              </h2>
+              <p
+                style={{
+                  fontSize: "17px",
+                  fontWeight: 400,
+                  color: "#425466",
+                  maxWidth: "440px",
+                  lineHeight: 1.5,
+                  margin: "16px 0 0 0",
+                }}
+              >
+                Every data point is sourced directly from Arc Network's public ledger. No
+                estimates — just mathematically verified data.
+              </p>
+              <CheckRow
+                items={["Deterministic price feeds", "Sub-second finality", "Full swap history"]}
+              />
+            </div>
+          </Reveal>
+
+          {/* RIGHT — floating data card */}
+          <Reveal delay={120}>
+            <div
+              style={{
+                background: "#FFFFFF",
+                borderRadius: "8px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                padding: "28px",
+              }}
+            >
+              {/* Header */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "20px",
+                }}
+              >
+                <span style={{ fontSize: "14px", fontWeight: 400, color: "#00D66F" }}>● LIVE</span>
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    color: "#6B7C93",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}
+                >
                   APERTURE TERMINAL
                 </span>
               </div>
 
-              {/* Divider */}
-              <div style={{ height: "1px", background: COLOR.borderLight, marginBottom: "20px" }} />
-
-              {/* Pair header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <span style={{ fontSize: "24px", fontWeight: 700, color: COLOR.textPrimary, fontFamily: FONT_SANS }}>
-                  {pair.token0.symbol}/{pair.token1.symbol}
-                </span>
-                <span
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    padding: "4px 10px",
-                    borderRadius: "6px",
-                    background: isPositive ? COLOR.greenBg : COLOR.redBg,
-                    color: isPositive ? "#0a7c4a" : COLOR.redText,
-                    fontFamily: FONT_SANS,
-                  }}
-                >
-                  {isPositive ? "+" : ""}
-                  {priceChange.toFixed(2)}%
-                </span>
+              {/* Pair name */}
+              <div style={{ fontSize: "20px", fontWeight: 500, color: "#0A2540", marginBottom: "8px" }}>
+                {pair.token0.symbol}/{pair.token1.symbol}
               </div>
 
               {/* Data rows */}
@@ -482,266 +761,93 @@ export default function LandingPage() {
                   { label: "PRICE", value: "$1.0045" },
                   { label: "24H VOLUME", value: formatUsd(pair.volume24h) },
                   { label: "LIQUIDITY", value: formatUsd(pair.liquidityUsd) },
-                  { label: "TX COUNT 24H", value: String(pair.txCount24h) },
-                ].map((row, i) => (
+                  { label: "TX COUNT", value: String(pair.txCount24h) },
+                ].map((row) => (
                   <div
-                    key={i}
+                    key={row.label}
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
                       padding: "12px 0",
-                      borderBottom: i < 3 ? `1px solid ${COLOR.rowBorder}` : "none",
+                      borderBottom: "1px solid #F1F5F9",
                     }}
                   >
-                    <span style={{ fontSize: "14px", color: COLOR.textCaption, fontWeight: 500, fontFamily: FONT_SANS }}>
+                    <span style={{ fontSize: "14px", fontWeight: 400, color: "#6B7C93" }}>
                       {row.label}
                     </span>
-                    <span style={{ fontSize: "16px", color: COLOR.textPrimary, fontFamily: FONT_MONO, fontWeight: 500 }}>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontFamily: "'SF Mono', 'Monaco', 'Menlo', monospace",
+                        color: "#0A2540",
+                      }}
+                    >
                       {row.value}
                     </span>
                   </div>
                 ))}
               </div>
 
-              {/* Bottom code */}
-              <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: `1px solid ${COLOR.borderLight}` }}>
-                <span style={{ fontSize: "13px", fontFamily: FONT_MONO, color: COLOR.arcBlue }}>
-                  npm install @aperture/sdk
-                </span>
+              {/* Bottom */}
+              <div
+                style={{
+                  marginTop: "20px",
+                  fontSize: "13px",
+                  fontFamily: "'SF Mono', 'Monaco', 'Menlo', monospace",
+                  color: "#635BFF",
+                }}
+              >
+                npm install @aperture/sdk
               </div>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* ═══ 3. TRUSTED BY ═══ */}
-      <section style={{ background: COLOR.white, padding: "48px 0" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px", textAlign: "center" }}>
-          <p style={{ fontSize: "14px", color: COLOR.textCaption, fontWeight: 500, marginBottom: "32px", fontFamily: FONT_SANS }}>
-            Trusted by teams building on Arc
-          </p>
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "48px", flexWrap: "wrap" }}>
-            {trustedLogos.map((logo, i) => (
-              <span key={i} style={{ fontSize: "18px", fontWeight: 600, color: COLOR.textSecondary, opacity: 0.5, fontFamily: FONT_SANS }}>
-                {logo}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 4. FEATURES ═══ */}
-      <section style={{ background: COLOR.white, padding: "96px 0" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
-          <Reveal delay={0}>
-            <span style={{ fontSize: "14px", textTransform: "uppercase", color: COLOR.textCaption, fontWeight: 500, fontFamily: FONT_SANS }}>
-              FEATURES
-            </span>
-          </Reveal>
-          <Reveal delay={100}>
-            <h2
-              style={{
-                fontSize: "44px",
-                fontWeight: 700,
-                color: COLOR.textPrimary,
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
-                margin: "16px 0 64px",
-                fontFamily: FONT_SANS,
-              }}
-            >
-              Everything you need to
-              <br />
-              scan Arc Network.
-            </h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
-            {features.map((f, i) => (
-              <Reveal key={i} delay={i * 80}>
-                <div
-                  style={{
-                    background: COLOR.white,
-                    borderRadius: "14px",
-                    boxShadow: CARD_SHADOW,
-                    padding: "36px",
-                    height: "100%",
-                  }}
-                >
-                  <div style={{ marginBottom: "20px" }}>{f.icon}</div>
-                  <h3 style={{ fontSize: "22px", fontWeight: 600, color: COLOR.textPrimary, margin: "0 0 12px", fontFamily: FONT_SANS }}>
-                    {f.title}
-                  </h3>
-                  <p style={{ fontSize: "15px", color: COLOR.textSecondary, lineHeight: 1.5, margin: "0 0 20px", fontFamily: FONT_SANS }}>
-                    {f.desc}
-                  </p>
-                  <a href="/explore" style={{ fontSize: "14px", fontWeight: 500, color: COLOR.arcBlue, textDecoration: "none", fontFamily: FONT_SANS }}>
-                    Learn more →
-                  </a>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 5. SHOWCASE SECTION ═══ */}
-      <section style={{ background: COLOR.grayBg, padding: "120px 0" }}>
-        <div
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-            padding: "0 24px",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "64px",
-            alignItems: "center",
-          }}
-        >
-          {/* LEFT */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <Reveal delay={0}>
-              <span style={{ fontSize: "14px", textTransform: "uppercase", color: COLOR.textCaption, fontWeight: 500, fontFamily: FONT_SANS }}>
-                LIVE DATA
-              </span>
-            </Reveal>
-            <Reveal delay={100}>
-              <h2
-                style={{
-                  fontSize: "44px",
-                  fontWeight: 700,
-                  color: COLOR.textPrimary,
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1.1,
-                  margin: 0,
-                  fontFamily: FONT_SANS,
-                }}
-              >
-                Verified on-chain,
-                <br />
-                in real time.
-              </h2>
-            </Reveal>
-            <Reveal delay={200}>
-              <p style={{ fontSize: "17px", color: COLOR.textSecondary, maxWidth: "440px", lineHeight: 1.5, margin: 0, fontFamily: FONT_SANS }}>
-                Every data point is sourced directly from Arc Network's public ledger. No estimates, no
-                approximations — just mathematically verified data.
-              </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "8px" }}>
-                {["Deterministic price feeds", "Sub-second finality", "Full swap history"].map((item, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <CheckIcon />
-                    <span style={{ fontSize: "16px", color: COLOR.textPrimary, fontFamily: FONT_SANS }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-
-          {/* RIGHT: Stacked cards */}
-          <Reveal delay={200}>
-            <div style={{ position: "relative" }}>
-              {/* Card 1: Recent Swaps */}
-              <div
-                style={{
-                  background: COLOR.white,
-                  borderRadius: "14px",
-                  boxShadow: CARD_SHADOW,
-                  padding: "24px",
-                  marginBottom: "24px",
-                  position: "relative",
-                  zIndex: 2,
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <span style={{ fontSize: "16px", fontWeight: 600, color: COLOR.textPrimary, fontFamily: FONT_SANS }}>
-                    Recent Swaps
-                  </span>
-                  <span style={{ fontSize: "13px", color: COLOR.textCaption, fontFamily: FONT_SANS }}>Last 4</span>
-                </div>
-                {recentSwaps.map((swap, i) => (
+      {/* ============================================================ */}
+      {/* 6. STATS                                                     */}
+      {/* ============================================================ */}
+      <section
+        style={{
+          background: "#0A2540",
+          padding: "96px 0",
+          borderTop: "1px solid rgba(99,91,255,0.3)",
+        }}
+      >
+        <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "32px" }}>
+            {[
+              { value: "845,231", label: "LATEST BLOCK" },
+              { value: formatUsd(pair.volume24h), label: "24H VOLUME" },
+              { value: "12", label: "ACTIVE PAIRS" },
+              { value: "99.9%", label: "UPTIME" },
+            ].map((s) => (
+              <Reveal key={s.label}>
+                <div>
                   <div
-                    key={i}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "10px 0",
-                      borderBottom: i < recentSwaps.length - 1 ? `1px solid ${COLOR.rowBorder}` : "none",
+                      fontSize: "36px",
+                      fontWeight: 300,
+                      fontFamily: "'SF Mono', 'Monaco', 'Menlo', monospace",
+                      color: "#FFFFFF",
+                      letterSpacing: "-0.02em",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          padding: "3px 8px",
-                          borderRadius: "6px",
-                          background: swap.type === "BUY" ? COLOR.greenBg : COLOR.redBg,
-                          color: swap.type === "BUY" ? "#0a7c4a" : COLOR.redText,
-                          fontFamily: FONT_SANS,
-                        }}
-                      >
-                        {swap.type}
-                      </span>
-                      <span style={{ fontSize: "14px", color: COLOR.textPrimary, fontFamily: FONT_MONO }}>{swap.amount}</span>
-                    </div>
-                    <span style={{ fontSize: "14px", color: COLOR.textSecondary, fontFamily: FONT_MONO }}>{swap.price}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Card 2: Liquidity Chart */}
-              <div
-                style={{
-                  background: COLOR.white,
-                  borderRadius: "14px",
-                  boxShadow: CARD_SHADOW,
-                  padding: "24px",
-                  position: "relative",
-                  zIndex: 1,
-                  marginTop: "-12px",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <span style={{ fontSize: "16px", fontWeight: 600, color: COLOR.textPrimary, fontFamily: FONT_SANS }}>
-                    Liquidity Chart
-                  </span>
-                  <span style={{ fontSize: "13px", color: COLOR.textCaption, fontFamily: FONT_SANS }}>TVL — 12h</span>
-                </div>
-                <svg width="100%" height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={COLOR.arcBlue} stopOpacity="0.25" />
-                      <stop offset="100%" stopColor={COLOR.arcBlue} stopOpacity="0.02" />
-                    </linearGradient>
-                  </defs>
-                  <path d={areaPath} fill="url(#chartGrad)" />
-                  <path d={linePath} fill="none" stroke={COLOR.arcBlue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ═══ 6. STATS BAR ═══ */}
-      <section style={{ position: "relative", background: COLOR.dark, padding: "96px 0" }}>
-        {/* Top divider */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: COLOR.arcBlue }} />
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px", textAlign: "center" }}>
-            {stats.map((s, i) => (
-              <Reveal key={i} delay={i * 80}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <span style={{ fontSize: "36px", fontWeight: 700, color: COLOR.white, fontFamily: FONT_MONO, lineHeight: 1.1 }}>
                     {s.value}
-                  </span>
-                  <span style={{ fontSize: "14px", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", fontWeight: 500, fontFamily: FONT_SANS }}>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      color: "rgba(255,255,255,0.7)",
+                      textTransform: "uppercase",
+                      marginTop: "8px",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     {s.label}
-                  </span>
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -749,43 +855,87 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ 7. HOW IT WORKS ═══ */}
-      <section style={{ background: COLOR.white, padding: "96px 0" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
-          <Reveal delay={0}>
-            <span style={{ fontSize: "14px", textTransform: "uppercase", color: COLOR.textCaption, fontWeight: 500, fontFamily: FONT_SANS }}>
+      {/* ============================================================ */}
+      {/* 7. HOW IT WORKS                                              */}
+      {/* ============================================================ */}
+      <section style={{ background: "#FFFFFF", padding: "96px 0" }}>
+        <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "0 24px" }}>
+          <Reveal>
+            <div style={{ fontSize: "14px", fontWeight: 400, color: "#6B7C93", textTransform: "uppercase" }}>
               GET STARTED
-            </span>
-          </Reveal>
-          <Reveal delay={100}>
+            </div>
             <h2
               style={{
-                fontSize: "44px",
-                fontWeight: 700,
-                color: COLOR.textPrimary,
+                fontSize: "40px",
+                fontWeight: 300,
+                color: "#0A2540",
                 letterSpacing: "-0.02em",
                 lineHeight: 1.1,
-                margin: "16px 0 64px",
-                fontFamily: FONT_SANS,
+                margin: "16px 0 0 0",
               }}
             >
-              Three steps to start
-              <br />
-              scanning Arc Network.
+              Three steps to start scanning.
             </h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
-            {steps.map((s, i) => (
-              <Reveal key={i} delay={i * 100}>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "24px",
+              marginTop: "48px",
+            }}
+          >
+            {[
+              {
+                num: "01",
+                title: "Open Explorer",
+                desc: "Visit the dashboard to see all pairs on Arc in real time.",
+              },
+              {
+                num: "02",
+                title: "Track Data",
+                desc: "Monitor swaps, liquidity, and price feeds for any pair.",
+              },
+              {
+                num: "03",
+                title: "Build with API",
+                desc: "Install the SDK and access everything programmatically.",
+              },
+            ].map((step, i) => (
+              <Reveal key={step.num} delay={i * 80}>
                 <div>
-                  <span style={{ fontSize: "48px", fontWeight: 700, color: COLOR.arcBlue, opacity: 0.2, fontFamily: FONT_SANS, display: "block", marginBottom: "16px" }}>
-                    {s.num}
-                  </span>
-                  <h3 style={{ fontSize: "22px", fontWeight: 600, color: COLOR.textPrimary, margin: "0 0 12px", fontFamily: FONT_SANS }}>
-                    {s.title}
+                  <div
+                    style={{
+                      fontSize: "40px",
+                      fontWeight: 300,
+                      color: "#635BFF",
+                      opacity: 0.3,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {step.num}
+                  </div>
+                  <h3
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: 500,
+                      color: "#0A2540",
+                      margin: "8px 0 0 0",
+                    }}
+                  >
+                    {step.title}
                   </h3>
-                  <p style={{ fontSize: "15px", color: COLOR.textSecondary, lineHeight: 1.5, margin: 0, fontFamily: FONT_SANS }}>
-                    {s.desc}
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 400,
+                      color: "#425466",
+                      lineHeight: 1.5,
+                      margin: "8px 0 0 0",
+                    }}
+                  >
+                    {step.desc}
                   </p>
                 </div>
               </Reveal>
@@ -794,11 +944,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ 8. DEVELOPER SECTION ═══ */}
-      <section style={{ background: COLOR.grayBg, padding: "120px 0" }}>
+      {/* ============================================================ */}
+      {/* 8. DEVELOPER                                                 */}
+      {/* ============================================================ */}
+      <section style={{ background: "#F6F9FC", padding: "120px 0" }}>
         <div
           style={{
-            maxWidth: "1200px",
+            maxWidth: "1080px",
             margin: "0 auto",
             padding: "0 24px",
             display: "grid",
@@ -807,28 +959,73 @@ export default function LandingPage() {
             alignItems: "center",
           }}
         >
-          {/* LEFT: Code block */}
-          <Reveal delay={0}>
+          {/* LEFT — terminal */}
+          <Reveal>
             <div
               style={{
-                background: COLOR.dark,
-                borderRadius: "14px",
-                padding: "32px",
-                boxShadow: CARD_SHADOW,
-                fontFamily: FONT_MONO,
+                background: "#0A2540",
+                borderRadius: "8px",
+                padding: "28px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
             >
-              {/* Terminal top bar */}
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
-                <span style={{ display: "inline-block", width: "12px", height: "12px", borderRadius: "50%", background: "#FF5F57" }} />
-                <span style={{ display: "inline-block", width: "12px", height: "12px", borderRadius: "50%", background: "#FFBD2E" }} />
-                <span style={{ display: "inline-block", width: "12px", height: "12px", borderRadius: "50%", background: "#28CA42" }} />
-                <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginLeft: "8px", fontFamily: FONT_MONO }}>terminal</span>
+              {/* Top bar */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginBottom: "20px",
+                }}
+              >
+                <span
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    background: "#FF5F57",
+                    display: "inline-block",
+                  }}
+                />
+                <span
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    background: "#FFBD2E",
+                    display: "inline-block",
+                  }}
+                />
+                <span
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    background: "#28CA42",
+                    display: "inline-block",
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: "13px",
+                    color: "rgba(255,255,255,0.5)",
+                    marginLeft: "12px",
+                  }}
+                >
+                  terminal
+                </span>
               </div>
-              {/* Code lines */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                {codeLines.map((line, i) => (
-                  <div key={i} style={{ fontSize: "14px", fontFamily: FONT_MONO, color: line.color || "transparent", minHeight: "20px" }}>
+
+              {/* Code */}
+              <div
+                style={{
+                  fontFamily: "'SF Mono', 'Monaco', 'Menlo', monospace",
+                  fontSize: "14px",
+                  lineHeight: 1.6,
+                }}
+              >
+                {CODE_LINES.map((line, i) => (
+                  <div key={i} style={{ color: line.color || "#FFFFFF" }}>
                     {line.text || "\u00A0"}
                   </div>
                 ))}
@@ -836,115 +1033,167 @@ export default function LandingPage() {
             </div>
           </Reveal>
 
-          {/* RIGHT: Text */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <Reveal delay={0}>
-              <span style={{ fontSize: "14px", textTransform: "uppercase", color: COLOR.textCaption, fontWeight: 500, fontFamily: FONT_SANS }}>
+          {/* RIGHT — copy */}
+          <Reveal delay={120}>
+            <div>
+              <div style={{ fontSize: "14px", fontWeight: 400, color: "#6B7C93", textTransform: "uppercase" }}>
                 DEVELOPER API
-              </span>
-            </Reveal>
-            <Reveal delay={100}>
+              </div>
               <h2
                 style={{
-                  fontSize: "44px",
-                  fontWeight: 700,
-                  color: COLOR.textPrimary,
+                  fontSize: "40px",
+                  fontWeight: 300,
+                  color: "#0A2540",
                   letterSpacing: "-0.02em",
                   lineHeight: 1.1,
-                  margin: 0,
-                  fontFamily: FONT_SANS,
+                  margin: "16px 0 0 0",
                 }}
               >
-                Build with
-                <br />
-                verified data.
+                Build with verified data.
               </h2>
-            </Reveal>
-            <Reveal delay={200}>
-              <p style={{ fontSize: "17px", color: COLOR.textSecondary, lineHeight: 1.5, margin: 0, fontFamily: FONT_SANS }}>
-                Full programmatic access to every pair, swap, and liquidity pool on Arc Network. REST +
-                WebSocket. TypeScript SDK.
+              <p
+                style={{
+                  fontSize: "17px",
+                  fontWeight: 400,
+                  color: "#425466",
+                  lineHeight: 1.5,
+                  margin: "16px 0 0 0",
+                }}
+              >
+                Full programmatic access to every pair, swap, and liquidity pool on Arc Network.
+                REST + WebSocket. TypeScript SDK.
               </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {devFeatures.map((item, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <CheckIcon />
-                    <span style={{ fontSize: "16px", color: COLOR.textPrimary, fontFamily: FONT_SANS }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-          </div>
+              <CheckRow
+                items={[
+                  "REST API for pair/swap data",
+                  "WebSocket for real-time updates",
+                  "TypeScript SDK with full types",
+                  "Rate limit: 1000 req/min",
+                ]}
+              />
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ═══ 9. CTA SECTION ═══ */}
-      <section style={{ position: "relative", background: COLOR.dark, padding: "120px 0", overflow: "hidden" }}>
-        <GradientMesh dark />
-        <div style={{ position: "relative", zIndex: 1, maxWidth: "640px", margin: "0 auto", padding: "0 24px", textAlign: "center" }}>
-          <Reveal delay={0}>
-            <span style={{ fontSize: "14px", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", fontWeight: 500, fontFamily: FONT_SANS }}>
-              GET STARTED
-            </span>
-          </Reveal>
-          <Reveal delay={100}>
-            <h2
+      {/* ============================================================ */}
+      {/* 9. CTA                                                       */}
+      {/* ============================================================ */}
+      <section style={{ position: "relative", background: "#0A2540", padding: "120px 0", overflow: "hidden" }}>
+        {/* Subtle gradient mesh */}
+        <div
+          style={{
+            position: "absolute",
+            top: "-100px",
+            right: "-50px",
+            width: "400px",
+            height: "400px",
+            background: "radial-gradient(circle, #FF6BCB 0%, transparent 70%)",
+            filter: "blur(120px)",
+            opacity: 0.1,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-100px",
+            left: "-50px",
+            width: "400px",
+            height: "400px",
+            background: "radial-gradient(circle, #8B5CF6 0%, transparent 70%)",
+            filter: "blur(120px)",
+            opacity: 0.1,
+            pointerEvents: "none",
+          }}
+        />
+
+        <div
+          style={{
+            position: "relative",
+            maxWidth: "640px",
+            margin: "0 auto",
+            padding: "0 24px",
+            textAlign: "center",
+          }}
+        >
+          <Reveal>
+            <div
               style={{
-                fontSize: "48px",
-                fontWeight: 700,
-                color: COLOR.white,
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
-                margin: "16px 0 24px",
-                fontFamily: FONT_SANS,
+                fontSize: "14px",
+                fontWeight: 400,
+                color: "rgba(255,255,255,0.7)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
               }}
             >
-              Start scanning
-              <br />
-              Arc Network today.
+              GET STARTED
+            </div>
+            <h2
+              style={{
+                fontSize: "44px",
+                fontWeight: 300,
+                color: "#FFFFFF",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
+                margin: "16px 0 0 0",
+              }}
+            >
+              Start scanning Arc Network today.
             </h2>
-          </Reveal>
-          <Reveal delay={200}>
-            <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.7)", lineHeight: 1.5, margin: "0 0 32px", fontFamily: FONT_SANS }}>
+            <p
+              style={{
+                fontSize: "18px",
+                fontWeight: 400,
+                color: "rgba(255,255,255,0.7)",
+                lineHeight: 1.5,
+                margin: "16px 0 0 0",
+              }}
+            >
               Index every pair, track every swap, and build with verified on-chain data.
             </p>
-          </Reveal>
-          <Reveal delay={300}>
-            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                justifyContent: "center",
+                marginTop: "32px",
+              }}
+            >
               <a
                 href="/explore"
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  background: COLOR.white,
-                  color: COLOR.dark,
-                  borderRadius: "999px",
-                  padding: "14px 28px",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  fontFamily: FONT_SANS,
+                  background: "#635BFF",
+                  color: "#FFFFFF",
+                  borderRadius: "4px",
+                  padding: "14px 24px",
+                  fontSize: "16px",
+                  fontWeight: 400,
                   textDecoration: "none",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
+                  transition: "background-color 0.2s ease, box-shadow 0.2s ease",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#5247DB")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "#635BFF")}
               >
-                Explore pairs →
+                Explore pairs
               </a>
               <a
                 href="https://docs.aperture.xyz"
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
                   background: "transparent",
-                  color: COLOR.white,
-                  borderRadius: "999px",
-                  padding: "14px 28px",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  fontFamily: FONT_SANS,
-                  textDecoration: "none",
                   border: "1px solid rgba(255,255,255,0.3)",
+                  color: "#FFFFFF",
+                  borderRadius: "4px",
+                  padding: "14px 24px",
+                  fontSize: "16px",
+                  fontWeight: 400,
+                  textDecoration: "none",
+                  transition: "background-color 0.2s ease",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
                 Read docs
               </a>
@@ -953,78 +1202,105 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ 10. FOOTER ═══ */}
-      <footer style={{ background: COLOR.white, borderTop: `1px solid ${COLOR.borderLight}`, padding: "64px 0 32px" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
-          {/* 4-column grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "48px", marginBottom: "48px" }}>
-            {/* COL 1 */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <ApertureLogo size={24} />
-                <span style={{ fontSize: "18px", fontWeight: 700, color: COLOR.textPrimary, fontFamily: FONT_SANS }}>Aperture</span>
+      {/* ============================================================ */}
+      {/* 10. FOOTER                                                   */}
+      {/* ============================================================ */}
+      <footer style={{ background: "#0A2540", padding: "64px 0 32px" }}>
+        <div style={{ maxWidth: "1080px", margin: "0 auto", padding: "0 24px" }}>
+          {/* 4 columns */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "2fr 1fr 1fr 1fr",
+              gap: "48px",
+            }}
+          >
+            {/* Col 1 — brand */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+                <ApertureLogo color="#FFFFFF" />
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "#FFFFFF" }}>Aperture</span>
               </div>
-              <span style={{ fontSize: "14px", color: COLOR.textCaption, fontFamily: FONT_SANS }}>
+              <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)", margin: "0 0 16px 0" }}>
                 DEX scanner on Arc Network
-              </span>
-              <div
+              </p>
+              <span
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "6px",
-                  background: COLOR.grayBg,
-                  border: `1px solid ${COLOR.borderLight}`,
-                  borderRadius: "6px",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "4px",
                   padding: "4px 10px",
-                  width: "fit-content",
+                  fontSize: "12px",
+                  color: "rgba(255,255,255,0.7)",
                 }}
               >
-                <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: COLOR.green }} />
-                <span style={{ fontSize: "12px", color: COLOR.textSecondary, fontWeight: 500, fontFamily: FONT_SANS }}>ARC TESTNET</span>
+                <span
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
+                    background: "#00D66F",
+                    display: "inline-block",
+                  }}
+                />
+                ARC TESTNET
+              </span>
+            </div>
+
+            {/* Cols 2-4 — link groups */}
+            {footerCols.map((col) => (
+              <div key={col.title}>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    color: "rgba(255,255,255,0.5)",
+                    textTransform: "uppercase",
+                    marginBottom: "16px",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  {col.title}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {col.links.map((l) => (
+                    <a
+                      key={l.label}
+                      href={l.href}
+                      className="footer-link"
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "rgba(255,255,255,0.7)",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {l.label}
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
-
-            {/* COL 2: PRODUCT */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <span style={{ fontSize: "12px", textTransform: "uppercase", color: COLOR.textCaption, fontWeight: 600, fontFamily: FONT_SANS }}>
-                PRODUCT
-              </span>
-              {["Explore", "Pairs", "Swap", "Portfolio"].map((link, i) => (
-                <a key={i} href={`#${link.toLowerCase()}`} style={{ fontSize: "14px", color: COLOR.textSecondary, textDecoration: "none", fontFamily: FONT_SANS }}>
-                  {link}
-                </a>
-              ))}
-            </div>
-
-            {/* COL 3: RESOURCES */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <span style={{ fontSize: "12px", textTransform: "uppercase", color: COLOR.textCaption, fontWeight: 600, fontFamily: FONT_SANS }}>
-                RESOURCES
-              </span>
-              {["Docs", "API", "GitHub", "Status"].map((link, i) => (
-                <a key={i} href={`#${link.toLowerCase()}`} style={{ fontSize: "14px", color: COLOR.textSecondary, textDecoration: "none", fontFamily: FONT_SANS }}>
-                  {link}
-                </a>
-              ))}
-            </div>
-
-            {/* COL 4: COMPANY */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <span style={{ fontSize: "12px", textTransform: "uppercase", color: COLOR.textCaption, fontWeight: 600, fontFamily: FONT_SANS }}>
-                COMPANY
-              </span>
-              {["About", "Blog", "Contact", "Privacy"].map((link, i) => (
-                <a key={i} href={`#${link.toLowerCase()}`} style={{ fontSize: "14px", color: COLOR.textSecondary, textDecoration: "none", fontFamily: FONT_SANS }}>
-                  {link}
-                </a>
-              ))}
-            </div>
+            ))}
           </div>
 
           {/* Bottom bar */}
-          <div style={{ borderTop: `1px solid ${COLOR.borderLight}`, paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "13px", color: COLOR.textCaption, fontFamily: FONT_SANS }}>© 2026 Aperture</span>
-            <span style={{ fontSize: "13px", color: COLOR.textCaption, fontFamily: FONT_SANS }}>
+          <div
+            style={{
+              borderTop: "1px solid rgba(255,255,255,0.1)",
+              marginTop: "48px",
+              paddingTop: "24px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "12px",
+            }}
+          >
+            <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>© 2026 Aperture</span>
+            <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
               Built on Arc™ — Arc is a trademark of Circle Internet Group, Inc.
             </span>
           </div>
