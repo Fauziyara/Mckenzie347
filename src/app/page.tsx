@@ -77,95 +77,94 @@ function PlusIcon({ open }: { open: boolean }) {
   );
 }
 
-// ─── Decorative crypto circle (placeholder logos) ────────────────────────────
+// ─── Pixel Grid: rounded squares with crypto logos (MintWeb3 style) ──────────
 
-function CryptoCircle({ bg, label }: { bg: string; label: string }) {
-  return (
-    <div
-      style={{
-        width: 40,
-        height: 40,
-        borderRadius: "999px",
-        background: bg,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#ffffff",
-        fontFamily: "'Inter', sans-serif",
-        fontSize: 13,
-        fontWeight: 700,
-        flexShrink: 0,
-      }}
-    >
-      {label}
-    </div>
-  );
-}
-
-function Pixel({ size = 8, opacity = 0.2, color = "#0f0807" }: { size?: number; opacity?: number; color?: string }) {
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: 4,
-        background: color,
-        opacity,
-        flexShrink: 0,
-      }}
-    />
-  );
-}
-
-// Decorative column: cascade of pixels + crypto circles
-function DecorColumn({ variant }: { variant: "left" | "right" }) {
-  const leftLogos = [
+function PixelGrid({ variant }: { variant: "left" | "right" }) {
+  // 5 cols × 9 rows grid of ~56px rounded squares
+  // Some squares have colored crypto logo backgrounds, rest are warm gray placeholders
+  const leftLogos: Array<{ bg: string; label: string }> = [
     { bg: "#627EEA", label: "ETH" },
     { bg: "#2775CA", label: "USDC" },
     { bg: "#8247E5", label: "ARB" },
+    { bg: "#0F172A", label: "DOT" },
+    { bg: "#1A1A1A", label: "ADA" },
   ];
-  const rightLogos = [
+  const rightLogos: Array<{ bg: string; label: string }> = [
     { bg: "#F7931A", label: "BTC" },
     { bg: "#9945FF", label: "SOL" },
     { bg: "#26A17B", label: "USDT" },
+    { bg: "#0EA5E9", label: "DYDX" },
+    { bg: "#1E1B4B", label: "SUI" },
   ];
   const logos = variant === "left" ? leftLogos : rightLogos;
 
-  // deterministic pseudo-random-ish offsets for visual interest
-  const cells: Array<{ kind: "px"; o: number } | { kind: "logo"; idx: number }> = [
-    { kind: "px", o: 0.3 },
-    { kind: "px", o: 0.12 },
-    { kind: "logo", idx: 0 },
-    { kind: "px", o: 0.2 },
-    { kind: "px", o: 0.1 },
-    { kind: "px", o: 0.25 },
-    { kind: "logo", idx: 1 },
-    { kind: "px", o: 0.15 },
-    { kind: "px", o: 0.3 },
-    { kind: "px", o: 0.18 },
-    { kind: "logo", idx: 2 },
-    { kind: "px", o: 0.22 },
-    { kind: "px", o: 0.1 },
+  // Positions of crypto logos in the 5x9 grid (col, row)
+  const logoPositions: Array<[number, number]> = [
+    [1, 0],
+    [3, 2],
+    [0, 4],
+    [2, 6],
+    [4, 8],
   ];
 
+  // Build 9 rows × 5 cols
+  const rows = [];
+  let logoIdx = 0;
+  for (let r = 0; r < 9; r++) {
+    const cells = [];
+    for (let c = 0; c < 5; c++) {
+      // Check if this cell has a logo
+      const logoPos = logoPositions.find(([lc, lr]) => lc === c && lr === r);
+      if (logoPos && logoIdx < logos.length) {
+        const logo = logos[logoIdx++];
+        cells.push(
+          <div
+            key={`${r}-${c}`}
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: 14,
+              background: logo.bg,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#ffffff",
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 11,
+              fontWeight: 700,
+              flexShrink: 0,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            }}
+          >
+            {logo.label}
+          </div>
+        );
+      } else {
+        // Empty placeholder square (warm gray)
+        cells.push(
+          <div
+            key={`${r}-${c}`}
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: 14,
+              background: "#D8D5D0",
+              flexShrink: 0,
+            }}
+          />
+        );
+      }
+    }
+    rows.push(
+      <div key={r} style={{ display: "flex", gap: 8 }}>
+        {cells}
+      </div>
+    );
+  }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: variant === "left" ? "flex-start" : "flex-end",
-        gap: 10,
-        width: 80,
-        opacity: 0.9,
-      }}
-    >
-      {cells.map((c, i) =>
-        c.kind === "px" ? (
-          <Pixel key={i} opacity={c.o} />
-        ) : (
-          <CryptoCircle key={i} bg={logos[c.idx].bg} label={logos[c.idx].label} />
-        )
-      )}
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {rows}
     </div>
   );
 }
@@ -456,29 +455,28 @@ export default function LandingPage() {
       <section
         style={{
           padding: "32px 24px",
-          background: "#0f0807",
+          background: "#f5f3ee",
         }}
       >
         <div
           style={{
-            maxWidth: 1070,
+            maxWidth: 1200,
             margin: "0 auto",
-            background: "#f8ebe5",
-            border: "1px dashed rgba(15,8,7,0.12)",
-            borderRadius: 250,
-            minHeight: "85vh",
+            background: "#ffffff",
+            borderRadius: 20,
+            minHeight: "80vh",
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "48px 56px",
-            gap: 32,
+            padding: "60px 48px",
+            gap: 24,
             boxSizing: "border-box",
           }}
         >
-          {/* LEFT decorative column */}
+          {/* LEFT pixel grid */}
           <div className="aperture-decor-left" style={{ display: "flex" }}>
-            <DecorColumn variant="left" />
+            <PixelGrid variant="left" />
           </div>
 
           {/* CENTER main content */}
@@ -527,10 +525,10 @@ export default function LandingPage() {
               style={{
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 700,
-                fontSize: 36,
+                fontSize: 56,
                 color: "#0f0807",
                 letterSpacing: "-0.02em",
-                lineHeight: "120%",
+                lineHeight: "1.1",
                 margin: 0,
                 textAlign: "center",
               }}
@@ -594,7 +592,7 @@ export default function LandingPage() {
 
           {/* RIGHT decorative column */}
           <div className="aperture-decor-right" style={{ display: "flex" }}>
-            <DecorColumn variant="right" />
+            <PixelGrid variant="right" />
           </div>
         </div>
 
@@ -608,8 +606,8 @@ export default function LandingPage() {
       {/* ═══ 3. TRUSTED BY ═══ */}
       <section
         style={{
-          background: "#0f0807",
-          padding: "40px 24px",
+          background: "#f5f3ee",
+          padding: "60px 24px",
           textAlign: "center",
         }}
       >
@@ -638,7 +636,7 @@ export default function LandingPage() {
             <span
               key={l}
               style={{
-                color: "#5d5958",
+                color: "#9CA3AF",
                 fontSize: 14,
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 500,
