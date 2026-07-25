@@ -4,87 +4,252 @@ import { Reveal } from "@/components/reveal";
 import { mockPairs } from "@/lib/mock-data";
 import { formatUsd } from "@/lib/format";
 
-const COLORS = {
-  cream: "#F4F1EA",
-  darkBg: "#0A0A0A",
-  darkCard: "#1A1A1A",
-  textPrimary: "#1A1A1A",
-  textSecondary: "#8A8A85",
-  amber: "#D4A04A",
-  borderLight: "#D8D4CA",
-  borderDark: "#2A2A2A",
-  textOnDark: "#F4F1EA",
-  textOnDarkMuted: "#888880",
-  green: "#4ADE80",
+const p0 = mockPairs[0];
+
+/* ── Shared style constants ───────────────────────────────────────── */
+const FONT_DISPLAY = "'Space Grotesk', 'Inter', sans-serif";
+const FONT_BODY = "'Inter', system-ui, sans-serif";
+const FONT_MONO = "'JetBrains Mono', ui-monospace, monospace";
+
+const C = {
+  ink: "#1e1d29",
+  paper: "#f7f7f7",
+  arcBlue: "#2f578c",
+  cream: "#f7f7f7",
+  orange: "#ff8c00",
+  green: "#10b981",
+  text2Dark: "rgba(247,247,247,0.76)",
+  text3Dark: "rgba(247,247,247,0.5)",
+  text2Light: "#6b7280",
+  borderDark: "rgba(255,255,255,0.08)",
+  borderLight: "#e5e7eb",
+  cardDarkBg: "rgba(255,255,255,0.04)",
+  cardLightBg: "#ffffff",
 };
 
-const FONT = "'Inter', sans-serif";
+/* ── Eyebrow (orange dot + uppercase label) ──────────────────────── */
+function Eyebrow({
+  label,
+  textColor,
+}: {
+  label: string;
+  textColor: string;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <span
+        style={{
+          display: "inline-block",
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: C.orange,
+        }}
+      />
+      <span
+        style={{
+          fontFamily: FONT_BODY,
+          fontSize: 12,
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          fontWeight: 500,
+          color: textColor,
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
 
-const featureCards = [
-  {
-    eyebrow: "PAIR DATA",
-    title: "Real-time pairs",
-    description: "Every liquidity pool on Arc, indexed the instant it's created.",
-  },
-  {
-    eyebrow: "SWAP HISTORY",
-    title: "On-chain swaps",
-    description: "Complete swap logs with price impact, gas, and sender analysis.",
-  },
-  {
-    eyebrow: "LIQUIDITY",
-    title: "Depth tracking",
-    description: "Live liquidity curves and TVL across all verified pairs.",
-  },
-  {
-    eyebrow: "PRICE FEEDS",
-    title: "Deterministic prices",
-    description: "Math-verified price data — no oracles, no estimates.",
-  },
-  {
-    eyebrow: "ANALYTICS",
-    title: "Volume & trends",
-    description: "24h volume, tx count, and price change for every pair.",
-  },
-  {
-    eyebrow: "API ACCESS",
-    title: "REST & WebSocket",
-    description: "Full programmatic access via SDK. npm install @aperture/sdk",
-  },
-];
+/* ── Tag pill (small, 6px radius) ─────────────────────────────────── */
+function Tag({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      style={{
+        background: "rgba(255,255,255,0.06)",
+        border: `1px solid ${C.borderDark}`,
+        borderRadius: 6,
+        padding: "4px 10px",
+        fontSize: 11,
+        textTransform: "uppercase",
+        fontWeight: 500,
+        color: C.text2Dark,
+        fontFamily: FONT_BODY,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
 
-const whereItFits = [
+/* ── Aperture logo (SVG aperture/lens) ────────────────────────────── */
+function ApertureLogo({ size = 28 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      aria-label="Aperture logo"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="30"
+        height="30"
+        rx="6"
+        stroke="rgba(255,255,255,0.15)"
+        strokeWidth="1"
+      />
+      <circle
+        cx="16"
+        cy="16"
+        r="9"
+        stroke={C.cream}
+        strokeWidth="1.5"
+      />
+      <circle cx="16" cy="16" r="3" fill={C.orange} />
+      {/* Aperture blades */}
+      <path
+        d="M16 7 L16 16 L23 12"
+        stroke={C.cream}
+        strokeWidth="1"
+        strokeLinecap="round"
+        opacity="0.6"
+      />
+      <path
+        d="M23 12 L16 16 L21 23"
+        stroke={C.cream}
+        strokeWidth="1"
+        strokeLinecap="round"
+        opacity="0.6"
+      />
+      <path
+        d="M21 23 L16 16 L9 20"
+        stroke={C.cream}
+        strokeWidth="1"
+        strokeLinecap="round"
+        opacity="0.6"
+      />
+      <path
+        d="M9 20 L16 16 L16 7"
+        stroke={C.cream}
+        strokeWidth="1"
+        strokeLinecap="round"
+        opacity="0.6"
+      />
+    </svg>
+  );
+}
+
+/* ── Feature card data ────────────────────────────────────────────── */
+const features = [
   {
     num: "01",
-    statement: "Real-time pair discovery for active traders.",
-    tags: "— DEX TRADERS, LPs, ANALYSTS",
+    tag: "DEX NATIVE",
+    title: "Pair Discovery",
+    desc: "Every liquidity pool on Arc, indexed the instant it's created.",
   },
   {
     num: "02",
-    statement: "Liquidity monitoring for position management.",
-    tags: "— MARKET MAKERS, LIQUIDITY PROVIDERS",
+    tag: "ON-CHAIN",
+    title: "Swap History",
+    desc: "Complete swap logs with price impact, gas, and sender analysis.",
   },
   {
     num: "03",
-    statement: "On-chain data for dashboards and integrations.",
-    tags: "— DEVELOPERS, DAPPS, AGGREGATORS",
+    tag: "REAL-TIME",
+    title: "Liquidity Tracking",
+    desc: "Live liquidity curves and TVL across all verified pairs.",
+  },
+  {
+    num: "04",
+    tag: "VERIFIED",
+    title: "Price Feeds",
+    desc: "Math-verified price data — no oracles, no estimates.",
+  },
+  {
+    num: "05",
+    tag: "SDK",
+    title: "Analytics API",
+    desc: "24h volume, tx count, and price change via REST + WebSocket.",
+  },
+  {
+    num: "06",
+    tag: "LIVE",
+    title: "Block Scanner",
+    desc: "Real-time block heights, transactions, and contract events.",
   },
 ];
 
-export default function LandingPage() {
-  const pair = mockPairs[0];
+const steps = [
+  {
+    num: "01",
+    title: "Open Explorer",
+    desc: "Visit the dashboard to see all pairs on Arc Network in real time.",
+  },
+  {
+    num: "02",
+    title: "Track Data",
+    desc: "Monitor swaps, liquidity, and price feeds for any pair.",
+  },
+  {
+    num: "03",
+    title: "Build with API",
+    desc: "Install the SDK and access everything programmatically.",
+  },
+];
 
+const stats = [
+  { label: "LATEST BLOCK", value: "845,231" },
+  { label: "24H VOLUME", value: formatUsd(p0.volume24h) },
+  { label: "ACTIVE PAIRS", value: "12" },
+  { label: "GAS PRICE", value: "22.018 GWEI" },
+];
+
+/* ── Mock swap list for showcase card ──────────────────────────────── */
+const mockSwaps = [
+  { side: "BUY", amount: "1.42", token: p0.token0.symbol, usd: "$2,840" },
+  { side: "SELL", amount: "0.86", token: p0.token1.symbol, usd: "$1,720" },
+  { side: "BUY", amount: "3.11", token: p0.token0.symbol, usd: "$6,220" },
+  { side: "SELL", amount: "0.50", token: p0.token1.symbol, usd: "$1,000" },
+];
+
+/* ── Page ─────────────────────────────────────────────────────────── */
+export default function Page() {
   return (
     <div
       style={{
-        background: COLORS.cream,
-        color: COLORS.textPrimary,
-        fontFamily: FONT,
+        background: C.ink,
+        color: C.cream,
+        fontFamily: FONT_BODY,
+        fontSize: 15,
+        lineHeight: 1.625,
         margin: 0,
         padding: 0,
-        minHeight: "100vh",
       }}
     >
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes scrollLine {
+          0% { transform: scaleY(0); transform-origin: top; }
+          50% { transform: scaleY(1); transform-origin: top; }
+          51% { transform: scaleY(1); transform-origin: bottom; }
+          100% { transform: scaleY(0); transform-origin: bottom; }
+        }
+        @keyframes orbPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; }
+        a { text-decoration: none; color: inherit; }
+      `}</style>
+
       {/* ═══ 1. STICKY HEADER ═══ */}
       <header
         style={{
@@ -92,450 +257,575 @@ export default function LandingPage() {
           top: 0,
           left: 0,
           right: 0,
-          height: 60,
-          background: COLORS.cream,
-          borderBottom: `1px solid ${COLORS.borderLight}`,
+          height: 64,
+          background: "rgba(30,29,41,0.78)",
+          backdropFilter: "blur(40px)",
+          WebkitBackdropFilter: "blur(40px)",
+          borderBottom: `1px solid ${C.borderDark}`,
           zIndex: 100,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 6%",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {/* aperture-like SVG icon */}
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            style={{ display: "block" }}
-          >
-            <rect
-              x="1"
-              y="1"
-              width="22"
-              height="22"
-              stroke={COLORS.textPrimary}
-              strokeWidth="2"
-            />
-            <circle
-              cx="12"
-              cy="12"
-              r="6"
-              stroke={COLORS.amber}
-              strokeWidth="2"
-            />
-            <circle cx="12" cy="12" r="2" fill={COLORS.textPrimary} />
-          </svg>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+        <div
+          style={{
+            maxWidth: 1280,
+            margin: "0 auto",
+            height: "100%",
+            padding: "0 32px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Left: logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <ApertureLogo size={28} />
             <span
               style={{
-                fontWeight: 700,
-                fontSize: 15,
-                letterSpacing: "0.02em",
-                color: COLORS.textPrimary,
-                lineHeight: 1.1,
+                fontFamily: FONT_DISPLAY,
+                fontSize: 16,
+                fontWeight: 600,
+                color: C.cream,
+                letterSpacing: "-0.01em",
               }}
             >
               APERTURE
             </span>
-            <span
-              style={{
-                fontSize: 9,
-                textTransform: "uppercase",
-                letterSpacing: "0.12em",
-                color: COLORS.textSecondary,
-                fontWeight: 700,
-                lineHeight: 1.2,
-              }}
-            >
-              DEX Scanner on Arc
-            </span>
           </div>
-        </div>
 
-        <nav style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          <a
-            href="#"
-            style={{
-              fontSize: 14,
-              color: COLORS.textPrimary,
-              textDecoration: "none",
-              fontWeight: 400,
-              fontFamily: FONT,
-            }}
-          >
-            Explore
-          </a>
-          <a
-            href="#"
-            style={{
-              fontSize: 14,
-              color: COLORS.textPrimary,
-              textDecoration: "none",
-              fontWeight: 400,
-              fontFamily: FONT,
-            }}
-          >
-            Security
-          </a>
-          <a
-            href="#"
-            style={{
-              fontSize: 14,
-              color: COLORS.textPrimary,
-              textDecoration: "none",
-              fontWeight: 400,
-              fontFamily: FONT,
-            }}
-          >
-            Docs
-          </a>
-          <span
+          {/* Center: nav */}
+          <nav
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 6,
-              fontSize: 11,
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              color: COLORS.textSecondary,
-              fontWeight: 700,
+              gap: 32,
             }}
           >
+            <a
+              href="#explore"
+              style={{
+                fontSize: 14,
+                color: C.text2Dark,
+                position: "relative",
+                paddingBottom: 4,
+                borderBottom: `2px solid ${C.orange}`,
+              }}
+            >
+              Explore
+            </a>
+            <a href="#security" style={{ fontSize: 14, color: C.text2Dark }}>
+              Security
+            </a>
+            <a href="#api" style={{ fontSize: 14, color: C.text2Dark }}>
+              API
+            </a>
+            <a href="#docs" style={{ fontSize: 14, color: C.text2Dark }}>
+              Docs
+            </a>
+          </nav>
+
+          {/* Right: status + connect */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span
               style={{
-                width: 6,
-                height: 6,
-                background: COLORS.amber,
-                borderRadius: 0,
-                display: "inline-block",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: "rgba(255,255,255,0.06)",
+                border: `1px solid rgba(255,255,255,0.1)`,
+                borderRadius: 999,
+                padding: "6px 12px",
+                fontSize: 12,
+                color: C.text2Dark,
+                fontFamily: FONT_BODY,
               }}
-            />
-            ARC Testnet
-          </span>
-          <a
-            href="#"
-            style={{
-              background: COLORS.darkBg,
-              color: COLORS.cream,
-              padding: "10px 16px",
-              fontSize: 11,
-              textTransform: "uppercase",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              borderRadius: 0,
-              textDecoration: "none",
-              fontFamily: FONT,
-              border: "none",
-              cursor: "pointer",
-              display: "inline-block",
-            }}
-          >
-            Go to app
-          </a>
-        </nav>
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: C.green,
+                }}
+              />
+              ARC TESTNET
+            </span>
+            <button
+              style={{
+                background: C.cream,
+                color: C.ink,
+                borderRadius: 8,
+                padding: "8px 16px",
+                fontSize: 14,
+                fontWeight: 500,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: FONT_BODY,
+              }}
+            >
+              Connect
+            </button>
+          </div>
+        </div>
       </header>
-
-      {/* spacer for fixed header */}
-      <div style={{ height: 60 }} />
 
       {/* ═══ 2. HERO ═══ */}
       <section
         style={{
-          background: COLORS.cream,
-          padding: "80px 6% 120px",
-          minHeight: "80vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          position: "relative",
+          minHeight: "auto",
+          background: C.arcBlue,
+          backgroundImage:
+            "radial-gradient(ellipse at center, rgba(172,198,233,0.15) 0%, rgba(47,87,140,0) 70%)",
+          overflow: "hidden",
+          paddingTop: 100,
+          paddingBottom: 60,
+          paddingLeft: 32,
+          paddingRight: 32,
         }}
       >
-        <div style={{ maxWidth: "60%" }}>
-          <Reveal delay={0}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 32,
-              }}
-            >
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  background: COLORS.amber,
-                  borderRadius: 0,
-                  display: "inline-block",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 11,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.12em",
-                  color: COLORS.textSecondary,
-                  fontWeight: 700,
-                  fontFamily: FONT,
-                }}
-              >
-                DEX Intelligence • Arc Network
-              </span>
-            </div>
-          </Reveal>
+        {/* Orb 1: top-right, orange */}
+        <div
+          style={{
+            position: "absolute",
+            top: -100,
+            right: -100,
+            width: 400,
+            height: 400,
+            background:
+              "radial-gradient(circle, rgba(255,140,0,0.08) 0%, transparent 70%)",
+            filter: "blur(40px)",
+            pointerEvents: "none",
+            animation: "orbPulse 6s ease-in-out infinite",
+          }}
+        />
+        {/* Orb 2: bottom-left, blue */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: -80,
+            left: -80,
+            width: 350,
+            height: 350,
+            background:
+              "radial-gradient(circle, rgba(172,198,233,0.12) 0%, transparent 70%)",
+            filter: "blur(40px)",
+            pointerEvents: "none",
+            animation: "orbPulse 8s ease-in-out infinite",
+          }}
+        />
 
-          <Reveal delay={100}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 2,
+            maxWidth: 1200,
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            gap: 64,
+            alignItems: "center",
+          }}
+        >
+          {/* Left content */}
+          <div>
+            <Eyebrow
+              label="DEX INTELLIGENCE • ARC NETWORK"
+              textColor={C.text2Dark}
+            />
+
             <h1
               style={{
-                fontSize: 200,
-                fontWeight: 700,
-                color: COLORS.textPrimary,
-                letterSpacing: "-0.04em",
-                lineHeight: 0.9,
-                margin: 0,
-                padding: 0,
-                fontFamily: FONT,
+                fontFamily: FONT_DISPLAY,
+                fontSize: 120,
+                fontWeight: 600,
+                color: C.cream,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.0,
+                margin: "24px 0 0 0",
               }}
             >
-              APERTURE
+              Scan every
+              <br />
+              <span style={{ fontStyle: "italic" }}>pair</span> on Arc.
             </h1>
-          </Reveal>
 
-          <Reveal delay={200}>
             <p
               style={{
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: 400,
-                color: COLORS.textSecondary,
-                maxWidth: 480,
-                lineHeight: 1.5,
-                margin: "32px 0",
-                fontFamily: FONT,
+                color: C.text2Dark,
+                maxWidth: 520,
+                lineHeight: 1.625,
+                margin: "32px 0 0 0",
               }}
             >
               A transparent DEX scanner for Arc Network. Real-time pair data,
-              on-chain swaps, and liquidity analytics — no estimates, just
-              verified data.
+              on-chain swap history, and verified liquidity analytics — no
+              estimates, just deterministic data.
             </p>
-          </Reveal>
 
-          <Reveal delay={300}>
-            <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+            {/* Tag row */}
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                flexWrap: "wrap",
+                marginTop: 28,
+              }}
+            >
+              <Tag>PAIRS</Tag>
+              <Tag>SWAPS</Tag>
+              <Tag>LIQUIDITY</Tag>
+              <Tag>VOLUME</Tag>
+              <Tag>API</Tag>
+            </div>
+
+            {/* Buttons */}
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                marginTop: 32,
+              }}
+            >
               <a
-                href="#"
+                href="#explore"
                 style={{
-                  background: COLORS.darkBg,
-                  color: COLORS.cream,
-                  padding: "12px 20px",
-                  fontSize: 12,
-                  textTransform: "uppercase",
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  borderRadius: 0,
-                  textDecoration: "none",
-                  fontFamily: FONT,
-                  border: "none",
-                  cursor: "pointer",
-                  display: "inline-block",
+                  background: C.cream,
+                  color: C.ink,
+                  borderRadius: 8,
+                  padding: "12px 24px",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontFamily: FONT_BODY,
                 }}
               >
-                Go to app
+                Explore pairs →
               </a>
               <a
-                href="#"
+                href="#docs"
                 style={{
                   background: "transparent",
-                  color: COLORS.textPrimary,
-                  padding: "12px 20px",
-                  fontSize: 12,
-                  textTransform: "uppercase",
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  borderRadius: 0,
-                  textDecoration: "none",
-                  fontFamily: FONT,
-                  border: `1px solid ${COLORS.textPrimary}`,
-                  cursor: "pointer",
-                  display: "inline-block",
+                  border: `1px solid rgba(255,255,255,0.15)`,
+                  color: C.cream,
+                  borderRadius: 8,
+                  padding: "12px 24px",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  fontFamily: FONT_BODY,
                 }}
               >
                 Read docs
               </a>
             </div>
-          </Reveal>
+          </div>
+
+          {/* Right: Terminal card */}
+          <div
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: `1px solid ${C.borderDark}`,
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              borderRadius: 16,
+              padding: 24,
+              width: 360,
+            }}
+          >
+            {/* Terminal header */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: 16,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 12,
+                  textTransform: "uppercase",
+                  color: C.text3Dark,
+                  fontFamily: FONT_BODY,
+                  fontWeight: 500,
+                  letterSpacing: "0.05em",
+                }}
+              >
+                APERTURE TERMINAL
+              </span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  textTransform: "uppercase",
+                  color: C.green,
+                  fontFamily: FONT_BODY,
+                  fontWeight: 500,
+                }}
+              >
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: C.green,
+                  }}
+                />
+                ONLINE
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div
+              style={{
+                height: 1,
+                background: C.borderDark,
+                marginBottom: 4,
+              }}
+            />
+
+            {/* Data rows */}
+            <DataRow label="PAIRS" value="12" />
+            <DataRow label="24H VOLUME" value={formatUsd(p0.volume24h)} />
+            <DataRow label="LIQUIDITY" value={formatUsd(p0.liquidityUsd)} />
+            <DataRow
+              label="BLOCK"
+              value="845,231"
+              isLast={true}
+            />
+
+            {/* Bottom */}
+            <div
+              style={{
+                marginTop: 16,
+                fontSize: 13,
+                fontFamily: FONT_MONO,
+                color: C.orange,
+              }}
+            >
+              npm install @aperture/sdk
+            </div>
+          </div>
         </div>
 
+        {/* SCROLL indicator */}
         <div
           style={{
-            borderTop: `1px solid ${COLORS.borderLight}`,
-            marginTop: 80,
-            width: "100%",
+            position: "absolute",
+            bottom: 32,
+            left: 32,
+            zIndex: 3,
           }}
-        />
+        >
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              color: C.text3Dark,
+              fontFamily: FONT_BODY,
+              letterSpacing: "0.05em",
+              marginBottom: 8,
+            }}
+          >
+            SCROLL
+          </div>
+          <div
+            style={{
+              width: 1,
+              height: 40,
+              background: C.text3Dark,
+              transformOrigin: "top",
+              animation: "scrollLine 2s ease-in-out infinite",
+            }}
+          />
+        </div>
       </section>
 
-      {/* ═══ 3. "THE SCANNER" SECTION ═══ */}
+      {/* ═══ 3. MARQUEE ═══ */}
       <section
         style={{
-          background: COLORS.cream,
-          padding: "120px 6%",
-          maxWidth: 1200,
-          margin: "0 auto",
+          background: C.paper,
+          padding: "80px 0",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
         }}
       >
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "40% 60%",
-            gap: 40,
-            alignItems: "start",
+            display: "inline-block",
+            whiteSpace: "nowrap",
+            animation: "marquee 20s linear infinite",
           }}
         >
-          {/* LEFT */}
-          <div>
-            <Reveal delay={0}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginBottom: 24,
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    background: COLORS.amber,
-                    borderRadius: 0,
-                    display: "inline-block",
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: 11,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.12em",
-                    color: COLORS.textSecondary,
-                    fontWeight: 700,
-                    fontFamily: FONT,
-                  }}
-                >
-                  The Scanner
-                </span>
-              </div>
-            </Reveal>
+          {Array.from({ length: 2 }).map((_, i) => (
+            <span key={i} aria-hidden={i > 0}>
+              {Array.from({ length: 4 }).map((_, j) => {
+                const filled = j % 2 === 0;
+                return (
+                  <span
+                    key={j}
+                    style={{
+                      fontFamily: FONT_DISPLAY,
+                      fontSize: 140,
+                      fontWeight: 600,
+                      letterSpacing: "-0.02em",
+                      WebkitTextStroke: filled
+                        ? "unset"
+                        : "2px #1e1d29",
+                      color: filled ? C.ink : "transparent",
+                      marginRight: 24,
+                    }}
+                  >
+                    APERTURE
+                    <span style={{ color: C.orange, margin: "0 16px" }}>
+                      —
+                    </span>
+                  </span>
+                );
+              })}
+            </span>
+          ))}
+        </div>
+      </section>
 
-            <Reveal delay={100}>
-              <h2
-                style={{
-                  fontSize: 64,
-                  fontWeight: 700,
-                  color: COLORS.textPrimary,
-                  letterSpacing: "-0.03em",
-                  lineHeight: 1.05,
-                  margin: 0,
-                  padding: 0,
-                  fontFamily: FONT,
-                }}
-              >
-                Index everything,
-                <br />
-                trust nothing.
-              </h2>
-            </Reveal>
-
-            <Reveal delay={200}>
-              <p
-                style={{
-                  fontSize: 16,
-                  fontWeight: 400,
-                  color: COLORS.textSecondary,
-                  lineHeight: 1.6,
-                  maxWidth: 360,
-                  margin: "32px 0 0",
-                  fontFamily: FONT,
-                }}
-              >
-                Aperture indexes every liquidity pool, swap, and price movement
-                on Arc Network. Mathematically verified, deterministically final.
-              </p>
-            </Reveal>
+      {/* ═══ 4. PRODUCT SYSTEM ═══ */}
+      <section
+        style={{
+          background: C.paper,
+          padding: "120px 32px",
+        }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          {/* Eyebrow row */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 40,
+            }}
+          >
+            <Eyebrow label="PRODUCT SYSTEM" textColor={C.ink} />
+            <span
+              style={{
+                fontSize: 12,
+                textTransform: "uppercase",
+                color: C.text2Light,
+                fontFamily: FONT_BODY,
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+              }}
+            >
+              06 CORE FEATURES
+            </span>
           </div>
 
-          {/* RIGHT - 2x3 grid */}
+          {/* Headline */}
+          <Reveal delay={100}>
+            <h2
+              style={{
+                fontFamily: FONT_DISPLAY,
+                fontSize: 56,
+                fontWeight: 600,
+                color: C.ink,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.05,
+                margin: "0 0 64px 0",
+              }}
+            >
+              Why Aperture feels
+              <br />
+              native to Arc.
+            </h2>
+          </Reveal>
+
+          {/* 3×2 grid */}
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 16,
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 24,
             }}
           >
-            {featureCards.map((card, i) => (
-              <Reveal key={card.eyebrow} delay={i * 80}>
+            {features.map((f, i) => (
+              <Reveal key={f.num} delay={100 + i * 80}>
                 <div
                   style={{
-                    background: COLORS.cream,
-                    border: `1px solid ${COLORS.borderLight}`,
-                    borderRadius: 0,
+                    background: C.cardLightBg,
+                    border: `1px solid ${C.borderLight}`,
+                    borderRadius: 16,
                     padding: 32,
-                    position: "relative",
-                    minHeight: 220,
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: 240,
                   }}
                 >
-                  <span
+                  <div
                     style={{
-                      position: "absolute",
-                      top: 24,
-                      right: 24,
-                      width: 8,
-                      height: 8,
-                      background: COLORS.amber,
-                      borderRadius: 0,
-                      display: "inline-block",
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: 11,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.12em",
-                      color: COLORS.textSecondary,
-                      fontWeight: 700,
-                      fontFamily: FONT,
-                      display: "block",
-                      marginBottom: 16,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 32,
                     }}
                   >
-                    {card.eyebrow}
-                  </span>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        textTransform: "uppercase",
+                        color: C.orange,
+                        fontFamily: FONT_BODY,
+                        fontWeight: 500,
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {f.num}
+                    </span>
+                    <span
+                      style={{
+                        background: "#f3f4f6",
+                        border: `1px solid ${C.borderLight}`,
+                        borderRadius: 6,
+                        padding: "4px 10px",
+                        fontSize: 11,
+                        textTransform: "uppercase",
+                        fontWeight: 500,
+                        color: C.text2Light,
+                        fontFamily: FONT_BODY,
+                      }}
+                    >
+                      {f.tag}
+                    </span>
+                  </div>
                   <h3
                     style={{
-                      fontSize: 28,
-                      fontWeight: 700,
-                      color: COLORS.textPrimary,
-                      letterSpacing: "-0.02em",
-                      lineHeight: 1.1,
-                      margin: 0,
-                      marginBottom: 12,
-                      fontFamily: FONT,
+                      fontFamily: FONT_DISPLAY,
+                      fontSize: 24,
+                      fontWeight: 600,
+                      color: C.ink,
+                      margin: "0 0 12px 0",
+                      letterSpacing: "-0.01em",
                     }}
                   >
-                    {card.title}
+                    {f.title}
                   </h3>
                   <p
                     style={{
                       fontSize: 15,
-                      fontWeight: 400,
-                      color: COLORS.textSecondary,
-                      lineHeight: 1.6,
+                      color: C.text2Light,
+                      lineHeight: 1.625,
                       margin: 0,
-                      fontFamily: FONT,
                     }}
                   >
-                    {card.description}
+                    {f.desc}
                   </p>
                 </div>
               </Reveal>
@@ -544,195 +834,38 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ 4. "WHERE IT FITS" SECTION ═══ */}
+      {/* ═══ 5. APP SHOWCASE ═══ */}
       <section
         style={{
-          background: COLORS.cream,
-          padding: "120px 6%",
-          maxWidth: 1200,
-          margin: "0 auto",
-        }}
-      >
-        <Reveal delay={0}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              marginBottom: 24,
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                background: COLORS.amber,
-                borderRadius: 0,
-                display: "inline-block",
-              }}
-            />
-            <span
-              style={{
-                fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: "0.12em",
-                color: COLORS.textSecondary,
-                fontWeight: 700,
-                fontFamily: FONT,
-              }}
-            >
-              Where It Fits
-            </span>
-          </div>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <h2
-            style={{
-              fontSize: 64,
-              fontWeight: 700,
-              color: COLORS.textPrimary,
-              letterSpacing: "-0.03em",
-              lineHeight: 1.05,
-              margin: 0,
-              marginBottom: 64,
-              fontFamily: FONT,
-            }}
-          >
-            Not every trader needs Aperture.
-          </h2>
-        </Reveal>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-          {whereItFits.map((item, i) => (
-            <Reveal key={item.num} delay={i * 100}>
-              <div
-                style={{
-                  borderTop: `1px solid ${COLORS.borderLight}`,
-                  paddingTop: 24,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 24,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: 24,
-                    flex: 1,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.12em",
-                      color: COLORS.amber,
-                      fontWeight: 700,
-                      fontFamily: FONT,
-                      flexShrink: 0,
-                    }}
-                  >
-                    {item.num}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 22,
-                      fontWeight: 700,
-                      color: COLORS.textPrimary,
-                      letterSpacing: "-0.02em",
-                      lineHeight: 1.3,
-                      fontFamily: FONT,
-                    }}
-                  >
-                    {item.statement}
-                  </span>
-                </div>
-                <span
-                  style={{
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    color: COLORS.textSecondary,
-                    fontWeight: 700,
-                    fontFamily: FONT,
-                    flexShrink: 0,
-                    textAlign: "right",
-                  }}
-                >
-                  {item.tags}
-                </span>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══ 5. "LIVE DATA" SECTION (DARK) ═══ */}
-      <section
-        style={{
-          background: COLORS.darkBg,
-          padding: "120px 6%",
-          maxWidth: 1200,
-          margin: "0 auto",
+          background: C.ink,
+          padding: "120px 32px",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
         <div
           style={{
+            maxWidth: 1200,
+            margin: "0 auto",
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 60,
-            alignItems: "start",
+            gap: 64,
+            alignItems: "center",
           }}
         >
-          {/* LEFT */}
+          {/* Left */}
           <div>
-            <Reveal delay={0}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginBottom: 24,
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    background: COLORS.amber,
-                    borderRadius: 0,
-                    display: "inline-block",
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: 11,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.12em",
-                    color: COLORS.textOnDark,
-                    fontWeight: 700,
-                    fontFamily: FONT,
-                  }}
-                >
-                  Live Data
-                </span>
-              </div>
-            </Reveal>
-
+            <Eyebrow label="LIVE DATA" textColor={C.cream} />
             <Reveal delay={100}>
               <h2
                 style={{
-                  fontSize: 64,
-                  fontWeight: 700,
-                  color: COLORS.textOnDark,
-                  letterSpacing: "-0.03em",
+                  fontFamily: FONT_DISPLAY,
+                  fontSize: 56,
+                  fontWeight: 600,
+                  color: C.cream,
+                  letterSpacing: "-0.025em",
                   lineHeight: 1.05,
-                  margin: 0,
-                  padding: 0,
-                  fontFamily: FONT,
+                  margin: "24px 0 24px 0",
                 }}
               >
                 Verified on-chain,
@@ -740,535 +873,753 @@ export default function LandingPage() {
                 in real time.
               </h2>
             </Reveal>
-
-            <Reveal delay={200}>
-              <p
-                style={{
-                  fontSize: 16,
-                  fontWeight: 400,
-                  color: COLORS.textOnDarkMuted,
-                  lineHeight: 1.6,
-                  maxWidth: 360,
-                  margin: "32px 0 0",
-                  fontFamily: FONT,
-                }}
-              >
-                Every data point is sourced directly from Arc Network's public
-                ledger. No estimates, no approximations.
-              </p>
-            </Reveal>
-          </div>
-
-          {/* RIGHT - dark card */}
-          <Reveal delay={150}>
-            <div
+            <p
               style={{
-                background: COLORS.darkCard,
-                border: `1px solid ${COLORS.borderDark}`,
-                borderRadius: 0,
-                padding: 32,
+                fontSize: 16,
+                color: C.text2Dark,
+                maxWidth: 480,
+                lineHeight: 1.625,
+                margin: 0,
               }}
             >
-              {/* top status row */}
+              Every data point is sourced directly from Arc Network's public
+              ledger. No estimates, no approximations.
+            </p>
+          </div>
+
+          {/* Right: scattered cards */}
+          <div
+            style={{
+              position: "relative",
+              minHeight: 440,
+            }}
+          >
+            {/* Card 1: Live Pair (top) */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: 280,
+                background: C.cardDarkBg,
+                border: `1px solid ${C.borderDark}`,
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                borderRadius: 16,
+                padding: 24,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 11,
+                  textTransform: "uppercase",
+                  color: C.text3Dark,
+                  fontFamily: FONT_BODY,
+                  fontWeight: 500,
+                  letterSpacing: "0.05em",
+                  marginBottom: 16,
+                }}
+              >
+                LIVE PAIR
+              </div>
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  paddingBottom: 20,
-                  borderBottom: `1px solid ${COLORS.borderDark}`,
+                  marginBottom: 16,
                 }}
               >
                 <span
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.12em",
-                    color: COLORS.textOnDark,
-                    fontWeight: 700,
-                    fontFamily: FONT,
+                    fontFamily: FONT_DISPLAY,
+                    fontSize: 18,
+                    fontWeight: 600,
+                    color: C.cream,
                   }}
                 >
-                  <span
-                    style={{
-                      width: 6,
-                      height: 6,
-                      background: COLORS.amber,
-                      borderRadius: 0,
-                      display: "inline-block",
-                    }}
-                  />
-                  Arc Testnet
+                  {p0.token0.symbol}/{p0.token1.symbol}
                 </span>
                 <span
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
                     fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.12em",
-                    color: COLORS.textOnDark,
-                    fontWeight: 700,
-                    fontFamily: FONT,
+                    color: C.green,
+                    fontFamily: FONT_MONO,
                   }}
                 >
-                  <span
-                    style={{
-                      width: 6,
-                      height: 6,
-                      background: COLORS.green,
-                      borderRadius: 0,
-                      display: "inline-block",
-                    }}
-                  />
-                  Live
+                  +{(p0.priceChange24h ?? 0).toFixed(2)}%
                 </span>
               </div>
-
-              {/* data rows */}
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "16px 0",
-                    borderBottom: `1px solid ${COLORS.borderDark}`,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.12em",
-                      color: COLORS.textOnDarkMuted,
-                      fontWeight: 700,
-                      fontFamily: FONT,
-                    }}
-                  >
-                    Block Height
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 16,
-                      color: COLORS.textOnDark,
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontWeight: 400,
-                    }}
-                  >
-                    845,231
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "16px 0",
-                    borderBottom: `1px solid ${COLORS.borderDark}`,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.12em",
-                      color: COLORS.textOnDarkMuted,
-                      fontWeight: 700,
-                      fontFamily: FONT,
-                    }}
-                  >
-                    24h Volume
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 16,
-                      color: COLORS.textOnDark,
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontWeight: 400,
-                    }}
-                  >
-                    {formatUsd(pair.volume24h)}
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "16px 0",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.12em",
-                      color: COLORS.textOnDarkMuted,
-                      fontWeight: 700,
-                      fontFamily: FONT,
-                    }}
-                  >
-                    Active Pairs
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 16,
-                      color: COLORS.textOnDark,
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontWeight: 400,
-                    }}
-                  >
-                    12
-                  </span>
-                </div>
-              </div>
-
-              {/* bottom code line */}
               <div
                 style={{
-                  marginTop: 24,
-                  paddingTop: 20,
-                  borderTop: `1px solid ${COLORS.borderDark}`,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "8px 0",
+                  borderBottom: `1px solid rgba(255,255,255,0.06)`,
                 }}
               >
-                <code
+                <span
                   style={{
-                    fontSize: 14,
-                    color: COLORS.amber,
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontWeight: 400,
+                    fontSize: 12,
+                    color: C.text3Dark,
+                    textTransform: "uppercase",
+                    fontFamily: FONT_BODY,
                   }}
                 >
-                  npm install @aperture/sdk
-                </code>
+                  PRICE
+                </span>
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontFamily: FONT_MONO,
+                    color: C.cream,
+                  }}
+                >
+                  ${((p0.liquidityUsd ?? 0) / (p0.volume24h ?? 1)).toFixed(4)}
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "8px 0",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: C.text3Dark,
+                    textTransform: "uppercase",
+                    fontFamily: FONT_BODY,
+                  }}
+                >
+                  VOLUME
+                </span>
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontFamily: FONT_MONO,
+                    color: C.cream,
+                  }}
+                >
+                  {formatUsd(p0.volume24h)}
+                </span>
               </div>
             </div>
-          </Reveal>
-        </div>
-      </section>
 
-      {/* ═══ 6. CTA SECTION ═══ */}
-      <section
-        style={{
-          background: COLORS.cream,
-          padding: "160px 6%",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ maxWidth: 800, width: "100%" }}>
-          <Reveal delay={0}>
+            {/* Card 2: Swap History (bottom-left) */}
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 24,
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                width: 260,
+                background: C.cardDarkBg,
+                border: `1px solid ${C.borderDark}`,
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                borderRadius: 16,
+                padding: 24,
               }}
             >
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  background: COLORS.amber,
-                  borderRadius: 0,
-                  display: "inline-block",
-                }}
-              />
-              <span
+              <div
                 style={{
                   fontSize: 11,
                   textTransform: "uppercase",
-                  letterSpacing: "0.12em",
-                  color: COLORS.textSecondary,
-                  fontWeight: 700,
-                  fontFamily: FONT,
+                  color: C.text3Dark,
+                  fontFamily: FONT_BODY,
+                  fontWeight: 500,
+                  letterSpacing: "0.05em",
+                  marginBottom: 16,
                 }}
               >
-                Get Started
-              </span>
+                SWAP HISTORY
+              </div>
+              {mockSwaps.map((s, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "6px 0",
+                    borderBottom:
+                      i < mockSwaps.length - 1
+                        ? "1px solid rgba(255,255,255,0.06)"
+                        : "none",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontFamily: FONT_MONO,
+                        color:
+                          s.side === "BUY" ? C.green : C.orange,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {s.side}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        fontFamily: FONT_MONO,
+                        color: C.cream,
+                      }}
+                    >
+                      {s.amount} {s.token}
+                    </span>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      color: C.text3Dark,
+                      fontFamily: FONT_MONO,
+                    }}
+                  >
+                    {s.usd}
+                  </span>
+                </div>
+              ))}
             </div>
-          </Reveal>
 
-          <Reveal delay={100}>
-            <h2
+            {/* Card 3: Liquidity curve (bottom-right) */}
+            <div
               style={{
-                fontSize: 80,
-                fontWeight: 700,
-                color: COLORS.textPrimary,
-                letterSpacing: "-0.03em",
-                lineHeight: 1.0,
-                margin: 0,
-                padding: 0,
-                fontFamily: FONT,
+                position: "absolute",
+                bottom: 60,
+                right: 20,
+                width: 240,
+                background: C.cardDarkBg,
+                border: `1px solid ${C.borderDark}`,
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                borderRadius: 16,
+                padding: 24,
               }}
             >
-              Start scanning
-              <br />
-              Arc Network.
-            </h2>
-          </Reveal>
-
-          <Reveal delay={200}>
-            <p
-              style={{
-                fontSize: 18,
-                fontWeight: 400,
-                color: COLORS.textSecondary,
-                maxWidth: 480,
-                lineHeight: 1.6,
-                margin: "32px 0 40px",
-                fontFamily: FONT,
-              }}
-            >
-              Index every pair, track every swap, and build with verified
-              on-chain data.
-            </p>
-          </Reveal>
-
-          <Reveal delay={300}>
-            <div style={{ display: "flex", gap: 12 }}>
-              <a
-                href="#"
+              <div
                 style={{
-                  background: COLORS.darkBg,
-                  color: COLORS.cream,
-                  padding: "12px 20px",
-                  fontSize: 12,
+                  fontSize: 11,
                   textTransform: "uppercase",
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  borderRadius: 0,
-                  textDecoration: "none",
-                  fontFamily: FONT,
-                  border: "none",
-                  cursor: "pointer",
-                  display: "inline-block",
+                  color: C.text3Dark,
+                  fontFamily: FONT_BODY,
+                  fontWeight: 500,
+                  letterSpacing: "0.05em",
+                  marginBottom: 16,
                 }}
               >
-                Go to app
-              </a>
-              <a
-                href="#"
+                LIQUIDITY
+              </div>
+              <svg width="100%" height="80" viewBox="0 0 200 80" fill="none">
+                <path
+                  d="M0 70 C 30 65, 50 40, 80 30 S 140 20, 200 10"
+                  stroke={C.orange}
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M0 70 C 30 65, 50 40, 80 30 S 140 20, 200 10 L 200 80 L 0 80 Z"
+                  fill="rgba(255,140,0,0.08)"
+                />
+                <circle cx="80" cy="30" r="3" fill={C.orange} />
+              </svg>
+              <div
                 style={{
-                  background: "transparent",
-                  color: COLORS.textPrimary,
-                  padding: "12px 20px",
-                  fontSize: 12,
-                  textTransform: "uppercase",
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  borderRadius: 0,
-                  textDecoration: "none",
-                  fontFamily: FONT,
-                  border: `1px solid ${COLORS.textPrimary}`,
-                  cursor: "pointer",
-                  display: "inline-block",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: 12,
                 }}
               >
-                Read docs
-              </a>
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: C.text3Dark,
+                    textTransform: "uppercase",
+                    fontFamily: FONT_BODY,
+                  }}
+                >
+                  TVL
+                </span>
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontFamily: FONT_MONO,
+                    color: C.cream,
+                  }}
+                >
+                  {formatUsd(p0.liquidityUsd)}
+                </span>
+              </div>
             </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* ═══ 7. FOOTER ═══ */}
+      {/* ═══ 6. STATS ═══ */}
+      <section
+        style={{
+          background: C.paper,
+          padding: "80px 32px",
+        }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+            }}
+          >
+            {stats.map((s, i) => (
+              <div
+                key={s.label}
+                style={{
+                  padding: "0 32px",
+                  borderLeft:
+                    i > 0 ? `1px solid ${C.borderLight}` : "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                }}
+              >
+                {/* Icon */}
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: C.orange,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 12,
+                    textTransform: "uppercase",
+                    color: C.text2Light,
+                    fontFamily: FONT_BODY,
+                    fontWeight: 500,
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  {s.label}
+                </span>
+                <span
+                  style={{
+                    fontSize: 24,
+                    fontFamily: FONT_MONO,
+                    color: C.ink,
+                    fontWeight: 600,
+                  }}
+                >
+                  {s.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 7. HOW IT WORKS ═══ */}
+      <section
+        style={{
+          background: C.ink,
+          padding: "120px 32px",
+        }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <Eyebrow label="GUIDE" textColor={C.cream} />
+          <Reveal delay={100}>
+            <h2
+              style={{
+                fontFamily: FONT_DISPLAY,
+                fontSize: 56,
+                fontWeight: 600,
+                color: C.cream,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.05,
+                margin: "24px 0 64px 0",
+              }}
+            >
+              Three steps to
+              <br />
+              start scanning.
+            </h2>
+          </Reveal>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 32,
+              flexWrap: "wrap",
+            }}
+          >
+            {steps.map((s, i) => (
+              <Reveal key={s.num} delay={100 + i * 100}>
+                <div
+                  style={{
+                    flex: "1 1 0",
+                    minWidth: 280,
+                    background: C.cardDarkBg,
+                    border: `1px solid ${C.borderDark}`,
+                    borderRadius: 16,
+                    padding: 32,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 14,
+                      color: C.orange,
+                      fontFamily: FONT_BODY,
+                      fontWeight: 500,
+                      letterSpacing: "0.05em",
+                      display: "block",
+                      marginBottom: 16,
+                    }}
+                  >
+                    {s.num}
+                  </span>
+                  <h3
+                    style={{
+                      fontFamily: FONT_DISPLAY,
+                      fontSize: 22,
+                      fontWeight: 600,
+                      color: C.cream,
+                      margin: "0 0 12px 0",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {s.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 15,
+                      color: C.text2Dark,
+                      lineHeight: 1.625,
+                      margin: 0,
+                    }}
+                  >
+                    {s.desc}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 8. CTA + FOOTER ═══ */}
+      <section
+        style={{
+          background: C.ink,
+          padding: "120px 32px 80px 32px",
+        }}
+      >
+        {/* CTA card */}
+        <div
+          style={{
+            maxWidth: 720,
+            margin: "0 auto",
+            background: "rgba(255,255,255,0.03)",
+            border: `1px solid ${C.borderDark}`,
+            borderRadius: 24,
+            padding: 48,
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 24,
+            }}
+          >
+            <Eyebrow label="GET STARTED" textColor={C.cream} />
+          </div>
+          <h2
+            style={{
+              fontFamily: FONT_DISPLAY,
+              fontSize: 48,
+              fontWeight: 600,
+              color: C.cream,
+              letterSpacing: "-0.025em",
+              lineHeight: 1.1,
+              margin: "0 0 24px 0",
+            }}
+          >
+            Start scanning
+            <br />
+            Arc Network.
+          </h2>
+          <p
+            style={{
+              fontSize: 17,
+              color: C.text2Dark,
+              maxWidth: 420,
+              margin: "0 auto 32px auto",
+              lineHeight: 1.625,
+            }}
+          >
+            Index every pair, track every swap, and build with verified on-chain
+            data.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              justifyContent: "center",
+            }}
+          >
+            <a
+              href="#explore"
+              style={{
+                background: C.cream,
+                color: C.ink,
+                borderRadius: 8,
+                padding: "12px 24px",
+                fontSize: 15,
+                fontWeight: 500,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                fontFamily: FONT_BODY,
+              }}
+            >
+              Explore pairs →
+            </a>
+            <a
+              href="#docs"
+              style={{
+                background: "transparent",
+                border: `1px solid rgba(255,255,255,0.15)`,
+                color: C.cream,
+                borderRadius: 8,
+                padding: "12px 24px",
+                fontSize: 15,
+                fontWeight: 500,
+                display: "inline-flex",
+                alignItems: "center",
+                fontFamily: FONT_BODY,
+              }}
+            >
+              Read docs
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <footer
         style={{
-          background: COLORS.cream,
-          borderTop: `1px solid ${COLORS.borderLight}`,
-          padding: "64px 6% 32px",
+          background: C.ink,
+          borderTop: "1px solid rgba(255,255,255,0.05)",
+          padding: "64px 32px 32px 32px",
         }}
       >
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: 40,
             maxWidth: 1200,
             margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr 1fr",
+            gap: 64,
+            marginBottom: 48,
           }}
         >
-          {/* LEFT */}
+          {/* Left */}
           <div>
             <div
               style={{
-                fontSize: 20,
-                fontWeight: 700,
-                color: COLORS.textPrimary,
-                letterSpacing: "0.02em",
-                fontFamily: FONT,
-                marginBottom: 8,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 16,
               }}
             >
-              APERTURE
+              <ApertureLogo size={28} />
+              <span
+                style={{
+                  fontFamily: FONT_DISPLAY,
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: C.cream,
+                }}
+              >
+                APERTURE
+              </span>
             </div>
-            <div
+            <p
               style={{
-                fontSize: 12,
-                color: COLORS.textSecondary,
-                fontWeight: 400,
-                fontFamily: FONT,
-                marginBottom: 20,
+                fontSize: 14,
+                color: C.text3Dark,
+                margin: 0,
+                lineHeight: 1.625,
               }}
             >
               DEX scanner on Arc Network
-            </div>
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                border: `1px solid ${COLORS.borderLight}`,
-                padding: "8px 12px",
-                borderRadius: 0,
-                fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                color: COLORS.textSecondary,
-                fontWeight: 700,
-                fontFamily: FONT,
-              }}
-            >
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  background: COLORS.amber,
-                  borderRadius: 0,
-                  display: "inline-block",
-                }}
-              />
-              Arc Testnet — Testing Environment
-            </span>
+            </p>
           </div>
 
-          {/* CENTER */}
+          {/* Center */}
           <div>
             <div
               style={{
                 fontSize: 12,
                 textTransform: "uppercase",
-                letterSpacing: "0.12em",
-                color: COLORS.textSecondary,
-                fontWeight: 700,
-                fontFamily: FONT,
-                marginBottom: 20,
+                color: C.text3Dark,
+                fontFamily: FONT_BODY,
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+                marginBottom: 16,
               }}
             >
-              Product
+              PRODUCT
             </div>
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 12,
+                gap: 10,
               }}
             >
-              {["Explore", "Pairs", "Swap", "Portfolio"].map((link) => (
+              {["Explore", "Pairs", "Swap", "Portfolio"].map((l) => (
                 <a
-                  key={link}
+                  key={l}
                   href="#"
                   style={{
                     fontSize: 14,
-                    color: COLORS.textPrimary,
-                    textDecoration: "none",
-                    fontWeight: 400,
-                    fontFamily: FONT,
+                    color: C.text2Dark,
+                    fontFamily: FONT_BODY,
                   }}
                 >
-                  {link}
+                  {l}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* RIGHT */}
+          {/* Right */}
           <div>
             <div
               style={{
                 fontSize: 12,
                 textTransform: "uppercase",
-                letterSpacing: "0.12em",
-                color: COLORS.textSecondary,
-                fontWeight: 700,
-                fontFamily: FONT,
-                marginBottom: 20,
+                color: C.text3Dark,
+                fontFamily: FONT_BODY,
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+                marginBottom: 16,
               }}
             >
-              Resources
+              RESOURCES
             </div>
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 12,
+                gap: 10,
               }}
             >
-              {["Docs", "API", "GitHub", "Status"].map((link) => (
+              {["Docs", "API", "GitHub", "Status"].map((l) => (
                 <a
-                  key={link}
+                  key={l}
                   href="#"
                   style={{
                     fontSize: 14,
-                    color: COLORS.textPrimary,
-                    textDecoration: "none",
-                    fontWeight: 400,
-                    fontFamily: FONT,
+                    color: C.text2Dark,
+                    fontFamily: FONT_BODY,
                   }}
                 >
-                  {link}
+                  {l}
                 </a>
               ))}
             </div>
           </div>
         </div>
 
-        {/* bottom bar */}
+        {/* Bottom bar */}
         <div
           style={{
-            borderTop: `1px solid ${COLORS.borderLight}`,
+            maxWidth: 1200,
+            margin: "0 auto",
+            borderTop: "1px solid rgba(255,255,255,0.05)",
             paddingTop: 24,
-            marginTop: 64,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            maxWidth: 1200,
-            margin: "64px auto 0",
           }}
         >
           <span
             style={{
               fontSize: 11,
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              color: COLORS.textSecondary,
-              fontWeight: 700,
-              fontFamily: FONT,
+              color: C.text3Dark,
+              fontFamily: FONT_BODY,
+              letterSpacing: "0.05em",
             }}
           >
-            © 2026 Aperture
+            © 2026 APERTURE
           </span>
           <span
             style={{
               fontSize: 11,
-              color: COLORS.textSecondary,
-              fontWeight: 400,
-              fontFamily: FONT,
+              color: C.text3Dark,
+              fontFamily: FONT_BODY,
             }}
           >
             Built on Arc™ — Arc is a trademark of Circle Internet Group, Inc.
           </span>
         </div>
       </footer>
+    </div>
+  );
+}
+
+/* ── Sub-components ───────────────────────────────────────────────── */
+
+function DataRow({
+  label,
+  value,
+  isLast = false,
+}: {
+  label: string;
+  value: string;
+  isLast?: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "12px 0",
+        borderBottom: isLast ? "none" : "1px solid rgba(255,255,255,0.06)",
+      }}
+    >
+      <span
+        style={{
+          fontSize: 12,
+          textTransform: "uppercase",
+          color: "rgba(247,247,247,0.5)",
+          fontFamily: "'Inter', system-ui, sans-serif",
+          fontWeight: 500,
+          letterSpacing: "0.05em",
+        }}
+      >
+        {label}
+      </span>
+      <span
+        style={{
+          fontSize: 16,
+          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+          color: "#f7f7f7",
+          fontWeight: 500,
+        }}
+      >
+        {value}
+      </span>
     </div>
   );
 }
