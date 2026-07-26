@@ -318,7 +318,7 @@ export default function LandingPage() {
           width: 100%;
         }
         .snap-section {
-          height: 100vh;
+          height: 100dvh;
           overflow: hidden;
           display: flex;
           flex-direction: column;
@@ -905,7 +905,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 3: SHOWCASE — DATA TERMINAL (dark navy, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "linear-gradient(135deg, #1E1B4B 0%, #252B5C 50%, #1A1F3A 100%)" }}>
+        <section className="snap-section" style={{ background: "#0A2540" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
             {/* Left column */}
             <Reveal>
