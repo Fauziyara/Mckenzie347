@@ -207,21 +207,16 @@ export default function LandingPage() {
 
         /* Scroll-snap container */
         .snap-container {
-          height: 100vh;
           width: 100%;
-          overflow-y: scroll;
-          overflow-x: hidden;
-          scroll-behavior: smooth;
         }
         .snap-section {
-          overflow: hidden;
           height: 100vh;
+          overflow: hidden;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
           position: relative;
-          
         }
         .footer-link {
           transition: color 0.15s ease;
