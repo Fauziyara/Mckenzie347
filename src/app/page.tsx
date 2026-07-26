@@ -339,17 +339,17 @@ export default function LandingPage() {
         <section
           className="snap-section"
           style={{
-            background: "#0A0E1A",
+            background: "#FAFBFF",
             padding: 0,
             justifyContent: "flex-start",
           }}
         >
           {/* ─── ANIMATED GRADIENT MESH BACKGROUND ─── */}
           <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
-            <div className="hero-orb hero-orb-1" style={{ width: 500, height: 500, background: "#635BFF", opacity: 0.15, top: "-10%", left: "-5%" }} />
-            <div className="hero-orb hero-orb-2" style={{ width: 450, height: 450, background: "#FF6BCB", opacity: 0.12, top: "20%", right: "-5%" }} />
-            <div className="hero-orb hero-orb-3" style={{ width: 400, height: 400, background: "#00D4FF", opacity: 0.08, bottom: "5%", left: "15%" }} />
-            <div className="hero-orb hero-orb-4" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.1, bottom: "-5%", right: "20%" }} />
+            <div className="hero-orb hero-orb-1" style={{ width: 500, height: 500, background: "#635BFF", opacity: 0.35, top: "-10%", left: "-5%" }} />
+            <div className="hero-orb hero-orb-2" style={{ width: 450, height: 450, background: "#FF6BCB", opacity: 0.30, top: "20%", right: "-5%" }} />
+            <div className="hero-orb hero-orb-3" style={{ width: 400, height: 400, background: "#00D4FF", opacity: 0.285, bottom: "5%", left: "15%" }} />
+            <div className="hero-orb hero-orb-4" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.28, bottom: "-5%", right: "20%" }} />
           </div>
 
           {/* Nav (60px) */}
@@ -362,9 +362,9 @@ export default function LandingPage() {
               alignItems: "center",
               justifyContent: "space-between",
               padding: "0 48px",
-              background: "rgba(10,14,26,0.8)",
+              background: "rgba(255,255,255,0.85)",
               backdropFilter: "blur(12px)",
-              borderBottom: "1px solid #1C2230",
+              borderBottom: "1px solid #E8EAF0",
               position: "relative",
               zIndex: 10,
             }}
@@ -415,15 +415,15 @@ export default function LandingPage() {
                 transform: "translateX(-50%)",
               }}
             >
-              <a href="/explore" style={{ fontSize: 14, fontWeight: 400, color: "#8B949E", textDecoration: "none", transition: "color 0.15s" }}>Explore</a>
-              <a href="/explore" style={{ fontSize: 14, fontWeight: 400, color: "#8B949E", textDecoration: "none", transition: "color 0.15s" }}>Pairs</a>
-              <a href="/explore" style={{ fontSize: 14, fontWeight: 400, color: "#8B949E", textDecoration: "none", transition: "color 0.15s" }}>API</a>
-              <a href="https://docs.aperture.xyz" style={{ fontSize: 14, fontWeight: 400, color: "#8B949E", textDecoration: "none", transition: "color 0.15s" }}>Docs</a>
+              <a href="/explore" style={{ fontSize: 14, fontWeight: 400, color: "#425466", textDecoration: "none", transition: "color 0.15s" }}>Explore</a>
+              <a href="/explore" style={{ fontSize: 14, fontWeight: 400, color: "#425466", textDecoration: "none", transition: "color 0.15s" }}>Pairs</a>
+              <a href="/explore" style={{ fontSize: 14, fontWeight: 400, color: "#425466", textDecoration: "none", transition: "color 0.15s" }}>API</a>
+              <a href="https://docs.aperture.xyz" style={{ fontSize: 14, fontWeight: 400, color: "#425466", textDecoration: "none", transition: "color 0.15s" }}>Docs</a>
             </div>
 
             {/* Right: Sign in + Go to app */}
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <a href="/explore" style={{ fontSize: 14, color: "#8B949E", textDecoration: "none" }}>Sign in</a>
+              <a href="/explore" style={{ fontSize: 14, color: "#425466", textDecoration: "none" }}>Sign in</a>
               <a
                 href="/explore"
                 style={{
@@ -483,7 +483,7 @@ export default function LandingPage() {
                     animationDelay: "0s",
                   }}
                 >
-                  ◆ DEX Intelligence
+                  ◆ DEX Intelligence on Arc
                 </span>
 
                 {/* b) Headline */}
@@ -492,7 +492,7 @@ export default function LandingPage() {
                   style={{
                     fontSize: 52,
                     fontWeight: 700,
-                    color: "#FFFFFF",
+                    color: "#0A2540",
                     letterSpacing: "-0.03em",
                     lineHeight: 1.05,
                     animationDelay: "0.1s",
@@ -511,15 +511,14 @@ export default function LandingPage() {
                   style={{
                     fontSize: 16,
                     fontWeight: 400,
-                    color: "#8B949E",
+                    color: "#425466",
                     maxWidth: 440,
                     lineHeight: 1.5,
                     animationDelay: "0.2s",
                   }}
                 >
-                  Real-time pair data, on-chain swap history, and verified
-                  liquidity analytics on Arc. No estimates — just deterministic
-                  data from Arc&apos;s public ledger.
+                  Track every liquidity pool, swap, and price feed on Arc Network
+                  in real time. Sub-second data, zero estimates, 100% on-chain.
                 </p>
 
                 {/* d) Buttons */}
@@ -546,8 +545,8 @@ export default function LandingPage() {
                     className="hero-btn-secondary"
                     style={{
                       background: "transparent",
-                      border: "1px solid #30363D",
-                      color: "#E6EDF3",
+                      border: "1px solid #D1D5DB",
+                      color: "#0A2540",
                       borderRadius: 6,
                       padding: "12px 20px",
                       fontSize: 15,
@@ -563,16 +562,16 @@ export default function LandingPage() {
                 {/* e) Stats row */}
                 <div className="fade-in-up" style={{ display: "flex", gap: 24, marginTop: 8, animationDelay: "0.4s" }}>
                   <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>&lt;1s</span>
-                    <span style={{ fontSize: 11, fontWeight: 400, color: "#8B949E" }}>FINALITY</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#0A2540" }}>&lt;1s</span>
+                    <span style={{ fontSize: 11, fontWeight: 400, color: "#6B7C93" }}>FINALITY</span>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>~$0.001</span>
-                    <span style={{ fontSize: 11, fontWeight: 400, color: "#8B949E" }}>GAS COST</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#0A2540" }}>~$0.001</span>
+                    <span style={{ fontSize: 11, fontWeight: 400, color: "#6B7C93" }}>GAS COST</span>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>100%</span>
-                    <span style={{ fontSize: 11, fontWeight: 400, color: "#8B949E" }}>ON-CHAIN</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#0A2540" }}>100%</span>
+                    <span style={{ fontSize: 11, fontWeight: 400, color: "#6B7C93" }}>ON-CHAIN</span>
                   </div>
                 </div>
               </div>
@@ -815,8 +814,8 @@ export default function LandingPage() {
                 </div>
 
                 {/* Caption below card */}
-                <p style={{ fontSize: 12, fontStyle: "italic", color: "#8B949E", textAlign: "center", marginTop: 12 }}>
-                  Live preview — Aperture DEX Scanner on Arc Network.
+                <p style={{ fontSize: 12, fontStyle: "italic", color: "#6B7C93", textAlign: "center", marginTop: 12 }}>
+                  Live preview of the Aperture DEX Scanner on Arc Network.
                 </p>
               </div>
             </div>
@@ -828,8 +827,8 @@ export default function LandingPage() {
               height: 40,
               flexShrink: 0,
               width: "100%",
-              background: "#06080F",
-              borderBottom: "1px solid #1C2230",
+              background: "#0A2540",
+              borderBottom: "1px solid #E8EAF0",
               overflow: "hidden",
               display: "flex",
               alignItems: "center",
@@ -1111,7 +1110,7 @@ export default function LandingPage() {
         <section className="snap-section" style={{ background: "#0A2540" }}>
           {/* Gradient mesh blobs */}
           <div className="gradient-orb" style={{ width: 400, height: 400, background: "#FF6BCB", opacity: 0.15, top: "10%", left: "10%", animationDelay: "0s" }} />
-          <div className="gradient-orb" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.15, bottom: "10%", right: "15%", animationDelay: "3s" }} />
+          <div className="gradient-orb" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.35, bottom: "10%", right: "15%", animationDelay: "3s" }} />
           <div className="gradient-orb" style={{ width: 380, height: 380, background: "#8B5CF6", opacity: 0.15, top: "40%", right: "5%", animationDelay: "5s" }} />
 
           <Reveal>
