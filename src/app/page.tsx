@@ -10,9 +10,13 @@ import { formatUsd } from "@/lib/format";
 /* ============================================================ */
 
 const KEYFRAMES = `
-@keyframes burstRotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+@keyframes burstBreathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.03); opacity: 1; }
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
 }
 @keyframes dotPulse {
   0%, 100% { opacity: 0.55; }
@@ -99,14 +103,30 @@ function useBurstLines(): BurstLine[] {
 
 function RadialBurst() {
   const lines = useBurstLines();
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height;
+    const dx = (e.clientX - rect.left - cx) / cx;
+    const dy = (e.clientY - rect.top - cy) / cy;
+    setMouse({ x: dx * 30, y: dy * 15 });
+  };
+
+  const handleMouseLeave = () => setMouse({ x: 0, y: 0 });
 
   const burstGroupStyle: CSSProperties = {
     transformOrigin: "720px 500px",
-    animation: "burstRotate 60s linear infinite",
+    transform: `translate(${mouse.x}px, ${mouse.y}px)`,
+    transition: "transform 0.15s ease-out",
+    animation: "burstBreathe 4s ease-in-out infinite",
   };
 
   return (
     <div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{
         position: "relative",
         width: "100%",
