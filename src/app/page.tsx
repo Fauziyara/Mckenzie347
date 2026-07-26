@@ -210,12 +210,12 @@ export default function LandingPage() {
           height: 100vh;
           width: 100%;
           overflow-y: scroll;
-          scroll-snap-type: y proximity;
+          overflow-x: hidden;
           scroll-behavior: smooth;
         }
         .snap-section {
-          scroll-snap-align: start;
-          min-height: 100vh;
+          overflow: hidden;
+          height: 100vh;
           display: flex;
           flex-direction: column;
           justify-content: center;
