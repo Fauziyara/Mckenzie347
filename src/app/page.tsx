@@ -498,10 +498,10 @@ export default function LandingPage() {
                     animationDelay: "0.1s",
                   }}
                 >
-                  Scan every pair.
+                  Every pair. Every swap.
                   <br />
                   <span className="gradient-text-hero" style={{ fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif" }}>
-                    Money moves.
+                    Indexed instantly.
                   </span>
                 </h1>
 
@@ -517,8 +517,9 @@ export default function LandingPage() {
                     animationDelay: "0.2s",
                   }}
                 >
-                  Track every liquidity pool, swap, and price feed on Arc Network
-                  in real time. Sub-second data, zero estimates, 100% on-chain.
+                  Index every liquidity pool, decode every swap, and stream price feeds
+                  from Arc Network in real time. No estimates, no oracles —
+                  just deterministic on-chain data.
                 </p>
 
                 {/* d) Buttons */}
