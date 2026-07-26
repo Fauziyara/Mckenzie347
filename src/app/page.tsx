@@ -22,7 +22,7 @@ const tickerItems = [
 const features = [
   {
     title: "Pair Discovery",
-    desc: "Every liquidity pool on Arc indexed at creation. No polling, no delays.",
+    desc: "Every liquidity pool on Arc indexed at creation. Search, filter, and sort in real time.",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#635BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
@@ -32,7 +32,7 @@ const features = [
   },
   {
     title: "Swap History",
-    desc: "Decoded and timestamped to the millisecond. Query any swap by address or pair.",
+    desc: "Every swap decoded and timestamped. Filter by token, pair, or contract address.",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#635BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 3v18h18" />
@@ -42,7 +42,7 @@ const features = [
   },
   {
     title: "Liquidity Tracking",
-    desc: "TVL, deposits, withdrawals — tracked across every pair in real time.",
+    desc: "TVL, deposits, and withdrawals tracked across every pair. Live, no polling.",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#635BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 2v20" />
@@ -53,7 +53,7 @@ const features = [
   },
   {
     title: "Price Feeds",
-    desc: "Sub-second spot prices streamed via WebSocket. No oracle middleware.",
+    desc: "Spot prices streamed via WebSocket with sub-second latency. No oracle middleware.",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#635BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
@@ -62,7 +62,7 @@ const features = [
   },
   {
     title: "Analytics API",
-    desc: "REST and GraphQL endpoints for volume, OHLCV, and depth.",
+    desc: "REST and GraphQL endpoints. Volume, OHLCV, depth, and swap history.",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#635BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="16 18 22 12 16 6" />
@@ -72,7 +72,7 @@ const features = [
   },
   {
     title: "Block Scanner",
-    desc: "Inspect any block, transaction, or log on Arc Network.",
+    desc: "Inspect any block, transaction, or log on Arc Network. Full on-chain transparency.",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#635BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -346,10 +346,10 @@ export default function LandingPage() {
         >
           {/* ─── ANIMATED GRADIENT MESH BACKGROUND ─── */}
           <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}>
-            <div className="hero-orb hero-orb-1" style={{ width: 500, height: 500, background: "#635BFF", opacity: 0.35, top: "-10%", left: "-5%" }} />
-            <div className="hero-orb hero-orb-2" style={{ width: 450, height: 450, background: "#FF6BCB", opacity: 0.30, top: "20%", right: "-5%" }} />
-            <div className="hero-orb hero-orb-3" style={{ width: 400, height: 400, background: "#00D4FF", opacity: 0.285, bottom: "5%", left: "15%" }} />
-            <div className="hero-orb hero-orb-4" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.28, bottom: "-5%", right: "20%" }} />
+            <div className="hero-orb hero-orb-1" style={{ width: 500, height: 500, background: "#635BFF", opacity: 0.25, top: "-10%", left: "-5%" }} />
+            <div className="hero-orb hero-orb-2" style={{ width: 450, height: 450, background: "#FF6BCB", opacity: 0.22, top: "20%", right: "-5%" }} />
+            <div className="hero-orb hero-orb-3" style={{ width: 400, height: 400, background: "#00D4FF", opacity: 0.18, bottom: "5%", left: "15%" }} />
+            <div className="hero-orb hero-orb-4" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.2, bottom: "-5%", right: "20%" }} />
           </div>
 
           {/* Nav (60px) */}
@@ -483,7 +483,7 @@ export default function LandingPage() {
                     animationDelay: "0s",
                   }}
                 >
-                  ◆ Real-time DEX scanner on Arc
+                  ◆ DEX Intelligence on Arc
                 </span>
 
                 {/* b) Headline */}
@@ -498,10 +498,10 @@ export default function LandingPage() {
                     animationDelay: "0.1s",
                   }}
                 >
-                  Every pair. Every swap.
+                  Scan every pair.
                   <br />
                   <span className="gradient-text-hero" style={{ fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif" }}>
-                    Indexed instantly.
+                    Money moves.
                   </span>
                 </h1>
 
@@ -517,9 +517,8 @@ export default function LandingPage() {
                     animationDelay: "0.2s",
                   }}
                 >
-                  Index every liquidity pool, decode every swap, and stream price feeds
-                  from Arc Network in real time. No estimates, no oracles —
-                  just deterministic on-chain data.
+                  Track every liquidity pool, swap, and price feed on Arc Network
+                  in real time. Sub-second data, zero estimates, 100% on-chain.
                 </p>
 
                 {/* d) Buttons */}
@@ -864,18 +863,18 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ SECTION 2: FEATURES (white bg, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#FFFFFF" }}>
+        {/* ═══ SECTION 2: FEATURES (dark bg, 100vh) ═══ */}
+        <section className="snap-section" style={{ background: "#0D1117" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", textAlign: "center" }}>
             <Reveal>
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                CAPABILITIES
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#635BFF", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                FEATURES
               </span>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
-                Everything you need to scan Arc.
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
+                Built for Arc Network builders.
               </h2>
-              <p style={{ fontSize: 16, color: "#425466", marginTop: 10, fontWeight: 400 }}>
-                One indexer. Every signal. Built for builders who ship.
+              <p style={{ fontSize: 16, color: "#8B949E", marginTop: 10, fontWeight: 400 }}>
+                Index, query, and stream on-chain data. Everything Aperture does, in one place.
               </p>
             </Reveal>
 
@@ -885,16 +884,17 @@ export default function LandingPage() {
                   <div
                     key={i}
                     style={{
-                      background: "#F6F9FC",
+                      background: "#161B22",
                       borderRadius: 12,
                       padding: 20,
+                      border: "1px solid #21262D",
                     }}
                   >
                     {feature.icon}
-                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0A2540", marginTop: 10 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "#E6EDF3", marginTop: 10 }}>
                       {feature.title}
                     </h3>
-                    <p style={{ fontSize: 14, color: "#425466", lineHeight: 1.5, marginTop: 6, fontWeight: 400 }}>
+                    <p style={{ fontSize: 14, color: "#8B949E", lineHeight: 1.5, marginTop: 6, fontWeight: 400 }}>
                       {feature.desc}
                     </p>
                   </div>
@@ -1021,7 +1021,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 4: STATS (white bg, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#FFFFFF" }}>
+        <section className="snap-section" style={{ background: "#0D1117" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", textAlign: "center" }}>
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
@@ -1111,7 +1111,7 @@ export default function LandingPage() {
         <section className="snap-section" style={{ background: "#0A2540" }}>
           {/* Gradient mesh blobs */}
           <div className="gradient-orb" style={{ width: 400, height: 400, background: "#FF6BCB", opacity: 0.15, top: "10%", left: "10%", animationDelay: "0s" }} />
-          <div className="gradient-orb" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.35, bottom: "10%", right: "15%", animationDelay: "3s" }} />
+          <div className="gradient-orb" style={{ width: 350, height: 350, background: "#FF8A4C", opacity: 0.25, bottom: "10%", right: "15%", animationDelay: "3s" }} />
           <div className="gradient-orb" style={{ width: 380, height: 380, background: "#8B5CF6", opacity: 0.15, top: "40%", right: "5%", animationDelay: "5s" }} />
 
           <Reveal>
