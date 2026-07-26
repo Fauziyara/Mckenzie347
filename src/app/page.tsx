@@ -601,30 +601,30 @@ export default function LandingPage() {
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 CAPABILITIES
               </span>
-              <h2 style={{ fontSize: 44, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 12, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
                 Everything you need to scan Arc.
               </h2>
-              <p style={{ fontSize: 18, color: "#425466", marginTop: 16, fontWeight: 400 }}>
+              <p style={{ fontSize: 16, color: "#425466", marginTop: 10, fontWeight: 400 }}>
                 One indexer. Every signal. Built for builders who ship.
               </p>
             </Reveal>
 
             <Reveal delay={100}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginTop: 48, textAlign: "left" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 24, textAlign: "left" }}>
                 {features.map((feature, i) => (
                   <div
                     key={i}
                     style={{
                       background: "#F6F9FC",
                       borderRadius: 12,
-                      padding: 32,
+                      padding: 20,
                     }}
                   >
                     {feature.icon}
-                    <h3 style={{ fontSize: 20, fontWeight: 600, color: "#0A2540", marginTop: 16 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0A2540", marginTop: 10 }}>
                       {feature.title}
                     </h3>
-                    <p style={{ fontSize: 15, color: "#425466", lineHeight: 1.5, marginTop: 8, fontWeight: 400 }}>
+                    <p style={{ fontSize: 14, color: "#425466", lineHeight: 1.5, marginTop: 6, fontWeight: 400 }}>
                       {feature.desc}
                     </p>
                   </div>
@@ -757,7 +757,7 @@ export default function LandingPage() {
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 BY THE NUMBERS
               </span>
-              <h2 style={{ fontSize: 44, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 12, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
                 The backbone of on-chain data.
               </h2>
             </Reveal>
@@ -801,7 +801,7 @@ export default function LandingPage() {
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 GET STARTED
               </span>
-              <h2 style={{ fontSize: 44, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 12, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
                 Three steps to ship.
               </h2>
             </Reveal>
