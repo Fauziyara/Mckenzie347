@@ -864,16 +864,16 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 2: FEATURES (dark bg, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#F6F9FC" }}>
+        <section className="snap-section" style={{ background: "linear-gradient(135deg, #1A1F3A 0%, #252B5C 50%, #1E1B4B 100%)" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", textAlign: "center" }}>
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#635BFF", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 FEATURES
               </span>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 6, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", marginTop: 6, lineHeight: 1.1 }}>
                 Built for Arc Network builders.
               </h2>
-              <p style={{ fontSize: 16, color: "#425466", marginTop: 8, fontWeight: 400 }}>
+              <p style={{ fontSize: 16, color: "#C7D2FE", marginTop: 8, fontWeight: 400 }}>
                 Index, query, and stream on-chain data. Everything Aperture does, in one place.
               </p>
             </Reveal>
@@ -884,17 +884,17 @@ export default function LandingPage() {
                   <div
                     key={i}
                     style={{
-                      background: "#FFFFFF",
+                      background: "rgba(255,255,255,0.06)",
                       borderRadius: 12,
                       padding: 16,
-                      border: "1px solid #E3E8EE",
+                      border: "1px solid rgba(99,102,241,0.2)",
                     }}
                   >
                     {feature.icon}
-                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0A2540", marginTop: 10 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "#E0E7FF", marginTop: 10 }}>
                       {feature.title}
                     </h3>
-                    <p style={{ fontSize: 14, color: "#425466", lineHeight: 1.5, marginTop: 6, fontWeight: 400 }}>
+                    <p style={{ fontSize: 14, color: "#A5B4FC", lineHeight: 1.5, marginTop: 6, fontWeight: 400 }}>
                       {feature.desc}
                     </p>
                   </div>
@@ -905,7 +905,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 3: SHOWCASE — DATA TERMINAL (dark navy, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#0A2540" }}>
+        <section className="snap-section" style={{ background: "linear-gradient(135deg, #1E1B4B 0%, #252B5C 50%, #1A1F3A 100%)" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
             {/* Left column */}
             <Reveal>
@@ -1021,7 +1021,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 4: STATS (white bg, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#F6F9FC" }}>
+        <section className="snap-section" style={{ background: "linear-gradient(135deg, #1A1F3A 0%, #252B5C 50%, #1E1B4B 100%)" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", textAlign: "center" }}>
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
@@ -1065,7 +1065,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 5: HOW IT WORKS (soft gray, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#F6F9FC" }}>
+        <section className="snap-section" style={{ background: "linear-gradient(135deg, #1A1F3A 0%, #252B5C 50%, #1E1B4B 100%)" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", textAlign: "center" }}>
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
