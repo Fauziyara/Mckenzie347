@@ -870,23 +870,23 @@ export default function LandingPage() {
               <span style={{ fontSize: 12, fontWeight: 600, color: "#635BFF", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 FEATURES
               </span>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", marginTop: 6, lineHeight: 1.1 }}>
                 Built for Arc Network builders.
               </h2>
-              <p style={{ fontSize: 16, color: "#8B949E", marginTop: 10, fontWeight: 400 }}>
+              <p style={{ fontSize: 16, color: "#8B949E", marginTop: 8, fontWeight: 400 }}>
                 Index, query, and stream on-chain data. Everything Aperture does, in one place.
               </p>
             </Reveal>
 
             <Reveal delay={100}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 24, textAlign: "left" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 16, textAlign: "left" }}>
                 {features.map((feature, i) => (
                   <div
                     key={i}
                     style={{
                       background: "#161B22",
                       borderRadius: 12,
-                      padding: 20,
+                      padding: 16,
                       border: "1px solid #21262D",
                     }}
                   >
@@ -905,7 +905,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 3: SHOWCASE — DATA TERMINAL (dark navy, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#0A2540" }}>
+        <section className="snap-section" style={{ background: "#0D1117" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
             {/* Left column */}
             <Reveal>
@@ -1027,7 +1027,7 @@ export default function LandingPage() {
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 BY THE NUMBERS
               </span>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 6, lineHeight: 1.1 }}>
                 The backbone of on-chain data.
               </h2>
             </Reveal>
@@ -1071,7 +1071,7 @@ export default function LandingPage() {
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 GET STARTED
               </span>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 8, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 6, lineHeight: 1.1 }}>
                 Three steps to ship.
               </h2>
             </Reveal>
