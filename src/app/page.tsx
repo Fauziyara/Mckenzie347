@@ -864,16 +864,16 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 2: FEATURES (dark bg, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#0D1117" }}>
+        <section className="snap-section" style={{ background: "#F6F9FC" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", textAlign: "center" }}>
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#635BFF", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 FEATURES
               </span>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", marginTop: 6, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 6, lineHeight: 1.1 }}>
                 Built for Arc Network builders.
               </h2>
-              <p style={{ fontSize: 16, color: "#8B949E", marginTop: 8, fontWeight: 400 }}>
+              <p style={{ fontSize: 16, color: "#425466", marginTop: 8, fontWeight: 400 }}>
                 Index, query, and stream on-chain data. Everything Aperture does, in one place.
               </p>
             </Reveal>
@@ -884,17 +884,17 @@ export default function LandingPage() {
                   <div
                     key={i}
                     style={{
-                      background: "#161B22",
+                      background: "#FFFFFF",
                       borderRadius: 12,
                       padding: 16,
-                      border: "1px solid #21262D",
+                      border: "1px solid #E3E8EE",
                     }}
                   >
                     {feature.icon}
-                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "#E6EDF3", marginTop: 10 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0A2540", marginTop: 10 }}>
                       {feature.title}
                     </h3>
-                    <p style={{ fontSize: 14, color: "#8B949E", lineHeight: 1.5, marginTop: 6, fontWeight: 400 }}>
+                    <p style={{ fontSize: 14, color: "#425466", lineHeight: 1.5, marginTop: 6, fontWeight: 400 }}>
                       {feature.desc}
                     </p>
                   </div>
@@ -905,24 +905,24 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 3: SHOWCASE — DATA TERMINAL (dark navy, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#0D1117" }}>
+        <section className="snap-section" style={{ background: "#0A2540" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
             {/* Left column */}
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#635BFF", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                 LIVE TERMINAL
               </span>
-              <h2 style={{ fontSize: 44, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", marginTop: 12, lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 44, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", marginTop: 12, lineHeight: 1.1 }}>
                 Query any pair in milliseconds.
               </h2>
-              <p style={{ fontSize: 17, color: "#8FA2B8", marginTop: 16, fontWeight: 400, lineHeight: 1.5 }}>
+              <p style={{ fontSize: 17, color: "#425466", marginTop: 16, fontWeight: 400, lineHeight: 1.5 }}>
                 Aperture indexes every block on Arc Network. Query swaps, liquidity, and price feeds through a single API.
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 24 }}>
                 {checklistItems.map((item, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     {checkSvg}
-                    <span style={{ fontSize: 15, color: "#FFFFFF", fontWeight: 400 }}>{item}</span>
+                    <span style={{ fontSize: 15, color: "#0A2540", fontWeight: 400 }}>{item}</span>
                   </div>
                 ))}
               </div>
@@ -1021,7 +1021,7 @@ export default function LandingPage() {
         </section>
 
         {/* ═══ SECTION 4: STATS (white bg, 100vh) ═══ */}
-        <section className="snap-section" style={{ background: "#0D1117" }}>
+        <section className="snap-section" style={{ background: "#F6F9FC" }}>
           <div style={{ width: "100%", maxWidth: 1080, padding: "0 48px", textAlign: "center" }}>
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 600, color: "#6B7C93", textTransform: "uppercase", letterSpacing: "0.08em" }}>
@@ -1116,7 +1116,7 @@ export default function LandingPage() {
 
           <Reveal>
             <div style={{ textAlign: "center", maxWidth: 600, padding: "0 48px", position: "relative", zIndex: 2 }}>
-              <h2 style={{ fontSize: 44, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 44, fontWeight: 700, color: "#0A2540", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
                 Start scanning Arc Network today.
               </h2>
               <p style={{ fontSize: 18, color: "#8FA2B8", marginTop: 16, fontWeight: 400 }}>
