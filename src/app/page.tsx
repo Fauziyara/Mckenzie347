@@ -483,7 +483,7 @@ export default function LandingPage() {
                     animationDelay: "0s",
                   }}
                 >
-                  ◆ DEX Intelligence on Arc
+                  ◆ Real-time DEX scanner on Arc
                 </span>
 
                 {/* b) Headline */}
