@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { Pair } from "@/lib/mock-data";
 import { formatPrice, formatUsd } from "@/lib/format";
 
-export function QuickBuyModal({ pair, onClose }: { pair: Pair; onClose: () => void }) {
+export function QuickBuyModal({ pair, onClose }: { pair: any; onClose: () => void }) {
   const [amount, setAmount] = useState("");
   const [slippage, setSlippage] = useState("1");
   const [status, setStatus] = useState<"idle" | "pending" | "success">("idle");
@@ -61,7 +60,7 @@ export function QuickBuyModal({ pair, onClose }: { pair: Pair; onClose: () => vo
 
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="mb-1 block text-xs text-muted-foreground">Bayar dengan {pair.token1.symbol}</label>
+                <label className="mb-1 block text-xs text-muted-foreground">Pay with {pair.token1.symbol}</label>
                 <input
                   type="number"
                   value={amount}

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { shortAddr, timeAgo, formatNumber } from "@/lib/format";
-import { mockPairs } from "@/lib/mock-data";
 
 interface Swap {
   tx_hash: string;
@@ -61,9 +60,9 @@ interface PulseData {
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-lg border border-border bg-muted/20 p-4">
+    <div className="rounded-lg border border-border bg-muted/20 p-3 sm:p-4">
       <div className="text-xs text-muted-foreground uppercase tracking-wider">{label}</div>
-      <div className="mt-1 text-xl font-bold text-foreground">{value}</div>
+      <div className="mt-1 text-base sm:text-xl font-bold text-foreground">{value}</div>
       {sub && <div className="mt-0.5 text-xs text-muted-foreground">{sub}</div>}
     </div>
   );
@@ -82,8 +81,8 @@ function SwapRow({ swap }: { swap: Swap }) {
   const formattedOut = (parseFloat(amountOut) / (10 ** decimalsOut)).toFixed(4);
 
   return (
-    <div className="flex items-center gap-3 border-b border-border/50 px-3 py-2.5 hover:bg-muted/30">
-      <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+    <div className="flex items-center gap-2 sm:gap-3 border-b border-border/50 px-2 sm:px-3 py-2 sm:py-2.5 hover:bg-muted/30">
+      <div className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-xs font-bold shrink-0 ${
         isBuy ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
       }`}>
         {isBuy ? "B" : "S"}
@@ -153,83 +152,8 @@ function TopPairRow({ pair, rank }: { pair: TopPair; rank: number }) {
   );
 }
 
-// Generate mock pulse data — random swaps from mockPairs
-function genMockPulse(prevSwaps: Swap[] = []): PulseData {
-  const now = Math.floor(Date.now() / 1000);
-
-  // Generate 1-3 new random swaps
-  const newSwaps: Swap[] = [];
-  const numNew = 1 + Math.floor(Math.random() * 3);
-  for (let i = 0; i < numNew; i++) {
-    const pair = mockPairs[Math.floor(Math.random() * mockPairs.length)];
-    const isBuy = Math.random() > 0.5;
-    const amountUsd = Math.random() * 5000 + 10;
-    const amountIn = isBuy
-      ? (amountUsd / pair.priceToken0PerToken1 * (10 ** pair.token0.decimals)).toFixed(0)
-      : (amountUsd * (10 ** pair.token1.decimals)).toFixed(0);
-    const amountOut = isBuy
-      ? (amountUsd * (10 ** pair.token1.decimals)).toFixed(0)
-      : (amountUsd / pair.priceToken0PerToken1 * (10 ** pair.token0.decimals)).toFixed(0);
-
-    newSwaps.push({
-      tx_hash: "0x" + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join(""),
-      block_number: 1000000 + Math.floor(Math.random() * 100000),
-      timestamp: now - Math.floor(Math.random() * 5),
-      sender: "0x" + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join(""),
-      recipient: "0x" + Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16)).join(""),
-      amount0_in: isBuy ? amountIn : "0",
-      amount1_in: isBuy ? "0" : amountIn,
-      amount0_out: isBuy ? "0" : amountOut,
-      amount1_out: isBuy ? amountOut : "0",
-      pair_address: pair.address,
-      token0_symbol: pair.token0.symbol,
-      token1_symbol: pair.token1.symbol,
-      token0_decimals: pair.token0.decimals,
-      token1_decimals: pair.token1.decimals,
-    });
-  }
-
-  const allSwaps = [...newSwaps, ...prevSwaps].slice(0, 50);
-
-  const newPairs: Pair[] = mockPairs.slice(0, 5).map(p => ({
-    address: p.address,
-    pair_index: Math.floor(Math.random() * 1000),
-    token0: p.token0.address,
-    token1: p.token1.address,
-    reserve0: String(p.reserve0),
-    reserve1: String(p.reserve1),
-    updated_at: p.createdAt * 1000,
-    token0_symbol: p.token0.symbol,
-    token1_symbol: p.token1.symbol,
-    token0_decimals: p.token0.decimals,
-    token1_decimals: p.token1.decimals,
-  }));
-
-  const topPairs: TopPair[] = [...mockPairs]
-    .sort((a, b) => b.txCount24h - a.txCount24h)
-    .slice(0, 8)
-    .map(p => ({
-      address: p.address,
-      total_swaps: p.txCount24h,
-      token0_symbol: p.token0.symbol,
-      token1_symbol: p.token1.symbol,
-    }));
-
-  return {
-    success: true,
-    timestamp: now * 1000,
-    stats: {
-      totalPairs: mockPairs.length,
-      totalSwaps: 12483 + allSwaps.length,
-      totalTokens: 28,
-      liquidPairs: mockPairs.filter(p => p.liquidityUsd > 100000).length,
-      recentActivity: allSwaps.length,
-    },
-    recentSwaps: allSwaps,
-    newPairs,
-    topPairs,
-  };
-}
+// Pulse data comes from /api/indexer/pulse — real on-chain data
+// Mock generation removed — data is fetched from Arc testnet indexer
 
 export default function PulsePage() {
   const [data, setData] = useState<PulseData | null>(null);
@@ -238,18 +162,37 @@ export default function PulsePage() {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Initial load
-    const initial = genMockPulse();
-    setData(initial);
-    setLastUpdate(new Date());
-    setLoading(false);
-
-    // Live updates every 2-4 seconds (feel alive)
-    const tick = () => {
-      setData(prev => genMockPulse(prev?.recentSwaps || []));
-      setLastUpdate(new Date());
+    // Initial load from real indexer API
+    const load = async () => {
+      try {
+        const res = await fetch("/api/indexer/pulse?limit=50");
+        const json = await res.json();
+        if (json.success) {
+          setData(json);
+        }
+      } catch (e) {
+        console.error("Failed to load pulse data:", e);
+      } finally {
+        setLoading(false);
+        setLastUpdate(new Date());
+      }
     };
-    const interval = setInterval(tick, 2500 + Math.random() * 1500);
+    load();
+
+    // Live updates every 10 seconds
+    const tick = async () => {
+      try {
+        const res = await fetch("/api/indexer/pulse?limit=50");
+        const json = await res.json();
+        if (json.success) {
+          setData(json);
+          setLastUpdate(new Date());
+        }
+      } catch (e) {
+        console.error("Failed to update pulse data:", e);
+      }
+    };
+    const interval = setInterval(tick, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -294,9 +237,9 @@ export default function PulsePage() {
     <>
       <Header />
       <main className="w-full flex-1 px-4 py-6">
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Aperture Pulse</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Aperture Pulse</h1>
             <p className="text-sm text-muted-foreground">
               Real-time DEX activity feed
             </p>
@@ -315,7 +258,7 @@ export default function PulsePage() {
         </div>
 
         {/* Stats */}
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3 lg:grid-cols-5">
           <StatCard label="Total Pairs" value={String(data.stats.totalPairs)} sub="Indexed" />
           <StatCard label="Total Swaps" value={String(data.stats.totalSwaps)} sub="All time" />
           <StatCard label="Total Tokens" value={String(data.stats.totalTokens)} sub="Unique" />
@@ -323,7 +266,7 @@ export default function PulsePage() {
           <StatCard label="Activity (1h)" value={String(data.stats.recentActivity)} sub="Recent swaps" />
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
           {/* Recent Swaps */}
           <div className="rounded-lg border border-border bg-muted/10">
             <div className="border-b border-border px-4 py-3 flex items-center justify-between">

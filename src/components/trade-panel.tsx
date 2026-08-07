@@ -113,7 +113,7 @@ export function TradePanel({ pair }: TradePanelProps) {
           />
         </div>
 
-        {/* Quick amounts — persentase dari modal */}
+        {/* Quick amounts — percentage from modal */}
         <div className="flex gap-1">
           {[
             { label: "25%", pct: 25 },

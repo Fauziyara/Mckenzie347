@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { TokenLogo } from "@/components/token-logo";
-import { mockPairs } from "@/lib/mock-data";
 import { formatUsd, formatNumber, formatPct } from "@/lib/format";
 
 interface Pool {
@@ -25,19 +24,8 @@ interface Pool {
 const STORAGE_KEY = "aperture-earn";
 
 function buildPools(): Pool[] {
-  return mockPairs.slice(0, 8).map((p, i) => ({
-    id: `pool-${i + 1}`,
-    pairLabel: `${p.token0.symbol}/${p.token1.symbol}`,
-    token0: p.token0.symbol,
-    token1: p.token1.symbol,
-    pairAddress: p.address,
-    tvl: p.liquidityUsd * (0.35 + (i % 5) * 0.12),
-    apy: [48.2, 22.5, 91.0, 15.8, 63.4, 37.1, 112.6, 8.9][i] ?? 20,
-    reward: ["ARC", "USDC", "ARC", "USDC", "ARC", "WETH", "ARC", "USDC"][i] ?? "ARC",
-    risk: (["Low", "Med", "High", "Low", "Med", "Med", "High", "Low"] as const)[i] ?? "Med",
-    myStake: 0,
-    earned: 0,
-  }));
+  // Placeholder — pools are fetched from /api/indexer/pairs in useEffect
+  return [];
 }
 
 export default function EarnPage() {
@@ -50,18 +38,40 @@ export default function EarnPage() {
   const [filterRisk, setFilterRisk] = useState<"All" | "Low" | "Med" | "High">("All");
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setPools(JSON.parse(saved));
-        return;
-      } catch {
-        // fall through
-      }
-    }
-    const defaults = buildPools();
-    setPools(defaults);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
+    // Fetch real pools from indexer API
+    fetch("/api/indexer/pairs?limit=20&liquidity=true")
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.pairs.length > 0) {
+          const realPools: Pool[] = data.pairs.map((p: any, i: number) => ({
+            id: `pool-${i + 1}`,
+            pairLabel: `${p.token0_symbol}/${p.token1_symbol}`,
+            token0: p.token0_symbol,
+            token1: p.token1_symbol,
+            pairAddress: p.address,
+            tvl: (Number(p.reserve0) / Math.pow(10, p.token0_decimals) + Number(p.reserve1) / Math.pow(10, p.token1_decimals)),
+            apy: Math.random() * 100 + 5, // APY needs on-chain calculation — placeholder for now
+            reward: "USDC",
+            risk: (["Low", "Med", "High"] as const)[i % 3],
+            myStake: 0,
+            earned: 0,
+          }));
+          setPools(realPools);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(realPools));
+          return;
+        }
+      })
+      .catch(() => {
+        // Fallback to localStorage or empty
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try {
+            setPools(JSON.parse(saved));
+          } catch {
+            setPools([]);
+          }
+        }
+      });
   }, []);
 
   useEffect(() => {
@@ -162,7 +172,7 @@ export default function EarnPage() {
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Earn</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Earn</h1>
             <p className="text-sm text-muted-foreground">
               Stake LP & farm rewards on Arc testnet · {pools.length} pools
             </p>
@@ -177,7 +187,7 @@ export default function EarnPage() {
           </button>
         </div>
 
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mb-6 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-4">
           <div className="rounded-md border border-border bg-muted/20 px-3 py-3">
             <div className="text-[11px] text-muted-foreground">My Staked</div>
             <div className="mt-1 text-lg font-bold font-mono">{formatUsd(stats.totalStaked)}</div>
@@ -252,20 +262,20 @@ export default function EarnPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/30">
-                  <th className="px-3 py-2.5 text-left font-medium text-muted-foreground">Pool</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">TVL</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">APY</th>
-                  <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Reward</th>
-                  <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Risk</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">My Stake</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Earned</th>
-                  <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Action</th>
+                  <th className="px-2 sm:px-3 py-2.5 text-left font-medium text-muted-foreground">Pool</th>
+                  <th className="hidden md:table-cell px-3 py-2.5 text-right font-medium text-muted-foreground">TVL</th>
+                  <th className="px-2 sm:px-3 py-2.5 text-right font-medium text-muted-foreground">APY</th>
+                  <th className="hidden lg:table-cell px-3 py-2.5 text-center font-medium text-muted-foreground">Reward</th>
+                  <th className="hidden sm:table-cell px-3 py-2.5 text-center font-medium text-muted-foreground">Risk</th>
+                  <th className="hidden sm:table-cell px-3 py-2.5 text-right font-medium text-muted-foreground">Stake</th>
+                  <th className="hidden md:table-cell px-3 py-2.5 text-right font-medium text-muted-foreground">Earned</th>
+                  <th className="px-2 sm:px-3 py-2.5 text-right font-medium text-muted-foreground">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {visible.map((pool) => (
                   <tr key={pool.id} className="border-b border-border/40 last:border-0 hover:bg-muted/20">
-                    <td className="px-3 py-2.5">
+                    <td className="px-2 sm:px-3 py-2.5">
                       <div className="flex items-center gap-2">
                         <div className="flex -space-x-1.5">
                           <TokenLogo symbol={pool.token0} size={22} />
@@ -279,33 +289,33 @@ export default function EarnPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pool.tvl)}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs text-emerald-400 font-semibold">
+                    <td className="hidden md:table-cell px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pool.tvl)}</td>
+                    <td className="px-2 sm:px-3 py-2.5 text-right font-mono text-xs text-emerald-400 font-semibold">
                       {pool.apy.toFixed(1)}%
                     </td>
-                    <td className="px-3 py-2.5 text-center">
+                    <td className="hidden lg:table-cell px-3 py-2.5 text-center">
                       <span className="inline-flex items-center gap-1 rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] font-medium">
                         <TokenLogo symbol={pool.reward} size={12} />
                         {pool.reward}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5 text-center">
+                    <td className="hidden sm:table-cell px-3 py-2.5 text-center">
                       <span className={`inline-block rounded border px-1.5 py-0.5 text-[10px] font-medium ${riskColor(pool.risk)}`}>
                         {pool.risk}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs">
+                    <td className="hidden sm:table-cell px-3 py-2.5 text-right font-mono text-xs">
                       {pool.myStake > 0 ? formatUsd(pool.myStake) : "—"}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs text-emerald-400">
+                    <td className="hidden md:table-cell px-3 py-2.5 text-right font-mono text-xs text-emerald-400">
                       {pool.earned > 0 ? formatUsd(pool.earned) : "—"}
                     </td>
-                    <td className="px-3 py-2.5 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <td className="px-2 sm:px-3 py-2.5 text-right">
+                      <div className="flex items-center justify-end gap-1">
                         <button
                           type="button"
                           onClick={() => openModal(pool, "stake")}
-                          className="rounded-md bg-emerald-500 px-2.5 py-1 text-[11px] font-semibold text-background hover:bg-emerald-400 cursor-pointer"
+                          className="rounded-md bg-emerald-500 px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold text-background hover:bg-emerald-400 cursor-pointer"
                         >
                           Stake
                         </button>

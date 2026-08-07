@@ -1,4 +1,5 @@
 export function formatUsd(n: number): string {
+  if (!isFinite(n) || isNaN(n)) return "$0.00";
   if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
@@ -6,6 +7,7 @@ export function formatUsd(n: number): string {
 }
 
 export function formatNumber(n: number, decimals = 2): string {
+  if (!isFinite(n) || isNaN(n)) return "0";
   if (n >= 1e9) return `${(n / 1e9).toFixed(decimals)}B`;
   if (n >= 1e6) return `${(n / 1e6).toFixed(decimals)}M`;
   if (n >= 1e3) return `${(n / 1e3).toFixed(decimals)}K`;
@@ -13,10 +15,11 @@ export function formatNumber(n: number, decimals = 2): string {
 }
 
 export function formatPrice(n: number): string {
+  if (!isFinite(n) || isNaN(n) || n === 0) return "0";
   if (n >= 1000) return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
   if (n >= 1) return n.toFixed(2);
   if (n >= 0.01) return n.toFixed(4);
-  if (n > 0) return n.toFixed(6);
+  if (n > 0) return n.toFixed(8);
   return "0";
 }
 
@@ -44,6 +47,7 @@ export function formatTime(unix: number): string {
 }
 
 export function formatPct(n: number): string {
+  if (!isFinite(n) || isNaN(n)) return "0.00%";
   const sign = n >= 0 ? "+" : "";
   return `${sign}${n.toFixed(2)}%`;
 }

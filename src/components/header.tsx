@@ -17,12 +17,12 @@ const navItems = [
   { href: "/", label: "Home", hasDropdown: false },
   { href: "/explore", label: "Explore", hasDropdown: false },
   { href: "/pulse", label: "Pulse", hasDropdown: false },
+  { href: "/swap", label: "Swap", hasDropdown: false },
   { href: "#", label: "Tools", hasDropdown: true, submenu: [
     { href: "/pelacak", label: "Tracker" },
     { href: "/alat", label: "Watchlist" },
-    { href: "/swap", label: "Swap" },
   ]},
-  { href: "/portofolio", label: "Portfolio", hasDropdown: false },
+  { href: "/portfolio", label: "Portfolio", hasDropdown: false },
   { href: "/earn", label: "Earn", hasDropdown: false },
 ];
 
@@ -34,7 +34,7 @@ export function Header({ active, showTicker = true, showFaucet = true }: { activ
         backdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}>
-        <div className="relative w-full flex h-16 items-center justify-between px-6 lg:px-10">
+        <div className="relative w-full flex h-14 sm:h-16 items-center justify-between px-3 sm:px-6 lg:px-10">
           {/* Left — Logo */}
           <div className="flex items-center gap-3 z-10">
             <a href="/" className="flex items-center gap-2.5">
@@ -44,8 +44,9 @@ export function Header({ active, showTicker = true, showFaucet = true }: { activ
                 width={36}
                 height={36}
                 priority
+                className="w-7 h-7 sm:w-9 sm:h-9"
               />
-              <span className="text-lg font-bold tracking-tight text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
+              <span className="hidden sm:inline text-lg font-bold tracking-tight text-white" style={{ fontFamily: "var(--font-heading, 'Space Grotesk'), sans-serif" }}>
                 Aperture
               </span>
             </a>
@@ -96,7 +97,7 @@ export function Header({ active, showTicker = true, showFaucet = true }: { activ
           </nav>
 
           {/* Right — CTA + Wallet */}
-          <div className="flex items-center gap-3 z-10">
+          <div className="flex items-center gap-1.5 sm:gap-3 z-10">
             <div
               className="hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors cursor-default"
             >

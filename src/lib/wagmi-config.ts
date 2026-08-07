@@ -32,7 +32,7 @@ const noopStorage = {
 
 const isBrowser = typeof window !== "undefined";
 
-// Wagmi adapter untuk Reown AppKit
+// Wagmi adapter — with longer polling to avoid RPC rate limits
 export const wagmiAdapter = new WagmiAdapter({
   networks: [arcTestnet],
   projectId: "aperture-dex-scanner",
@@ -41,11 +41,15 @@ export const wagmiAdapter = new WagmiAdapter({
     storage: isBrowser ? window.localStorage : (noopStorage as any),
   }),
   transports: {
-    [arcTestnet.id]: http("https://rpc.testnet.arc.network"),
+    [arcTestnet.id]: http("https://rpc.testnet.arc.network", {
+      batch: true,
+      retryCount: 2,
+      retryDelay: 1000,
+    }),
   },
 });
 
-// Create AppKit instance — Aperture branding (NOT Arc)
+// Create AppKit instance
 export const appKit = createAppKit({
   adapters: [wagmiAdapter],
   networks: [arcTestnet],

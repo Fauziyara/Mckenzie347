@@ -2,34 +2,48 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import type { Pair } from "@/lib/mock-data";
-import { formatUsd, formatPrice, formatNumber, timeAgo, shortAddr, formatPct } from "@/lib/format";
-import { Sparkline } from "@/components/sparkline";
 import { TokenLogo } from "@/components/token-logo";
+import { formatPrice, formatPct, shortAddr } from "@/lib/format";
 import { Input } from "@/components/ui/input";
-import { QuickBuyModal } from "@/components/quick-buy-modal";
 
-type SortKey = "createdAt" | "liquidityUsd" | "volume24h" | "txCount24h" | "marketCapUsd";
-type Tab = "top" | "tren" | "baru" | "lonjakan" | "dipantau";
+type SortKey = "priceToken0PerToken1" | "txCount24h" | "liquidityUsd" | "createdAt";
+type Tab = "top" | "trending" | "new" | "watchlist";
 
-const TAB_INFO: Record<Tab, { label: string; desc: string }> = {
-  top: { label: "Top", desc: "" },
-  tren: { label: "Trending", desc: "Pair dengan harga naik" },
-  baru: { label: "New", desc: "Pair baru (≤24 h)" },
-  lonjakan: { label: "Surge", desc: "Pair dengan kenaikan >10%" },
-  dipantau: { label: "Watchlist", desc: "Pair yang kamu pantau" },
+// Map Arc testnet symbols to recognizable names
+const SYMBOL_MAP: Record<string, string> = {
+  cirBTC: "BTC",
+  solXC: "SOL",
+  APEPE: "PEPE",
+  mog: "MOG",
+  BULLY: "BULLY",
+  WUSDC: "USDC",
+  wUSDC: "USDC",
+  EURC: "EURC",
+  ACHS: "ACHS",
+  AWE: "AWE",
+  SYN: "SYN",
+  KITTY: "KITTY",
+  JAY: "JAY",
 };
 
-export function PairTable({ pairs }: { pairs: Pair[] }) {
+function mapSymbol(sym: string): string {
+  return SYMBOL_MAP[sym] || sym;
+}
+
+// Leverage tiers based on token
+function getLeverage(sym: string): string {
+  const mapped = mapSymbol(sym);
+  if (["BTC", "ETH", "SOL"].includes(mapped)) return "100x";
+  return "50x";
+}
+
+export function PairTable({ pairs }: { pairs: any[] }) {
   const [search, setSearch] = useState("");
-  const [minLiq, setMinLiq] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("createdAt");
+  const [sortKey, setSortKey] = useState<SortKey>("txCount24h");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [tab, setTab] = useState<Tab>("top");
-  const [timeframe, setTimeframe] = useState<"5m" | "1h" | "24h">("5m");
   const [watchlist, setWatchlist] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [buyPair, setBuyPair] = useState<Pair | null>(null);
+  const [buyPair, setBuyPair] = useState<any | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("aperture-watchlist");
@@ -39,110 +53,63 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
       setWatchlist(s ? JSON.parse(s) : []);
     };
     window.addEventListener("storage", handler);
-    // Simulate loading
-    const t = setTimeout(() => setLoading(false), 400);
-    return () => { window.removeEventListener("storage", handler); clearTimeout(t); };
+    return () => window.removeEventListener("storage", handler);
   }, []);
+
+  function toggleWatch(address: string) {
+    setWatchlist(prev => {
+      const next = prev.includes(address) ? prev.filter(a => a !== address) : [...prev, address];
+      localStorage.setItem("aperture-watchlist", JSON.stringify(next));
+      return next;
+    });
+  }
 
   const filtered = useMemo(() => {
     let result = [...pairs];
 
-    if (tab === "baru") {
-      result = result.filter(p => Date.now() / 1000 - p.createdAt < 86400);
-    } else if (tab === "tren") {
-      result = result.filter(p => {
-        const ch = timeframe === "5m" ? p.priceChange5m : timeframe === "1h" ? p.priceChange1h : p.priceChange24h;
-        return ch > 0;
-      });
-    } else if (tab === "lonjakan") {
-      result = result.filter(p => {
-        const ch = timeframe === "5m" ? p.priceChange5m : timeframe === "1h" ? p.priceChange1h : p.priceChange24h;
-        return ch > 10;
-      });
-    } else if (tab === "dipantau") {
+    if (tab === "watchlist") {
       result = result.filter(p => watchlist.includes(p.address));
     }
 
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter(p =>
-        p.token0.symbol.toLowerCase().includes(q) ||
-        p.token1.symbol.toLowerCase().includes(q) ||
-        p.address.toLowerCase().includes(q)
-      );
-    }
-
-    const min = parseFloat(minLiq);
-    if (!isNaN(min) && min > 0) result = result.filter(p => p.liquidityUsd >= min);
-
-    if (tab === "tren" || tab === "lonjakan") {
-      const chKey = timeframe === "5m" ? "priceChange5m" : timeframe === "1h" ? "priceChange1h" : "priceChange24h";
-      result.sort((a, b) => (b as any)[chKey] - (a as any)[chKey]);
-    } else {
-      result.sort((a, b) => {
-        const diff = a[sortKey] - b[sortKey];
-        return sortDir === "asc" ? diff : -diff;
+      result = result.filter(p => {
+        const s0 = (p.token0?.symbol || "").toLowerCase();
+        const s1 = (p.token1?.symbol || "").toLowerCase();
+        const m0 = mapSymbol(p.token0?.symbol || "").toLowerCase();
+        const m1 = mapSymbol(p.token1?.symbol || "").toLowerCase();
+        return s0.includes(q) || s1.includes(q) || m0.includes(q) || m1.includes(q) || p.address.toLowerCase().includes(q);
       });
     }
 
-    // Always pin live swap pairs to top
-    result.sort((a, b) => (b.isSwapReal ? 1 : 0) - (a.isSwapReal ? 1 : 0));
+    result.sort((a, b) => {
+      let diff = 0;
+      if (sortKey === "priceToken0PerToken1") diff = (Number(a.priceToken0PerToken1) || 0) - (Number(b.priceToken0PerToken1) || 0);
+      else if (sortKey === "txCount24h") diff = (a.total_swaps || a.txCount24h || 0) - (b.total_swaps || b.txCount24h || 0);
+      else if (sortKey === "liquidityUsd") diff = (Number(a.liquidityUsd) || 0) - (Number(b.liquidityUsd) || 0);
+      else diff = (a.createdAt || 0) - (b.createdAt || 0);
+      return sortDir === "asc" ? diff : -diff;
+    });
 
     return result;
-  }, [pairs, search, minLiq, sortKey, sortDir, tab, timeframe, watchlist]);
+  }, [pairs, search, sortKey, sortDir, tab, watchlist]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) setSortDir(sortDir === "asc" ? "desc" : "asc");
     else { setSortKey(key); setSortDir("desc"); }
   }
 
-  function SortIcon({ k }: { k: SortKey }) {
-    if (sortKey !== k) return <span className="text-muted-foreground/30 ml-0.5">⇅</span>;
-    return <span className="text-emerald-400 ml-0.5 font-bold">{sortDir === "asc" ? "↑" : "↓"}</span>;
-  }
-
-  function getChange(p: Pair) {
-    return timeframe === "5m" ? p.priceChange5m : timeframe === "1h" ? p.priceChange1h : p.priceChange24h;
-  }
-
-  // Loading skeleton
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        <div className="flex gap-2">
-          {[1,2,3,4,5].map(i => (
-            <div key={i} className="h-8 w-20 animate-pulse rounded-md bg-muted/50" />
-          ))}
-        </div>
-        <div className="h-10 w-full animate-pulse rounded-md bg-muted/30" />
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <div className="space-y-1 p-2">
-            {[1,2,3,4,5,6,7,8].map(i => (
-              <div key={i} className="flex h-12 animate-pulse items-center gap-4 rounded bg-muted/20 px-3">
-                <div className="h-4 w-24 rounded bg-muted/40" />
-                <div className="h-4 w-16 rounded bg-muted/40" />
-                <div className="h-4 w-12 rounded bg-muted/40" />
-                <div className="ml-auto h-4 w-16 rounded bg-muted/40" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-3">
-      {/* Tabs + Timeframe */}
+      {/* Tabs */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1 rounded-lg bg-muted/50 p-1">
             {([
               ["top", "Top"],
-              ["tren", "Trending"],
-              ["baru", "New"],
-              ["lonjakan", "Surge"],
-              ["dipantau", `Watchlist${watchlist.length ? ` (${watchlist.length})` : ""}`],
+              ["trending", "Trending"],
+              ["new", "New"],
+              ["watchlist", `★ ${watchlist.length}`],
             ] as [Tab, string][]).map(([t, label]) => (
               <button
                 key={t}
@@ -158,205 +125,117 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-1 rounded-lg bg-muted/50 p-1">
-            {(["5m", "1h", "24h"] as const).map(tf => (
-              <button
-                key={tf}
-                type="button"
-                onClick={() => setTimeframe(tf)}
-                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-                  timeframe === tf
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                {tf}
-              </button>
-            ))}
-          </div>
         </div>
-      </div>
-
-      {/* Search + Sort */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Input
-          placeholder="Search token, symbol, or address..."
+          placeholder="Search token or address..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="sm:max-w-sm bg-muted/30 border-border/50"
+          className="sm:max-w-xs bg-muted/30 border-border/50 h-8 text-xs"
         />
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground whitespace-nowrap">Min Liq:</span>
-          <Input
-            type="number"
-            placeholder="0"
-            value={minLiq}
-            onChange={e => setMinLiq(e.target.value)}
-            className="w-28 bg-muted/30 border-border/50"
-          />
-        </div>
-        <div className="hidden items-center gap-1 sm:ml-auto sm:flex">
-          <span className="text-xs text-muted-foreground mr-1">Sort:</span>
-          {([
-            ["createdAt", "New"],
-            ["marketCapUsd", "MCap"],
-            ["liquidityUsd", "Liq"],
-            ["volume24h", "Vol"],
-            ["txCount24h", "TX"],
-          ] as [SortKey, string][]).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => toggleSort(key)}
-              className={`h-7 rounded-md px-2.5 text-xs font-medium gap-1 inline-flex items-center justify-center border transition-colors cursor-pointer ${
-                sortKey === key
-                  ? "bg-emerald-500 text-background border-emerald-500 hover:bg-emerald-600 sort-active"
-                  : "border-border bg-background hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              {label}
-              <SortIcon k={key} />
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* ===== DESKTOP TABLE (md and up) ===== */}
-      <div className="hidden overflow-x-auto rounded-lg border border-border md:block sticky-thead">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border bg-muted/30">
-              <th className="px-3 py-2.5 text-left font-medium text-muted-foreground">Pair</th>
-              <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Chart</th>
-              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Price</th>
-              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">{timeframe}</th>
-              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Mkt Cap</th>
-              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Liquidity</th>
-              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Volume</th>
-              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">TX (B/S)</th>
-              <th className="px-3 py-2.5 text-right font-medium text-muted-foreground">Token Info</th>
-                            <th className="px-3 py-2.5 text-center font-medium text-muted-foreground">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={11} className="px-4 py-12 text-center text-muted-foreground">
-                  {tab === "dipantau" ? "No tokens in watchlist. Click ☆ Watch on pair page." : "No pairs found"}
-                </td>
-              </tr>
-            ) : (
-              filtered.map(pair => {
-                const isNew = Date.now() / 1000 - pair.createdAt < 86400;
-                const change = getChange(pair);
-                const isPositive = change >= 0;
-                return (
-                  <tr key={pair.address} className="row-glow border-b border-border/40 transition-colors last:border-0 hover:bg-muted/20">
-                    <td className="px-3 py-2.5">
-                      <Link href={pair.isSwapReal ? "/swap" : `/pair/${pair.address}`} className="block">
-                        <div className="flex items-center gap-2">
-                          <TokenLogo symbol={pair.token0.symbol} size={24} />
-                          <span className="font-medium">{pair.token0.symbol}</span>
-                          <span className="text-muted-foreground text-xs">/ {pair.token1.symbol}</span>
-                          {isNew && (
-                            <span className="rounded bg-emerald-500/20 px-1 py-0 text-[9px] font-bold text-emerald-400">NEW</span>
-                          )}
-                          {pair.isSwapReal && (
-                            <span className="rounded bg-emerald-500/20 px-1.5 py-0 text-[9px] font-bold text-emerald-400 border border-emerald-500/30 flex items-center gap-0.5">
-                              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />LIVE
-                            </span>
-                          )}
-                        </div>
-                        <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">{shortAddr(pair.address)}</div>
-                      </Link>
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <Link href={`/pair/${pair.address}`}>
-                        <Sparkline data={pair.sparkline} positive={isPositive} width={72} height={24} />
-                      </Link>
-                    </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs">{formatPrice(pair.priceToken0PerToken1)}</td>
-                    <td className={`px-3 py-2.5 text-right font-mono text-xs font-medium ${isPositive ? "text-emerald-400" : "text-red-400"}`}>{formatPct(change)}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.marketCapUsd)}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.liquidityUsd)}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs">{formatUsd(pair.volume24h)}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs">
-                      <span className="text-emerald-400">{pair.buys24h}</span>
-                      <span className="text-muted-foreground">/</span>
-                      <span className="text-red-400">{pair.sells24h}</span>
-                    </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-xs text-muted-foreground">
-                      <div className="inline-grid grid-cols-3 gap-x-2 gap-y-0.5 text-[10px] items-center">
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>{pair.top10Pct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18h20M3 6l4 4 5-6 5 6 4-4-2 12H5L3 6z"/></svg>{pair.devPct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>{pair.sniperPct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>{pair.insiderPct}%</span>
-  <span className="flex items-center gap-0.5 text-red-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12h.01M15 12h.01M9 15h.01M15 15h.01M12 2a8 8 0 0 0-8 8v12l3-2 2 2 3-2 3 2 2-2 3 2V10a8 8 0 0 0-8-8z"/></svg>{pair.bundlerPct}%</span>
-  <span className="flex items-center gap-0.5 text-emerald-400"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Paid</span>
-</div>
-                    </td>
-                                        <td className="px-3 py-2.5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => setBuyPair(pair)}
-                        className="rounded-md bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
-                      >
-                        Buy
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* ===== COMPACT TABLE (like perpetuals exchange) ===== */}
+      <div className="overflow-hidden rounded-lg border border-border">
+        {/* Header */}
+        <div className="flex items-center border-b border-border bg-muted/30 px-2 sm:px-3 py-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+          <div className="w-5 sm:w-6 shrink-0" />
+          <div className="flex-1 ml-1 sm:ml-2 min-w-0">Pair</div>
+          <div className="hidden md:block w-16 text-center">Lev</div>
+          <div
+            className="w-20 sm:w-28 text-right cursor-pointer hover:text-foreground shrink-0"
+            onClick={() => toggleSort("priceToken0PerToken1")}
+          >
+            Price {sortKey === "priceToken0PerToken1" && (sortDir === "desc" ? "↓" : "↑")}
+          </div>
+          <div className="hidden sm:block w-20 text-right">24h</div>
+          <div
+            className="hidden lg:block w-24 text-right cursor-pointer hover:text-foreground"
+            onClick={() => toggleSort("txCount24h")}
+          >
+            Swaps {sortKey === "txCount24h" && (sortDir === "desc" ? "↓" : "↑")}
+          </div>
+          <div className="w-14 sm:w-16 text-center shrink-0">Trade</div>
+        </div>
 
-      {/* ===== MOBILE CARDS (below md) ===== */}
-      <div className="space-y-2 md:hidden">
+        {/* Rows */}
         {filtered.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-            {tab === "dipantau" ? "Belum ada pair dipantau" : "No pairs found"}
+          <div className="px-4 py-12 text-center text-sm text-muted-foreground">
+            {tab === "watchlist" ? "No pairs in watchlist. Click ★ to add." : "No pairs found"}
           </div>
         ) : (
-          filtered.map(pair => {
-            const isNew = Date.now() / 1000 - pair.createdAt < 86400;
-            const change = getChange(pair);
+          filtered.map((pair, idx) => {
+            const sym0 = pair.token0?.symbol || "?";
+            const sym1 = pair.token1?.symbol || "?";
+            const mapped0 = mapSymbol(sym0);
+            const mapped1 = mapSymbol(sym1);
+            const lev = getLeverage(sym0);
+            const price = Number(pair.priceToken0PerToken1) || 0;
+            const swaps = pair.total_swaps || pair.txCount24h || 0;
+            const change = 0; // No historical price data yet
             const isPositive = change >= 0;
+            const isWatched = watchlist.includes(pair.address);
+
             return (
-              <div key={pair.address} className="rounded-lg border border-border p-3">
-                <div className="flex items-start justify-between">
-                  <Link href={pair.isSwapReal ? "/swap" : `/pair/${pair.address}`}>
-                    <div className="flex items-center gap-2">
-                      <TokenLogo symbol={pair.token0.symbol} size={28} />
-                      <span className="font-medium">{pair.token0.symbol}</span>
-                      <span className="text-muted-foreground text-xs">/ {pair.token1.symbol}</span>
-                      {isNew && <span className="rounded bg-emerald-500/20 px-1 text-[9px] font-bold text-emerald-400">NEW</span>}
-                      {pair.isSwapReal && (
-                        <span className="rounded bg-emerald-500/20 px-1 text-[9px] font-bold text-emerald-400 border border-emerald-500/30">LIVE</span>
-                      )}
+              <div
+                key={pair.address}
+                className={`flex items-center px-2 sm:px-3 py-2 sm:py-2.5 border-b border-border/40 last:border-0 transition-colors hover:bg-muted/20 ${idx % 2 === 0 ? "" : "bg-muted/5"}`}
+              >
+                {/* Star */}
+                <button
+                  type="button"
+                  onClick={() => toggleWatch(pair.address)}
+                  className="w-5 sm:w-6 shrink-0 flex items-center justify-center text-muted-foreground hover:text-amber-400 transition-colors"
+                >
+                  {isWatched ? "★" : "☆"}
+                </button>
+
+                {/* Pair name + logos */}
+                <Link href={`/pair/${pair.address}`} className="flex-1 flex items-center gap-1.5 sm:gap-2 ml-1 sm:ml-2 min-w-0">
+                  <div className="flex items-center" style={{ marginRight: -4 }}>
+                    <TokenLogo symbol={mapped0} size={22} />
+                    <div style={{ marginLeft: -7 }}>
+                      <TokenLogo symbol={mapped1} size={22} />
                     </div>
-                    <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">{shortAddr(pair.address)}</div>
-                  </Link>
-                  <Sparkline data={pair.sparkline} positive={isPositive} width={60} height={20} />
-                </div>
-                <div className="mt-2 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-sm">{formatPrice(pair.priceToken0PerToken1)}</span>
-                    <span className={`font-mono text-xs font-medium ${isPositive ? "text-emerald-400" : "text-red-400"}`}>{formatPct(change)}</span>
                   </div>
+                  <span className="font-medium text-xs sm:text-sm truncate">{mapped0}</span>
+                  <span className="text-muted-foreground text-[10px] sm:text-xs">/{mapped1}</span>
+                  <span className="hidden sm:inline-flex rounded bg-emerald-500/20 px-1.5 py-0 text-[9px] font-bold text-emerald-400 border border-emerald-500/30 items-center gap-0.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    LIVE
+                  </span>
+                </Link>
+
+                {/* Leverage */}
+                <div className="hidden md:block w-16 text-center">
+                  <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">
+                    {lev}
+                  </span>
+                </div>
+
+                {/* Price */}
+                <div className="w-20 sm:w-28 text-right font-mono text-xs text-foreground shrink-0">
+                  {formatPrice(price)}
+                </div>
+
+                {/* 24h change */}
+                <div className={`hidden sm:block w-20 text-right font-mono text-xs font-medium ${isPositive ? "text-emerald-400" : "text-red-400"}`}>
+                  {formatPct(change)}
+                </div>
+
+                {/* Swaps */}
+                <div className="hidden lg:block w-24 text-right font-mono text-xs text-muted-foreground">
+                  {swaps}
+                </div>
+
+                {/* Trade button */}
+                <div className="w-14 sm:w-16 text-center shrink-0">
                   <button
                     type="button"
                     onClick={() => setBuyPair(pair)}
-                    className="rounded-md bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 cursor-pointer"
+                    className="rounded-md bg-emerald-500/10 px-2.5 py-1 text-[10px] font-medium text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
                   >
-                    Buy
+                    Trade
                   </button>
-                </div>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-[10px] text-muted-foreground">
-                  <div>Liq: <span className="font-mono text-foreground">{formatUsd(pair.liquidityUsd)}</span></div>
-                  <div>Vol: <span className="font-mono text-foreground">{formatUsd(pair.volume24h)}</span></div>
-                  <div>TX: <span className="text-emerald-400">{pair.buys24h}</span>/<span className="text-red-400">{pair.sells24h}</span></div>
                 </div>
               </div>
             );
@@ -365,11 +244,30 @@ export function PairTable({ pairs }: { pairs: Pair[] }) {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        {filtered.length} dari {pairs.length} pairs
+        {filtered.length} of {pairs.length} pairs
       </p>
 
       {/* Quick Buy Modal */}
-      {buyPair && <QuickBuyModal pair={buyPair} onClose={() => setBuyPair(null)} />}
+      {buyPair && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setBuyPair(null)}>
+          <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 m-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold">
+                {mapSymbol(buyPair.token0?.symbol || "?")} / {mapSymbol(buyPair.token1?.symbol || "?")}
+              </h3>
+              <button onClick={() => setBuyPair(null)} className="text-muted-foreground hover:text-foreground">✕</button>
+            </div>
+            <p className="text-xs text-muted-foreground mb-2">Address: {shortAddr(buyPair.address)}</p>
+            <p className="text-xs text-muted-foreground mb-2">Price: {formatPrice(Number(buyPair.priceToken0PerToken1) || 0)}</p>
+            <p className="text-xs text-muted-foreground mb-4">Swaps: {buyPair.total_swaps || 0}</p>
+            <Link href={`/pair/${buyPair.address}`}>
+              <button className="w-full rounded-lg bg-emerald-500 py-2.5 text-sm font-medium text-background hover:bg-emerald-600 transition-colors">
+                View Pair Details
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
