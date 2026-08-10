@@ -49,28 +49,38 @@ export const wagmiAdapter = new WagmiAdapter({
   },
 });
 
-// Create AppKit instance
-export const appKit = createAppKit({
-  adapters: [wagmiAdapter],
-  networks: [arcTestnet],
-  projectId: "aperture-dex-scanner",
-  metadata: {
-    name: "Aperture",
-    description: "Aperture — DEX Scanner built on Arc Network",
-    url: "https://aperture.app",
-    icons: ["/aperture-logo.svg"],
-  },
-  features: {
-    analytics: false,
-    email: false,
-    socials: false,
-  },
-  themeMode: "dark",
-  themeVariables: {
-    "--w3m-accent": "#10b981",
-    "--w3m-border-radius-master": "2px",
-  },
-});
+// Create AppKit instance — called once
+let _appKitCreated = false;
+export function initAppKit() {
+  if (_appKitCreated) return;
+  _appKitCreated = true;
+  createAppKit({
+    adapters: [wagmiAdapter],
+    networks: [arcTestnet],
+    projectId: "aperture-dex-scanner",
+    metadata: {
+      name: "Aperture",
+      description: "Aperture — DEX Scanner built on Arc Network",
+      url: "https://aperture.app",
+      icons: ["/logo-arc.png"],
+    },
+    features: {
+      analytics: false,
+      email: false,
+      socials: false,
+    },
+    themeMode: "dark",
+    themeVariables: {
+      "--w3m-accent": "#10b981",
+      "--w3m-border-radius-master": "2px",
+    },
+  });
+}
+
+// Auto-init on client
+if (typeof window !== "undefined") {
+  initAppKit();
+}
 
 // Export wagmi config dari adapter
 export const config = wagmiAdapter.wagmiConfig;

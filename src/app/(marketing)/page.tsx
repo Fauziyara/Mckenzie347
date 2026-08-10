@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface PairData {
   name: string;
@@ -49,9 +50,13 @@ const FALLBACK_PAIRS: PairData[] = [
 
 const FALLBACK_POOLS: PoolData[] = [
   { name: "cirBTC / USDC", sub: "High yield · stable", apr: "48.2%", tvl: "$1.2M" },
-  { name: "EURC / USDC", sub: "Stablecoin pair", apr: "32.5%", tvl: "$840k" },
-  { name: "SYN / USDC", sub: "Moderate yield", apr: "27.8%", tvl: "$620k" },
-  { name: "BTC / USDC", sub: "Blue chip pair", apr: "19.4%", tvl: "$450k" },
+  { name: "BTC / USDC", sub: "Blue chip", apr: "42.1%", tvl: "$2.1M" },
+  { name: "ETH / USDC", sub: "High volume", apr: "35.7%", tvl: "$1.8M" },
+  { name: "SOL / USDC", sub: "High volume", apr: "31.4%", tvl: "$920k" },
+  { name: "BNB / USDC", sub: "Blue chip", apr: "28.9%", tvl: "$740k" },
+  { name: "EURC / USDC", sub: "Stablecoin pair", apr: "22.3%", tvl: "$680k" },
+  { name: "XRP / USDC", sub: "High volume", apr: "19.8%", tvl: "$520k" },
+  { name: "LINK / USDC", sub: "Oracle", apr: "17.2%", tvl: "$390k" },
 ];
 
 const specs = [
@@ -60,13 +65,13 @@ const specs = [
   { n: "03", label: "On-chain DEX", copy: "On-chain swaps with live quotes on Arc's native DEX. Route size without leaving the scanner.", meta: "live quotes" },
   { n: "04", label: "CCTP bridge", copy: "Bring USDC from Ethereum, Base, or Arbitrum through Circle CCTP into Arc.", meta: "3+ sources" },
   { n: "05", label: "Gateway balance", copy: "Deposit from any supported chain into Circle Gateway. One balance, internal transfers.", meta: "unified" },
-  { n: "06", label: "Circle infrastructure", copy: "Settlement sits on audited Arc stack. Aperture reads chain state; it does not custody funds.", meta: "audited" },
+  { n: "06", label: "Circle infrastructure", copy: "Settlement on Arc's audited infrastructure. Aperture reads chain state; it does not custody funds.", meta: "audited" },
 ];
 
 const faqs = [
-  { q: "What is Aperture?", a: "A real-time DEX scanner and aggregator on Arc Network. Discover pools, swap tokens, farm yield, and read on-chain tape without a custodial middle layer." },
+  { q: "What is Aperture?", a: "A real-time DEX scanner and aggregator on Arc Network. Discover pools, swap tokens, farm yield, and read on-chain activity without a custodial middle layer." },
   { q: "How do I swap or earn?", a: "Open the app, connect a wallet on Arc Testnet, pick a pair. Swaps route through the native DEX. Farms take a deposit into the pool contract. Gas is paid in USDC." },
-  { q: "Is Aperture safe and audited?", a: "Settlement sits on Circle's Arc stack. Aperture does not custody funds. Swaps and LP positions live in contracts you can verify on-chain." },
+  { q: "Is Aperture safe and audited?", a: "Settlement runs on Arc's infrastructure. Aperture does not custody funds. Swaps and LP positions live in contracts you can verify on-chain." },
   { q: "What are the fees?", a: "Typical swaps cost around $0.001 in gas. Pool fees follow each pair's curve. Aperture does not invent a second gas token." },
   { q: "What is Arc Network?", a: "Arc is Circle's stablecoin L1: USDC as gas, sub-second finality, and audited infrastructure for on-chain settlement." },
   { q: "Which wallets are supported?", a: "Any wallet that speaks Arc Testnet and USDC. Connect, fund from faucet or bridge, then trade." },
@@ -170,7 +175,7 @@ export default function LandingPage() {
       <header className={stuck ? "stuck" : ""}>
         <div className="shell header-row">
           <a className="logo" href="#top" aria-label="Aperture">
-            <span className="logo-mark" aria-hidden="true"></span>
+            <Image src="/logo-arc.png" alt="Aperture" width={18} height={18} priority />
             Aperture
           </a>
           <div className="header-actions">
@@ -368,7 +373,7 @@ export default function LandingPage() {
             <div className="faq-side">
               <p className="band-kicker">FAQ</p>
               <h2 className="band-title">Questions before the first swap.</h2>
-              <p className="band-desc" style={{ marginTop: 14 }}>Straight answers. No support theater.</p>
+              <p className="band-desc" style={{ marginTop: 14 }}>Direct answers to common questions.</p>
             </div>
             <div className="faq-list">
               {faqs.map((f, i) => (
@@ -437,9 +442,9 @@ export default function LandingPage() {
           <span>© 2026 Aperture · Built on Arc</span>
           <nav>
             <a href="/explore">Scanner</a>
-            <a href="#why">Why</a>
+            <a href="/docs">Docs</a>
             <a href="#earn">Earn</a>
-            <a href="#faq">FAQ</a>
+            <a href="/earn">Earn</a>
           </nav>
         </div>
       </footer>

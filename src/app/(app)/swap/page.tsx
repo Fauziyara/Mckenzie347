@@ -466,7 +466,7 @@ function SwapContent() {
 
   return (
     <>
-      <Header active="Swap" />
+      <Header logoColor="green" active="Swap" />
       <main className="w-full flex-1 px-4 flex items-center justify-center" style={{ minHeight: "calc(100vh - 180px)" }}>
         <div className="mx-auto w-full max-w-[480px]">
 
@@ -659,7 +659,7 @@ export default function SwapPage() {
   return (
     <Suspense fallback={
       <>
-        <Header active="Swap" />
+        <Header logoColor="green" active="Swap" />
         <main className="w-full flex-1 flex items-center justify-center min-h-[60vh]">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
         </main>

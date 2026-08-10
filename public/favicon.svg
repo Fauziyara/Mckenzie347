@@ -1,34 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- Aperture Orbit — with emerald background
-       Filosofi: Aperture = pusat ekosistem Arc.
-       Orbit = pairs berputar mengelilingi scanner engine. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
   <defs>
-    <linearGradient id="aperture-bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#10b981"/>
-      <stop offset="1" stop-color="#047857"/>
+    <linearGradient id="ag" x1="100" y1="100" x2="924" y2="924" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399"/>
+      <stop offset="1" stop-color="#059669"/>
     </linearGradient>
   </defs>
-  <!-- Emerald background — rounded square -->
-  <rect width="64" height="64" rx="14" fill="url(#aperture-bg)"/>
-  <!-- Orbit 1 — horizontal -->
-  <ellipse cx="32" cy="32" rx="24" ry="8" fill="none" stroke="#0a0a0a" stroke-width="1.5" opacity="0.2"/>
-  <!-- Orbit 2 — 60deg -->
-  <ellipse cx="32" cy="32" rx="24" ry="8" fill="none" stroke="#0a0a0a" stroke-width="1.5" opacity="0.25" transform="rotate(60 32 32)"/>
-  <!-- Orbit 3 — -60deg -->
-  <ellipse cx="32" cy="32" rx="24" ry="8" fill="none" stroke="#0a0a0a" stroke-width="1.5" opacity="0.2" transform="rotate(-60 32 32)"/>
-  <!-- Pair nodes on orbits — dark on green -->
-  <circle cx="56" cy="32" r="2.5" fill="#0a0a0a" opacity="0.7"/>
-  <circle cx="8" cy="32" r="1.5" fill="#0a0a0a" opacity="0.4"/>
-  <circle cx="44" cy="11" r="2" fill="#0a0a0a" opacity="0.6"/>
-  <circle cx="20" cy="53" r="1.5" fill="#0a0a0a" opacity="0.4"/>
-  <circle cx="20" cy="11" r="2" fill="#0a0a0a" opacity="0.6"/>
-  <circle cx="44" cy="53" r="1.5" fill="#0a0a0a" opacity="0.4"/>
-  <!-- Core — aperture scanner engine -->
-  <circle cx="32" cy="32" r="10" fill="#0a0a0a" opacity="0.15"/>
-  <circle cx="32" cy="32" r="8" fill="none" stroke="#0a0a0a" stroke-width="2"/>
-  <!-- Inner diamond (aperture blade) -->
-  <path d="M32 25 L39 32 L32 39 L25 32 Z" fill="#0a0a0a" opacity="0.4"/>
-  <!-- Center pupil -->
-  <circle cx="32" cy="32" r="3" fill="#0a0a0a"/>
-  <circle cx="32" cy="32" r="1.2" fill="url(#aperture-bg)"/>
+  <rect width="1024" height="1024" rx="256" fill="#0A0A0A"/>
+  <g transform="translate(0,1024) scale(0.1,-0.1)" fill="url(#ag)" stroke="none">
+    <path d="M4498 8396 c-50 -18 -84 -41 -102 -69 -16 -23 -52 -107 -268 -622
+-72 -170 -166 -395 -210 -500 -133 -315 -158 -378 -154 -383 3 -2 325 -96 716
+-208 391 -112 724 -211 739 -219 41 -21 86 -68 101 -107 13 -33 83 -197 255
+-598 49 -113 91 -209 95 -213 4 -5 183 345 398 778 l391 786 -185 442 c-310
+737 -346 821 -366 848 -11 14 -39 37 -61 50 l-42 24 -635 2 c-512 2 -642 0
+-672 -11z M6155 6047 c-212 -428 -385 -785 -385 -795 -1 -30 412 -986 434
+-1005 12 -11 31 -17 46 -15 14 2 261 163 550 358 289 194 526 354 527 355 3 1
+-108 273 -224 550 -44 105 -185 442 -313 750 -128 308 -236 564 -241 569 -5 6
+-170 -315 -394 -767z M3681 6637 c-5 -12 -148 -357 -319 -767 -170 -410 -347
+-835 -392 -945 -45 -110 -161 -389 -257 -620 -97 -231 -178 -427 -181 -435 -7
+-17 17 2 165 130 1377 1197 1346 1171 1603 1387 118 99 227 194 241 209 15 16
+56 74 92 129 36 55 149 198 251 317 102 120 182 219 178 221 -4 3 -302 89
+-662 191 -360 103 -668 191 -683 196 -24 8 -29 6 -36 -13z M4250 5117 c-182
+-155 -527 -453 -1587 -1375 l-291 -253 -80 -192 c-579 -1384 -557 -1325 -503
+-1368 22 -18 48 -19 650 -19 603 0 627 1 658 20 18 10 39 30 48 44 16 24 91
+209 357 876 269 675 437 1119 472 1249 38 139 46 159 295 769 84 205 151 377
+149 381 -2 5 -77 -54 -168 -132z M6884 4439 c-280 -188 -547 -369 -594 -402
+-139 -99 -147 -101 -355 -105 -188 -3 -225 -6 -225 -22 0 -8 357 -289 675
+-530 201 -152 267 -210 303 -267 17 -27 75 -160 130 -298 188 -470 333 -819
+348 -843 8 -12 29 -32 47 -42 31 -19 55 -20 655 -20 l623 0 24 25 c46 45 45
+47 -177 580 -42 99 -124 297 -183 440 -59 143 -124 301 -145 350 -21 50 -122
+293 -225 540 -205 493 -387 929 -390 932 -1 2 -231 -151 -511 -338z M4143
+3911 c-49 -23 -52 -28 -133 -236 -34 -88 -93 -239 -130 -335 -37 -96 -87 -223
+-109 -281 -23 -58 -41 -110 -41 -117 0 -9 324 -12 1413 -12 776 0 1418 4 1425
+9 11 7 9 18 -12 59 -22 44 -49 69 -173 164 -81 62 -257 199 -392 303 -491 381
+-555 429 -603 447 -45 17 -89 18 -626 18 -545 0 -579 -1 -619 -19z"/>
+  </g>
 </svg>

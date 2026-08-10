@@ -7,7 +7,7 @@ import { BottomNav } from "@/components/bottom-nav";
 export const metadata: Metadata = {
   title: "Aperture — DEX Scanner",
   description: "Aperture is a real-time DEX pair scanner built on Arc Network.",
-  icons: { icon: "/aperture-logo.svg", shortcut: "/aperture-logo.svg", apple: "/aperture-logo.svg" },
+  icons: { icon: "/logo-arc.png", shortcut: "/logo-arc.png", apple: "/logo-arc.png" },
 };
 
 const themeScript = `

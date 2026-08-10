@@ -171,7 +171,7 @@ export default function ExplorePage() {
 
   return (
     <>
-      <Header active="Explore" />
+      <Header logoColor="green" active="Explore" />
       <main className="w-full flex-1 bg-explore">
         {/* Stats Bar */}
         <section className="border-b border-border/50 bg-muted/10">
@@ -386,7 +386,6 @@ export default function ExplorePage() {
 
               <div className="flex items-center justify-between mt-3 px-1">
                 <p className="text-[10px] sm:text-xs text-muted-foreground">
-                  Prices from CoinGecko · Swaps from Arc indexer · Auto-refresh 15s
                 </p>
                 <div className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>

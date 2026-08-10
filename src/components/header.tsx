@@ -19,14 +19,14 @@ const navItems = [
   { href: "/pulse", label: "Pulse", hasDropdown: false },
   { href: "/swap", label: "Swap", hasDropdown: false },
   { href: "#", label: "Tools", hasDropdown: true, submenu: [
-    { href: "/pelacak", label: "Tracker" },
-    { href: "/alat", label: "Watchlist" },
+    { href: "/tracker", label: "Tracker" },
+    { href: "/watchlist", label: "Watchlist" },
   ]},
   { href: "/portfolio", label: "Portfolio", hasDropdown: false },
   { href: "/earn", label: "Earn", hasDropdown: false },
 ];
 
-export function Header({ active, showTicker = true, showFaucet = true }: { active?: string; showTicker?: boolean; showFaucet?: boolean }) {
+export function Header({ active, showTicker = true, showFaucet = true, logoColor = "black" }: { active?: string; showTicker?: boolean; showFaucet?: boolean; logoColor?: "black" | "green" }) {
   return (
     <>
       <header className="sticky top-0 z-50" style={{
@@ -39,7 +39,7 @@ export function Header({ active, showTicker = true, showFaucet = true }: { activ
           <div className="flex items-center gap-3 z-10">
             <a href="/" className="flex items-center gap-2.5">
               <Image
-                src="/aperture-logo.svg"
+                src={logoColor === "green" ? "/logo-arc-green.png" : "/logo-arc.png"}
                 alt="Aperture"
                 width={36}
                 height={36}

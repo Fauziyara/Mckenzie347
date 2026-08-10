@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { formatUsd, formatPrice, shortAddr } from "@/lib/format";
 import Link from "next/link";
 
-export default function PelacakPage() {
+export default function TrackerPage() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<"searching" | "notfound" | "found" | null>(null);
   const [pair, setPair] = useState<any | null>(null);
@@ -39,7 +39,7 @@ export default function PelacakPage() {
 
   return (
     <>
-      <Header active="Tracker" />
+      <Header logoColor="green" active="Tracker" />
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">Tracker</h1>

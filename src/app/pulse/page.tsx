@@ -199,7 +199,7 @@ export default function PulsePage() {
   if (loading && !data) {
     return (
       <>
-        <Header />
+        <Header logoColor="green" />
         <main className="w-full flex-1 px-4 py-6">
           <div className="space-y-4">
             <div className="h-8 w-48 animate-pulse rounded bg-muted/50"></div>
@@ -219,7 +219,7 @@ export default function PulsePage() {
   if (error && !data) {
     return (
       <>
-        <Header />
+        <Header logoColor="green" />
         <main className="w-full flex-1 px-4 py-6">
           <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-6 text-center">
             <div className="text-sm font-medium text-red-400">Failed to load data Pulse</div>
@@ -235,7 +235,7 @@ export default function PulsePage() {
 
   return (
     <>
-      <Header />
+      <Header logoColor="green" />
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
@@ -296,7 +296,7 @@ export default function PulsePage() {
             <div className="max-h-96 overflow-y-auto">
               {data.newPairs.length === 0 ? (
                 <div className="px-4 py-8 text-center text-xs text-muted-foreground">
-                  Tidak ada pair baru
+                  No new pairs yet
                 </div>
               ) : (
                 data.newPairs.map((pair) => (
@@ -315,7 +315,7 @@ export default function PulsePage() {
             <div className="max-h-96 overflow-y-auto">
               {data.topPairs.length === 0 ? (
                 <div className="px-4 py-8 text-center text-xs text-muted-foreground">
-                  <p>Belum ada aktivitas</p>
+                  <p>No activity yet</p>
                   <p className="mt-1">Pairs with the most swaps will appear here</p>
                 </div>
               ) : (

@@ -173,7 +173,7 @@ export default function PortofolioPage() {
 
   return (
     <>
-      <Header active="Portfolio" />
+      <Header logoColor="green" active="Portfolio" />
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>

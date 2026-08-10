@@ -38,40 +38,19 @@ export default function EarnPage() {
   const [filterRisk, setFilterRisk] = useState<"All" | "Low" | "Med" | "High">("All");
 
   useEffect(() => {
-    // Fetch real pools from indexer API
-    fetch("/api/indexer/pairs?limit=20&liquidity=true")
-      .then(r => r.json())
-      .then(data => {
-        if (data.success && data.pairs.length > 0) {
-          const realPools: Pool[] = data.pairs.map((p: any, i: number) => ({
-            id: `pool-${i + 1}`,
-            pairLabel: `${p.token0_symbol}/${p.token1_symbol}`,
-            token0: p.token0_symbol,
-            token1: p.token1_symbol,
-            pairAddress: p.address,
-            tvl: (Number(p.reserve0) / Math.pow(10, p.token0_decimals) + Number(p.reserve1) / Math.pow(10, p.token1_decimals)),
-            apy: Math.random() * 100 + 5, // APY needs on-chain calculation — placeholder for now
-            reward: "USDC",
-            risk: (["Low", "Med", "High"] as const)[i % 3],
-            myStake: 0,
-            earned: 0,
-          }));
-          setPools(realPools);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(realPools));
-          return;
-        }
-      })
-      .catch(() => {
-        // Fallback to localStorage or empty
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          try {
-            setPools(JSON.parse(saved));
-          } catch {
-            setPools([]);
-          }
-        }
-      });
+    // Use dummy pools matching explorer pairs
+    const DUMMY_POOLS: Pool[] = [
+      { id: "pool-1", pairLabel: "cirBTC/USDC", token0: "cirBTC", token1: "USDC", pairAddress: "", tvl: 1200000, apy: 48.2, reward: "USDC", risk: "Low", myStake: 0, earned: 0 },
+      { id: "pool-2", pairLabel: "BTC/USDC", token0: "BTC", token1: "USDC", pairAddress: "", tvl: 2100000, apy: 42.1, reward: "USDC", risk: "Med", myStake: 0, earned: 0 },
+      { id: "pool-3", pairLabel: "ETH/USDC", token0: "ETH", token1: "USDC", pairAddress: "", tvl: 1800000, apy: 35.7, reward: "USDC", risk: "Med", myStake: 0, earned: 0 },
+      { id: "pool-4", pairLabel: "SOL/USDC", token0: "SOL", token1: "USDC", pairAddress: "", tvl: 920000, apy: 31.4, reward: "USDC", risk: "High", myStake: 0, earned: 0 },
+      { id: "pool-5", pairLabel: "BNB/USDC", token0: "BNB", token1: "USDC", pairAddress: "", tvl: 740000, apy: 28.9, reward: "USDC", risk: "Med", myStake: 0, earned: 0 },
+      { id: "pool-6", pairLabel: "EURC/USDC", token0: "EURC", token1: "USDC", pairAddress: "", tvl: 680000, apy: 22.3, reward: "USDC", risk: "Low", myStake: 0, earned: 0 },
+      { id: "pool-7", pairLabel: "XRP/USDC", token0: "XRP", token1: "USDC", pairAddress: "", tvl: 520000, apy: 19.8, reward: "USDC", risk: "High", myStake: 0, earned: 0 },
+      { id: "pool-8", pairLabel: "LINK/USDC", token0: "LINK", token1: "USDC", pairAddress: "", tvl: 390000, apy: 17.2, reward: "USDC", risk: "Low", myStake: 0, earned: 0 },
+    ];
+    setPools(DUMMY_POOLS);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DUMMY_POOLS));
   }, []);
 
   useEffect(() => {
@@ -131,7 +110,7 @@ export default function EarnPage() {
     if (!selected) return;
     const val = parseFloat(amount);
     if (!val || val <= 0) {
-      setToast("Masukkan amount valid");
+      setToast("Enter a valid amount");
       return;
     }
     const next = pools.map((p) => {
@@ -151,13 +130,13 @@ export default function EarnPage() {
   function claim(poolId: string) {
     const next = pools.map((p) => (p.id === poolId ? { ...p, earned: 0 } : p));
     persist(next);
-    setToast("Reward di-claim");
+    setToast("Reward claimed");
   }
 
   function claimAll() {
     const next = pools.map((p) => ({ ...p, earned: 0 }));
     persist(next);
-    setToast("All reward di-claim");
+    setToast("All rewards claimed");
   }
 
   function riskColor(risk: Pool["risk"]) {
@@ -168,7 +147,7 @@ export default function EarnPage() {
 
   return (
     <>
-      <Header active="Earn" />
+      <Header logoColor="green" active="Earn" />
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -245,7 +224,7 @@ export default function EarnPage() {
         {visible.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-12 text-center">
             <p className="text-sm text-muted-foreground">
-              {tab === "my" ? "Belum ada posisi stake" : "Tidak ada pool"}
+              {tab === "my" ? "No staked positions yet" : "No pools available"}
             </p>
             {tab === "my" && (
               <button

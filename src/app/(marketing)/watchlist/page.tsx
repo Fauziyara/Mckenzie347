@@ -7,7 +7,7 @@ import { formatUsd, formatPrice, formatPct, shortAddr } from "@/lib/format";
 import { Sparkline } from "@/components/sparkline";
 import Link from "next/link";
 
-export default function AlatPage() {
+export default function WatchlistPage() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [watchedPairs, setWatchedPairs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ export default function AlatPage() {
 
   return (
     <>
-      <Header active="Tools" />
+      <Header logoColor="green" active="Tools" />
       <main className="w-full flex-1 px-4 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">Watchlist</h1>

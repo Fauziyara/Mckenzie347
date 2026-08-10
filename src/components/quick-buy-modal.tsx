@@ -30,7 +30,7 @@ export function QuickBuyModal({ pair, onClose }: { pair: any; onClose: () => voi
                 <path d="M20 6L9 17l-5-5" />
               </svg>
             </div>
-            <h3 className="text-base font-semibold">Swap Berhasil (Mock)</h3>
+            <h3 className="text-base font-semibold">Swap Successful (Demo)</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {amount} {pair.token1.symbol} → {expectedOut} {pair.token0.symbol}
             </p>

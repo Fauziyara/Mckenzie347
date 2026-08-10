@@ -91,7 +91,7 @@ export default function PairDetailClient({ params }: { params: Promise<{ address
   if (error) {
     return (
       <>
-        <Header active="Explore" />
+        <Header logoColor="green" active="Explore" />
         <main className="w-full flex-1 px-4 py-6">
           <div className="mb-4">
             <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">← Back</Link>
@@ -108,7 +108,7 @@ export default function PairDetailClient({ params }: { params: Promise<{ address
   if (loading) {
     return (
       <>
-        <Header active="Explore" />
+        <Header logoColor="green" active="Explore" />
         <main className="w-full flex-1 px-4 py-6">
           <div className="mb-4 h-4 w-32 animate-pulse rounded bg-muted/50" />
           <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
@@ -128,7 +128,7 @@ export default function PairDetailClient({ params }: { params: Promise<{ address
 
   return (
     <>
-      <Header active="Explore" />
+      <Header logoColor="green" active="Explore" />
       <main className="w-full flex-1 px-2 py-2">
         <div className="mb-2">
           <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back</Link>

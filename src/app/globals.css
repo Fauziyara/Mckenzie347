@@ -1593,3 +1593,125 @@ tr.row-glow:hover td:first-child {
     transition: none !important;
   }
 }
+
+
+/* ===== MOBILE RESPONSIVENESS IMPROVEMENTS ===== */
+
+/* Landing page mobile fixes */
+@media (max-width: 639px) {
+  /* Header: hide nav links, show only logo + launch button */
+  .lp .header-actions .link-quiet { display: none; }
+  .lp .header-actions { gap: 4px; }
+  .lp .btn { height: 32px; padding: 0 10px; font-size: 12px; }
+  .lp .logo { font-size: 14px; gap: 7px; }
+  
+  /* Hero: smaller text, tighter spacing */
+  .lp .hero h1 { font-size: clamp(1.8rem, 7vw, 2.4rem); }
+  .lp .hero-copy { font-size: 14px; max-width: 100%; }
+  .lp .hero-ctas { gap: 8px; }
+  .lp .btn-lg { height: 38px; padding: 0 14px; font-size: 12px; }
+  .lp .hero-facts { gap: 6px 14px; font-size: 10px; }
+  
+  /* Frame: full width, smaller chart */
+  .lp .frame { max-height: none; }
+  .lp .frame-body { min-height: 320px; }
+  .lp .pane-main { min-height: 200px; }
+  .lp .chart-box { min-height: 140px; }
+  .lp .stats-line { grid-template-columns: repeat(2, 1fr); }
+  .lp .stats-line div:nth-child(2) { border-right: 0; }
+  .lp .stats-line div:nth-child(1), .lp .stats-line div:nth-child(2) { border-bottom: 1px solid var(--rule); }
+  
+  /* Bands: less padding on mobile */
+  .lp .band { padding: 40px 0; }
+  .lp .band-head { gap: 8px; margin-bottom: 20px; }
+  .lp .band-title { font-size: 1.4rem; }
+  .lp .band-desc { font-size: 13.5px; }
+  
+  /* Spec rows: stacked layout */
+  .lp .spec-row { grid-template-columns: 36px 1fr; gap: 8px 12px; padding: 14px 0; }
+  .lp .spec-label { font-size: 13px; }
+  .lp .spec-copy { font-size: 13px; max-width: 100%; }
+  .lp .spec-meta { font-size: 10px; }
+  
+  /* Pool rows: compact */
+  .lp .pool-row { grid-template-columns: 1fr auto; gap: 8px; padding: 12px 14px; }
+  .lp .pool-tvl { display: none; }
+  .lp .pool-apr { font-size: 13px; min-width: 60px; }
+  .lp .pool-name { font-size: 13px; }
+  .lp .pool-sub { font-size: 9px; }
+  
+  /* Earn foot: single column */
+  .lp .earn-foot { grid-template-columns: 1fr; }
+  .lp .earn-foot div { padding: 10px 14px; }
+  
+  /* FAQ: single column */
+  .lp .faq-grid { gap: 12px; }
+  .lp .faq-side { margin-bottom: 8px; }
+  
+  /* Quick start: stacked */
+  .lp .step { padding: 16px 0; }
+  .lp .step h3 { font-size: 15px; }
+  .lp .step p { font-size: 13px; }
+  
+  /* Close section */
+  .lp .close { padding: 40px 0 48px; }
+  .lp .close h2 { font-size: 1.5rem; }
+  .lp .close p { font-size: 13.5px; }
+  
+  /* Footer */
+  .lp .foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .lp .foot nav { gap: 10px; flex-wrap: wrap; }
+  
+  /* Shell: tighter margins */
+  .lp .shell { width: min(100% - 24px, var(--max)); }
+}
+
+/* Tablet improvements */
+@media (min-width: 640px) and (max-width: 979px) {
+  /* Header: show some nav links */
+  .lp .header-actions .link-quiet { font-size: 12px; padding: 6px 8px; }
+  
+  /* Frame: better proportions */
+  .lp .frame-body { min-height: 380px; }
+  .lp .pane-main { min-height: 260px; }
+  
+  /* Stats: 4 columns on tablet */
+  .lp .stats-line { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* App (dark theme) mobile fixes */
+@media (max-width: 639px) {
+  /* Ensure tables don't overflow */
+  table { font-size: 12px; }
+  
+  /* Header: compact on mobile */
+  header.sticky { height: auto; }
+  
+  /* Cards: full width on mobile */
+  .grid-cols-2 { gap: 8px; }
+  
+  /* Swap/Trade panel: stack vertically */
+  .trade-panel { width: 100%; }
+  
+  /* Pair table: hide less important columns on mobile */
+  .pair-table th:nth-child(n+5),
+  .pair-table td:nth-child(n+5) { display: none; }
+}
+
+/* Prevent horizontal scroll on all breakpoints */
+html, body { overflow-x: hidden; }
+
+/* Ensure images don't overflow */
+img, svg { max-width: 100%; height: auto; }
+
+/* Better tap targets on mobile */
+@media (max-width: 639px) {
+  button, a.btn, a[role="button"] { min-height: 36px; min-width: 36px; }
+  input, select { font-size: 16px; } /* Prevent zoom on iOS */
+}
+
+/* Smooth scrolling for anchor links */
+html { scroll-behavior: smooth; }
+
+/* Better text wrapping */
+h1, h2, h3 { overflow-wrap: break-word; word-wrap: break-word; }

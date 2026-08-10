@@ -2,6 +2,8 @@
 
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useDisconnect } from "@reown/appkit/react";
 import { useState, useRef, useEffect } from "react";
+import { initAppKit } from "@/lib/wagmi-config";
+initAppKit();
 
 function shortAddr(addr: string): string {
   if (!addr || addr.length < 10) return addr;
