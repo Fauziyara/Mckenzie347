@@ -91,7 +91,7 @@ sub-second data freshness from a live indexer.
 ### Install & Run
 
 ```bash
-git clone https://github.com/Fauziyara/Mckenzie347.git
+git clone https://github.com/Fauziyara/Aperture.git
 cd arc-dashboard
 npm install
 npm run dev
@@ -218,7 +218,7 @@ MIT — see [LICENSE](LICENSE)
 
 ## 🔗 Links
 
-- **GitHub:** [github.com/Fauziyara/Mckenzie347](https://github.com/Fauziyara/Mckenzie347)
+- **GitHub:** [github.com/Fauziyara/Aperture](https://github.com/Fauziyara/Aperture)
 - **Aperture live:** [http://43.153.223.215](http://43.153.223.215)
 - **Arc Network:** [arc.io](https://arc.io)
 - **ArcScan:** [testnet.arcscan.app](https://testnet.arcscan.app)
