@@ -1629,9 +1629,9 @@ tr.row-glow:hover td:first-child {
   
   /* Spec rows: stacked layout */
   .lp .spec-row { grid-template-columns: 36px 1fr; gap: 8px 12px; padding: 14px 0; }
-  .lp .spec-label { font-size: 13px; }
-  .lp .spec-copy { font-size: 13px; max-width: 100%; }
-  .lp .spec-meta { font-size: 10px; }
+  .lp .spec-label { font-size: 13px; grid-column: 2; }
+  .lp .spec-copy { font-size: 13px; max-width: 100%; grid-column: 2; }
+  .lp .spec-meta { font-size: 10px; grid-column: 2; }
   
   /* Pool rows: compact */
   .lp .pool-row { grid-template-columns: 1fr auto; gap: 8px; padding: 12px 14px; }

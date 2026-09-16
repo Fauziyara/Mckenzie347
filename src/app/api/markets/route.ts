@@ -26,9 +26,9 @@ const COINGECKO_IDS: Record<string, { cgId: string; arcSymbols: string[] }> = {
 // Arc testnet native pairs — map to CoinGecko for real-time pricing
 // cirBTC tracks BTC 1:1, so use BTC price from CoinGecko
 const ARC_PAIRS: { symbol: string; name: string; peggedTo?: string; basePrice: number }[] = [
+  { symbol: "cirBTC", name: "Circle BTC", peggedTo: "bitcoin", basePrice: 64500 },
   { symbol: "EURC", name: "Euro Coin", basePrice: 1.08 },
-  { symbol: "cirBTC", name: "Circle BTC", peggedTo: "BTC", basePrice: 64000 },
-  { symbol: "SYN", name: "Synapse", basePrice: 0.45 },
+
 ];
 
 export async function GET(req: NextRequest) {
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Build CoinGecko markets
-    const cgMarkets = Object.entries(COINGECKO_IDS).map(([symbol, config]) => {
+    const cgMarkets = Object.entries(COINGECKO_IDS).filter(([symbol]) => symbol !== "BTC").map(([symbol, config]) => {
       const cg = cgData[config.cgId] || {};
       const price = cg.usd || 0;
       const volume24h = cg.usd_24h_vol || 0;
@@ -141,8 +141,9 @@ export async function GET(req: NextRequest) {
       let marketCap = 0;
 
       // If pegged to a CoinGecko asset, use its real-time data
-      if (ap.peggedTo && COINGECKO_IDS[ap.peggedTo]) {
-        const cg = cgData[COINGECKO_IDS[ap.peggedTo].cgId] || {};
+      if (ap.peggedTo) {
+        // Try direct cgId lookup first (e.g. "bitcoin" for cirBTC)
+        const cg = cgData[ap.peggedTo] || {};
         price = cg.usd || ap.basePrice;
         change24h = cg.usd_24h_change || 0;
         volume24h = cg.usd_24h_vol || 0;
@@ -162,7 +163,7 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ success: true, markets: [...cgMarkets, ...arcMarkets] });
+    return NextResponse.json({ success: true, markets: [...arcMarkets, ...cgMarkets] });
   } catch (e: any) {
     return NextResponse.json({ success: false, error: e.message }, { status: 500 });
   }

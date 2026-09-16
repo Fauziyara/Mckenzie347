@@ -2,7 +2,6 @@ import React from "react";
 
 // Crypto icon image URLs — GitHub CDN first, CoinCap fallback
 const CRYPTO_ICONS: Record<string, string> = {
-  BTC: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png",
   ETH: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png",
   SOL: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/sol.png",
   LINK: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/link.png",
@@ -24,8 +23,8 @@ const CRYPTO_ICONS: Record<string, string> = {
   NEAR: "https://assets.coincap.io/assets/icons/near@2x.png",
   // Arc testnet tokens — local PNG
   EURC: "/tokens/eurc.png",
-  CIRBTC: "/tokens/cirbtc.png",
-  cirBTC: "/tokens/cirbtc.png",
+  CIRBTC: "/tokens/cirbtc.svg",
+  cirBTC: "/tokens/cirbtc.svg",
   MOG: "/tokens/mog.png",
   mog: "/tokens/mog.png",
   SYN: "/tokens/syn.png",
@@ -33,7 +32,6 @@ const CRYPTO_ICONS: Record<string, string> = {
 
 // Fallback chain: GitHub → CoinCap → gradient
 const COINCAP_FALLBACK: Record<string, string> = {
-  BTC: "https://assets.coincap.io/assets/icons/btc@2x.png",
   ETH: "https://assets.coincap.io/assets/icons/eth@2x.png",
   SOL: "https://assets.coincap.io/assets/icons/sol@2x.png",
   LINK: "https://assets.coincap.io/assets/icons/link@2x.png",
@@ -100,7 +98,6 @@ const TOKEN_COLORS: Record<string, string> = {
   LACHESIS: "from-red-500 to-rose-700",
   QUINN: "from-violet-500 to-purple-700",
   JADEN: "from-cyan-500 to-blue-700",
-  BTC: "from-amber-500 to-orange-700",
   ETH: "from-violet-500 to-violet-700",
   ARB: "from-blue-400 to-blue-700",
   SUI: "from-cyan-400 to-blue-600",

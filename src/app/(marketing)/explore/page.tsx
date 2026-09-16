@@ -165,7 +165,7 @@ export default function ExplorePage() {
   const totalVolume = markets.reduce((a, m) => a + m.volume24h, 0);
   const totalMcap = markets.reduce((a, m) => a + m.marketCap, 0);
   const gainers = markets.filter(m => m.change24h > 0).length;
-  const totalTx = markets.reduce((a, m) => a + m.txCount, 0);
+
 
   const arrow = (key: SortKey) => sortKey === key ? (sortDir === "desc" ? "↓" : "↑") : "";
 
@@ -176,7 +176,7 @@ export default function ExplorePage() {
         {/* Stats Bar */}
         <section className="border-b border-border/50 bg-muted/10">
           <div className="w-full px-4 py-4">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <div className="rounded-xl border border-border/50 bg-card/30 p-3">
                 <div className="text-base sm:text-xl font-bold text-foreground font-mono">{loading ? "—" : fmtVol(totalVolume)}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">Total Volume 24h</div>
@@ -188,10 +188,6 @@ export default function ExplorePage() {
               <div className="rounded-xl border border-border/50 bg-card/30 p-3">
                 <div className="text-base sm:text-xl font-bold text-emerald-400 font-mono">{loading ? "—" : <>{gainers}<span className="text-muted-foreground text-sm sm:text-base">/{markets.length}</span></>}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">Gainers</div>
-              </div>
-              <div className="rounded-xl border border-border/50 bg-card/30 p-3">
-                <div className="text-base sm:text-xl font-bold text-foreground font-mono">{loading ? "—" : totalTx.toLocaleString()}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">Total Swaps</div>
               </div>
             </div>
           </div>

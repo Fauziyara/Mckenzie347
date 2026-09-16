@@ -44,13 +44,12 @@ function fmtVol(n: number): string {
 const FALLBACK_PAIRS: PairData[] = [
   { name: "cirBTC / USDC", vol: "$2.4M vol", px: "64,000", chg: "+0.00%", dir: "up", token0: "cirBTC", token1: "USDC", swaps: 627 },
   { name: "EURC / USDC", vol: "$812k vol", px: "1.08", chg: "+0.00%", dir: "up", token0: "EURC", token1: "USDC", swaps: 1278 },
-  { name: "SYN / USDC", vol: "$640k vol", px: "0.45", chg: "+0.00%", dir: "up", token0: "SYN", token1: "USDC", swaps: 145 },
-  { name: "BTC / USDC", vol: "$291k vol", px: "64,844", chg: "+0.88%", dir: "up", token0: "BTC", token1: "USDC", swaps: 627 },
+  { name: "ETH / USDC", vol: "$1.2M vol", px: "2,850", chg: "+0.32%", dir: "up", token0: "ETH", token1: "USDC", swaps: 890 },
+  { name: "BNB / USDC", vol: "$450k vol", px: "312", chg: "+1.23%", dir: "up", token0: "BNB", token1: "USDC", swaps: 1234 },
 ];
 
 const FALLBACK_POOLS: PoolData[] = [
   { name: "cirBTC / USDC", sub: "High yield · stable", apr: "48.2%", tvl: "$1.2M" },
-  { name: "BTC / USDC", sub: "Blue chip", apr: "42.1%", tvl: "$2.1M" },
   { name: "ETH / USDC", sub: "High volume", apr: "35.7%", tvl: "$1.8M" },
   { name: "SOL / USDC", sub: "High volume", apr: "31.4%", tvl: "$920k" },
   { name: "BNB / USDC", sub: "Blue chip", apr: "28.9%", tvl: "$740k" },
@@ -122,7 +121,7 @@ export default function LandingPage() {
 
         if (marketsRes?.success && !cancelled) {
           const m = marketsRes.markets;
-          const arcNative = ["cirBTC", "EURC", "SYN", "BTC"];
+          const arcNative = ["cirBTC", "EURC", "ETH", "BNB"];
           const arcPairs: PairData[] = [];
           for (const sym of arcNative) {
             const market = m.find((x: any) => x.baseAsset === sym);
@@ -443,7 +442,6 @@ export default function LandingPage() {
           <nav>
             <a href="/explore">Scanner</a>
             <a href="/docs">Docs</a>
-            <a href="#earn">Earn</a>
             <a href="/earn">Earn</a>
           </nav>
         </div>

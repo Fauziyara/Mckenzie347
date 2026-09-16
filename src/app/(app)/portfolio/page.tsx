@@ -235,20 +235,6 @@ export default function PortofolioPage() {
           </div>
           {mounted && activeAddress && (
             <>
-            <button
-              type="button"
-              onClick={() => {
-                if (activeAddress) {
-                  navigator.clipboard.writeText(activeAddress);
-                  setCopied(true);
-                  setToast("Address copied");
-                  setTimeout(() => setCopied(false), 1800);
-                }
-              }}
-              className="rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs font-medium hover:bg-muted/50 cursor-pointer"
-            >
-              {copied ? "Copied!" : "Copy Address"}
-            </button>
             <button type="button" onClick={() => activeAddress && fetchBalances(activeAddress)} disabled={loading || !activeAddress} className="rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs font-medium hover:bg-muted/50 cursor-pointer disabled:opacity-50">
               {loading ? "Loading…" : "↻ Refresh"}
             </button>

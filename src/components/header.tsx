@@ -20,7 +20,6 @@ const navItems = [
   { href: "/swap", label: "Swap", hasDropdown: false },
   { href: "#", label: "Tools", hasDropdown: true, submenu: [
     { href: "/tracker", label: "Tracker" },
-    { href: "/watchlist", label: "Watchlist" },
   ]},
   { href: "/portfolio", label: "Portfolio", hasDropdown: false },
   { href: "/earn", label: "Earn", hasDropdown: false },

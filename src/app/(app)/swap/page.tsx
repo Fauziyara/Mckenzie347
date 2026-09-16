@@ -41,8 +41,6 @@ const TOKENS: Record<string, { address: `0x${string}`; decimals: number; name: s
   USDC: { address: USDC_ADDRESS, decimals: 6, name: "USD Coin" },
   EURC: { address: "0x89b50855aa3be2f677cd6303cec089b5f319d72a", decimals: 6, name: "Euro Coin" },
   cirBTC: { address: "0xf0c4a4ce82a5746abaad9425360ab04fbba432bf", decimals: 8, name: "Circle BTC" },
-  mog: { address: "0x4f6e1a3b2a3b2095ff2700e4c8d80c723db62650", decimals: 18, name: "Mog Coin" },
-  SYN: { address: "0xc5124c846c6e6307986988dfb7e743327aa05f19", decimals: 18, name: "Synthra" },
 };
 
 // Available swap tokens (for token selector)
